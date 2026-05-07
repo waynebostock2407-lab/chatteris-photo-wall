@@ -222,19 +222,21 @@ export default function SlideshowPage() {
       </div>
 
       {/* QR Panel */}
-      <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
+<div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
 
-        <div className="text-center text-[#0A1E3D] font-bold text-lg mb-3">
-          UPLOAD PHOTOS
-        </div>
+  <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
+    UPLOAD PHOTOS
+    <br />
+    & MESSAGES
+  </div>
 
-        <img
-          src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-          alt="QR"
-          className="rounded-xl"
-        />
+  <img
+    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
+    alt="QR"
+    className="rounded-xl"
+  />
 
-      </div>
+</div>
 
       <style jsx>{`
         .fabric-layer {
