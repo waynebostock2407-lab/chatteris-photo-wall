@@ -330,7 +330,7 @@ export default function SlideshowPage() {
           inset: -4%;
           background-size: cover;
           background-position: center;
-          animation: fabricFlutter 9s ease-in-out infinite;
+          background-size: cover;
           transform-origin: center;
           filter: saturate(1.05);
         }
@@ -363,67 +363,6 @@ export default function SlideshowPage() {
             transparent
           );
           transform: rotate(18deg);
-        }
-
-        @keyframes fabricFlutter {
-          0% {
-            transform:
-              perspective(1200px)
-              rotateY(0deg)
-              rotateX(0deg)
-              scale(1.06)
-              translateX(0px);
-          }
-
-          25% {
-            transform:
-              perspective(1200px)
-              rotateY(1.5deg)
-              rotateX(0.5deg)
-              scale(1.07)
-              translateX(-8px);
-          }
-
-          50% {
-            transform:
-              perspective(1200px)
-              rotateY(-1.5deg)
-              rotateX(-0.5deg)
-              scale(1.08)
-              translateX(8px);
-          }
-
-          75% {
-            transform:
-              perspective(1200px)
-              rotateY(1deg)
-              rotateX(0.5deg)
-              scale(1.07)
-              translateX(-4px);
-          }
-
-          100% {
-            transform:
-              perspective(1200px)
-              rotateY(0deg)
-              rotateX(0deg)
-              scale(1.06)
-              translateX(0px);
-          }
-        }
-
-        @keyframes fade {
-          from {
-            opacity: 0;
-          }
-
-          to {
-            opacity: 1;
-          }
-        }
-
-        .animate-fade {
-          animation: fade 1.2s ease;
         }
       `}</style>
 
