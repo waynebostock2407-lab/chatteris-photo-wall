@@ -330,6 +330,182 @@ export default function AdminPage() {
 
         </div>
 
+        {/* Pending Photos */}
+        <div>
+
+          <h2 className="text-4xl font-bold mb-8">
+            Pending Photos
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-20">
+
+            {photos
+              .filter((photo) => !photo.approved)
+              .map((photo) => (
+
+                <div
+                  key={photo.id}
+                  className="relative bg-white rounded-2xl overflow-hidden shadow-2xl"
+                >
+
+                  <div className="absolute top-3 left-3 z-20">
+
+                    <input
+                      type="checkbox"
+                      checked={selectedPhotos.includes(photo.id)}
+                      onChange={() => togglePhotoSelection(photo.id)}
+                      className="w-6 h-6 accent-green-500 cursor-pointer"
+                    />
+
+                  </div>
+
+                  <div className="absolute top-3 right-3 z-20 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full">
+                    Pending
+                  </div>
+
+                  <img
+                    src={photo.imageUrl}
+                    alt="Uploaded"
+                    className="w-full h-72 object-cover"
+                  />
+
+                  <div className="p-5 flex gap-3">
+
+                    <button
+                      onClick={() => approvePhoto(photo.id)}
+                      className="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold py-3 rounded-xl transition"
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      onClick={() => deletePhoto(photo.id)}
+                      className="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 rounded-xl transition"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+          </div>
+
+        </div>
+
+        {/* Approved Photos */}
+        <div className="mb-24">
+
+          <h2 className="text-3xl font-bold mb-6 text-white/80">
+            Approved Photos
+          </h2>
+
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
+
+            {photos
+              .filter((photo) => photo.approved)
+              .map((photo) => (
+
+                <div
+                  key={photo.id}
+                  className="relative group"
+                >
+
+                  <input
+                    type="checkbox"
+                    checked={selectedPhotos.includes(photo.id)}
+                    onChange={() => togglePhotoSelection(photo.id)}
+                    className="absolute top-2 left-2 z-20 w-5 h-5 accent-red-500 cursor-pointer"
+                  />
+
+                  <img
+                    src={photo.imageUrl}
+                    alt="Approved"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                    className="w-full aspect-square object-cover rounded-xl border border-white/10"
+                  />
+
+                  <button
+                    onClick={() => deletePhoto(photo.id)}
+                    className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-sm font-bold rounded-xl"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              ))}
+
+          </div>
+
+        </div>
+
+        {/* Guestbook Messages */}
+        <div className="mt-24">
+
+          <h2 className="text-4xl font-bold mb-8">
+            Guestbook Messages
+          </h2>
+
+          <div className="grid gap-6">
+
+            {messages.map((message) => (
+
+              <div
+                key={message.id}
+                className="bg-white/10 border border-white/10 rounded-3xl p-6 backdrop-blur-md"
+              >
+
+                <div className="flex justify-between items-start gap-6 flex-wrap">
+
+                  <div className="flex-1">
+
+                    <p className="text-2xl font-bold mb-3 text-[#D9F3FF]">
+                      {message.name}
+                    </p>
+
+                    <p className="text-white/80 text-lg leading-relaxed whitespace-pre-wrap">
+                      {message.message}
+                    </p>
+
+                  </div>
+
+                  <div className="flex gap-3 flex-wrap">
+
+                    {!message.approved && (
+
+                      <button
+                        onClick={() => approveMessage(message.id)}
+                        className="bg-green-600 hover:bg-green-500 px-5 py-3 rounded-xl font-semibold transition"
+                      >
+                        Approve
+                      </button>
+
+                    )}
+
+                    <button
+                      onClick={() => deleteMessage(message.id)}
+                      className="bg-red-600 hover:bg-red-500 px-5 py-3 rounded-xl font-semibold transition"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
       </div>
 
     </main>
