@@ -8,6 +8,7 @@ import {
   orderBy,
   updateDoc,
   doc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
@@ -50,6 +51,9 @@ export default function AdminPage() {
       approved: true,
     });
   };
+  const deletePhoto = async (id: string) => {
+  await deleteDoc(doc(db, "photos", id));
+};
 
   if (!authenticated) {
     return (
@@ -115,14 +119,23 @@ export default function AdminPage() {
                 )}
               </div>
 
-              {!photo.approved && (
-                <button
-                  onClick={() => approvePhoto(photo.id)}
-                  className="bg-green-500 px-4 py-3 rounded-xl font-bold w-full"
-                >
-                  Approve
-                </button>
-              )}
+              <div className="flex gap-3">
+  {!photo.approved && (
+    <button
+      onClick={() => approvePhoto(photo.id)}
+      className="bg-green-500 px-4 py-3 rounded-xl font-bold w-full"
+    >
+      Approve
+    </button>
+  )}
+
+  <button
+    onClick={() => deletePhoto(photo.id)}
+    className="bg-red-500 px-4 py-3 rounded-xl font-bold w-full"
+  >
+    Delete
+  </button>
+</div>
             </div>
           </div>
         ))}
