@@ -238,7 +238,7 @@ export default function SlideshowPage() {
                   }}
                   className="text-[#1A1A1A] text-3xl italic"
                 >
-                  Presentation Day Memories
+                  Memories
                 </div>
 
               </div>
