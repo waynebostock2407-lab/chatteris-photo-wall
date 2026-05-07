@@ -152,20 +152,43 @@ export default function SlideshowPage() {
 
               </div>
 
-              {/* Safe Area Message Box */}
-              <div className="bg-black/40 border border-white/15 backdrop-blur-md rounded-[2.5rem] px-16 py-14 shadow-[0_0_60px_rgba(0,0,0,0.45)]">
+              {/* Elegant Message Card */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
 
-                <div
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                  }}
-                  className="text-[2.15rem] leading-[1.55] text-white font-medium break-words"
-                >
-                  “{randomMessage.message}”
+                {/* Soft Glow */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_45%)] pointer-events-none"></div>
+
+                {/* Quote Mark */}
+                <div className="absolute top-6 left-10 text-white/10 text-[9rem] leading-none font-serif">
+                  “
                 </div>
 
-                <div className="mt-10 text-[#D9F3FF] text-3xl font-semibold tracking-wide">
-                  — {randomMessage.name}
+                {/* Message */}
+                <div
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    whiteSpace: "pre-wrap",
+                  }}
+                  className="relative z-10 text-[2.05rem] leading-[1.7] text-[#F8FBFF] font-medium tracking-[0.01em] text-left max-h-[42vh] overflow-hidden drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
+                >
+                  {randomMessage.message}
+                </div>
+
+                {/* Signature */}
+                <div className="relative z-10 mt-12 flex items-center justify-end">
+
+                  <div className="text-right">
+
+                    <div className="text-white/50 text-sm uppercase tracking-[0.35em] mb-2">
+                      Shared by
+                    </div>
+
+                    <div className="text-[#D9F3FF] text-[2rem] font-semibold tracking-wide">
+                      {randomMessage.name}
+                    </div>
+
+                  </div>
+
                 </div>
 
               </div>
@@ -197,11 +220,46 @@ export default function SlideshowPage() {
             }`}
           >
 
-            <img
-              src={photos[currentIndex].imageUrl}
-              alt="Slideshow"
-              className="max-w-[82vw] max-h-[66vh] object-contain rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.35)] border border-white/30"
-            />
+            {/* Polaroid */}
+            <div
+              className="
+                bg-white
+                p-5
+                pb-20
+                rounded-[0.6rem]
+                shadow-[0_25px_80px_rgba(0,0,0,0.45)]
+                rotate-[-1.5deg]
+                transition-all
+                duration-1000
+              "
+            >
+
+              <img
+                src={photos[currentIndex].imageUrl}
+                alt="Slideshow"
+                className="
+                  max-w-[74vw]
+                  max-h-[58vh]
+                  object-contain
+                  bg-[#f3f3f3]
+                "
+              />
+
+              {/* Caption */}
+              <div className="mt-6 text-center">
+
+                <div
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                  }}
+                  className="text-[#1A1A1A] text-3xl italic"
+                >
+                  Presentation Day Memories
+                </div>
+
+              </div>
+
+            </div>
 
           </div>
 
@@ -209,7 +267,7 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Bottom Branding Bar */}
+      {/* Bottom Branding */}
       <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
 
         <img
