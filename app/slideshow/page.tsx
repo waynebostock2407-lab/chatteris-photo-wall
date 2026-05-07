@@ -20,7 +20,7 @@ interface GuestbookMessage {
   id: string;
   name: string;
   message: string;
-  approved: boolean;
+ approved: boolean;
 }
 
 export default function SlideshowPage() {
@@ -69,6 +69,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
+  /* Slideshow Rotation */
   useEffect(() => {
     if (photos.length === 0) return;
 
@@ -81,11 +82,27 @@ export default function SlideshowPage() {
         );
 
         setFade(true);
-      }, 700);
-    }, 7000);
+      }, 350);
+
+    }, 6500);
 
     return () => clearInterval(interval);
   }, [photos]);
+
+  /* Preload Next Image */
+  useEffect(() => {
+    if (photos.length === 0) return;
+
+    const nextIndex =
+      currentIndex === photos.length - 1
+        ? 0
+        : currentIndex + 1;
+
+    const nextImage = new Image();
+
+    nextImage.src = photos[nextIndex]?.imageUrl;
+
+  }, [currentIndex, photos]);
 
   const showGuestbookSlide =
     messages.length > 0 &&
@@ -99,7 +116,7 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* Animated Fabric Background */}
+      {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
 
         <div
@@ -114,7 +131,7 @@ export default function SlideshowPage() {
             <img
               src="/logo.png"
               alt="Background Logo"
-              className="w-[780px] opacity-[0.16] blur-[1px] drop-shadow-[0_0_40px_rgba(255,255,255,0.18)]"
+              className="w-[780px] opacity-[0.16] blur-[1px]"
             />
 
           </div>
@@ -123,20 +140,19 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Overlay */}
+      {/* Overlays */}
       <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
-      {/* Vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
 
       {/* Spotlights */}
       <div className="spotlight spotlight-left"></div>
       <div className="spotlight spotlight-right"></div>
-      <div className="spotlight spotlight-top"></div>
 
       {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52">
 
+        {/* Guestbook Slide */}
         {showGuestbookSlide && randomMessage ? (
 
           <div className="w-full flex justify-center items-center z-20 px-20">
@@ -199,6 +215,7 @@ export default function SlideshowPage() {
 
         ) : photos.length === 0 ? (
 
+          /* Empty State */
           <div className="text-center z-20">
 
             <div className="text-6xl font-bold text-white mb-6">
@@ -213,20 +230,21 @@ export default function SlideshowPage() {
 
         ) : (
 
+          /* Photo Slide */
           <div
             key={photos[currentIndex]?.id}
-            className={`transition-all duration-1000 ${
-              fade ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            className={`transition-opacity duration-700 will-change-opacity ${
+              fade ? "opacity-100" : "opacity-0"
             }`}
           >
 
             {/* Polaroid */}
-            <div className="bg-white p-5 pb-20 rounded-[0.6rem] shadow-[0_25px_80px_rgba(0,0,0,0.45)] rotate-[-1.5deg] transition-all duration-1000">
+            <div className="bg-white p-5 pb-20 rounded-[0.6rem] shadow-[0_18px_50px_rgba(0,0,0,0.38)] rotate-[-1.5deg]">
 
               <img
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
-                className="max-w-[74vw] max-h-[58vh] object-contain bg-[#f3f3f3]"
+                className="max-w-[74vw] max-h-[58vh] object-cover bg-[#f3f3f3]"
               />
 
               {/* Caption */}
@@ -251,7 +269,7 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Bottom Branding */}
+      {/* Branding */}
       <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
 
         <img
@@ -264,7 +282,7 @@ export default function SlideshowPage() {
 
           <h1 className="leading-none">
 
-            <span className="text-white text-5xl font-extrabold tracking-wide drop-shadow-[0_3px_18px_rgba(255,255,255,0.2)]">
+            <span className="text-white text-5xl font-extrabold tracking-wide">
               Chatteris Town Football Club
             </span>
 
@@ -274,12 +292,12 @@ export default function SlideshowPage() {
               style={{
                 fontFamily: "'Playfair Display', serif",
               }}
-              className="text-[#EAF8FF] text-[4rem] italic font-semibold tracking-[0.04em] drop-shadow-[0_2px_12px_rgba(255,255,255,0.18)]"
+              className="text-[#EAF8FF] text-[4rem] italic font-semibold tracking-[0.04em]"
             >
               Presentation Day
             </span>
 
-            <span className="block mt-3 uppercase tracking-[0.22em] text-[#EAF8FF] text-[1.55rem] font-semibold drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
+            <span className="block mt-3 uppercase tracking-[0.22em] text-[#EAF8FF] text-[1.55rem] font-semibold">
               ONE CLUB | ONE FAMILY | THE LILIES
             </span>
 
@@ -289,7 +307,7 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* QR Panel */}
+      {/* QR */}
       <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
 
         <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
@@ -323,7 +341,7 @@ export default function SlideshowPage() {
           height: 120vh;
           top: -20vh;
           filter: blur(30px);
-          opacity: 0.18;
+          opacity: 0.15;
           pointer-events: none;
         }
 
@@ -341,20 +359,10 @@ export default function SlideshowPage() {
           right: -120px;
           background: linear-gradient(
             to bottom,
-            rgba(147,197,253,0.9),
+            rgba(147,197,253,0.8),
             transparent
           );
           transform: rotate(18deg);
-        }
-
-        .spotlight-top {
-          left: 40%;
-          top: -40vh;
-          background: linear-gradient(
-            to bottom,
-            rgba(255,255,255,0.7),
-            transparent
-          );
         }
 
         @keyframes fabricFlutter {
@@ -364,48 +372,34 @@ export default function SlideshowPage() {
               rotateY(0deg)
               rotateX(0deg)
               scale(1.06)
-              translateX(0px)
-              translateY(0px);
+              translateX(0px);
           }
 
-          20% {
-            transform:
-              perspective(1200px)
-              rotateY(2deg)
-              rotateX(1deg)
-              scale(1.08)
-              translateX(-10px)
-              translateY(-3px);
-          }
-
-          40% {
-            transform:
-              perspective(1200px)
-              rotateY(-2deg)
-              rotateX(-1deg)
-              scale(1.07)
-              translateX(8px)
-              translateY(2px);
-          }
-
-          60% {
+          25% {
             transform:
               perspective(1200px)
               rotateY(1.5deg)
               rotateX(0.5deg)
-              scale(1.09)
-              translateX(-6px)
-              translateY(-2px);
+              scale(1.07)
+              translateX(-8px);
           }
 
-          80% {
+          50% {
             transform:
               perspective(1200px)
               rotateY(-1.5deg)
               rotateX(-0.5deg)
+              scale(1.08)
+              translateX(8px);
+          }
+
+          75% {
+            transform:
+              perspective(1200px)
+              rotateY(1deg)
+              rotateX(0.5deg)
               scale(1.07)
-              translateX(6px)
-              translateY(1px);
+              translateX(-4px);
           }
 
           100% {
@@ -414,25 +408,22 @@ export default function SlideshowPage() {
               rotateY(0deg)
               rotateX(0deg)
               scale(1.06)
-              translateX(0px)
-              translateY(0px);
+              translateX(0px);
           }
         }
 
         @keyframes fade {
           from {
             opacity: 0;
-            transform: scale(0.96);
           }
 
           to {
             opacity: 1;
-            transform: scale(1);
           }
         }
 
         .animate-fade {
-          animation: fade 1.5s ease;
+          animation: fade 1.2s ease;
         }
       `}</style>
 
