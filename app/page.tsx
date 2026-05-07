@@ -16,33 +16,39 @@ import {
 import { db, storage } from "@/lib/firebase";
 
 export default function UploadPage() {
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleUpload = async () => {
-    if (!image) return;
+    if (images.length === 0) return;
 
     try {
       setUploading(true);
 
-      const storageRef = ref(
-        storage,
-        `photos/${Date.now()}-${image.name}`
+      await Promise.all(
+        images.map(async (image) => {
+
+          const storageRef = ref(
+            storage,
+            `photos/${Date.now()}-${image.name}`
+          );
+
+          await uploadBytes(storageRef, image);
+
+          const downloadURL = await getDownloadURL(storageRef);
+
+          await addDoc(collection(db, "photos"), {
+            imageUrl: downloadURL,
+            approved: false,
+            createdAt: serverTimestamp(),
+          });
+
+        })
       );
 
-      await uploadBytes(storageRef, image);
-
-      const downloadURL = await getDownloadURL(storageRef);
-
-      await addDoc(collection(db, "photos"), {
-        imageUrl: downloadURL,
-        approved: false,
-        createdAt: serverTimestamp(),
-      });
-
       setSuccess(true);
-      setImage(null);
+      setImages([]);
 
     } catch (error) {
       console.error("Upload error:", error);
@@ -125,10 +131,11 @@ export default function UploadPage() {
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 className="hidden"
                 onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    setImage(e.target.files[0]);
+                  if (e.target.files) {
+                    setImages(Array.from(e.target.files));
                     setSuccess(false);
                   }
                 }}
@@ -137,7 +144,7 @@ export default function UploadPage() {
               <div className="text-center">
 
                 <p className="text-2xl font-semibold mb-2">
-                  Choose a Photo
+                  Choose Photos
                 </p>
 
                 <p className="text-white/70">
@@ -148,13 +155,23 @@ export default function UploadPage() {
 
             </label>
 
-            {image && (
+            {images.length > 0 && (
 
               <div className="bg-black/20 rounded-2xl p-5">
 
-                <p className="text-white/90 text-lg font-medium truncate">
-                  {image.name}
+                <p className="text-white/90 text-lg font-medium mb-2">
+                  {images.length} photo(s) selected
                 </p>
+
+                <div className="max-h-40 overflow-y-auto space-y-1 text-white/70 text-sm">
+
+                  {images.map((img, index) => (
+                    <p key={index} className="truncate">
+                      {img.name}
+                    </p>
+                  ))}
+
+                </div>
 
               </div>
 
@@ -162,13 +179,13 @@ export default function UploadPage() {
 
             <button
               onClick={handleUpload}
-              disabled={!image || uploading}
+              disabled={images.length === 0 || uploading}
               className="bg-[#B9E6FF] text-[#06142B] font-bold text-xl py-4 rounded-2xl hover:bg-white transition disabled:opacity-40"
             >
 
               {uploading
                 ? "Uploading..."
-                : "Upload Photo"}
+                : "Upload Photos"}
 
             </button>
 
@@ -177,11 +194,11 @@ export default function UploadPage() {
               <div className="bg-green-500/20 border border-green-400/40 rounded-2xl p-5 text-center">
 
                 <p className="text-2xl font-bold text-[#D9FFE8] mb-2">
-                  Photo Uploaded!
+                  Photos Uploaded!
                 </p>
 
                 <p className="text-white/80">
-                  Your photo may appear on the big screen shortly.
+                  Your photos may appear on the big screen shortly.
                 </p>
 
               </div>
