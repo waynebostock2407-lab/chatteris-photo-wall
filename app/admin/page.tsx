@@ -106,8 +106,24 @@ export default function AdminPage() {
       );
 
       setSelectedPhotos([]);
+
     } catch (error) {
       console.error("Error approving photos:", error);
+    }
+  };
+
+  const deleteSelectedPhotos = async () => {
+    try {
+      await Promise.all(
+        selectedPhotos.map((id) =>
+          deleteDoc(doc(db, "photos", id))
+        )
+      );
+
+      setSelectedPhotos([]);
+
+    } catch (error) {
+      console.error("Error deleting photos:", error);
     }
   };
 
@@ -170,6 +186,14 @@ export default function AdminPage() {
               className="bg-green-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-green-500 transition disabled:opacity-40"
             >
               Approve Selected ({selectedPhotos.length})
+            </button>
+
+            <button
+              onClick={deleteSelectedPhotos}
+              disabled={selectedPhotos.length === 0}
+              className="bg-red-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-red-500 transition disabled:opacity-40"
+            >
+              Delete Selected ({selectedPhotos.length})
             </button>
 
           </div>
