@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import {
   addDoc,
   collection,
@@ -15,12 +16,17 @@ import {
 
 import { db, storage } from "@/lib/firebase";
 
-export default function UploadPage() {
+export default function HomePage() {
   const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [photoSuccess, setPhotoSuccess] = useState(false);
 
-  const handleUpload = async () => {
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [messageSuccess, setMessageSuccess] = useState(false);
+
+  const handlePhotoUpload = async () => {
     if (images.length === 0) return;
 
     try {
@@ -47,20 +53,44 @@ export default function UploadPage() {
         })
       );
 
-      setSuccess(true);
+      setPhotoSuccess(true);
       setImages([]);
 
     } catch (error) {
-      console.error("Upload error:", error);
+      console.error(error);
     } finally {
       setUploading(false);
     }
   };
 
-  return (
-    <main className="relative min-h-screen overflow-hidden flex items-center justify-center px-6 py-12 text-white">
+  const submitMessage = async () => {
+    if (!name || !message) return;
 
-      {/* Animated Fabric Background */}
+    try {
+      setSendingMessage(true);
+
+      await addDoc(collection(db, "guestbook"), {
+        name,
+        message,
+        approved: false,
+        createdAt: serverTimestamp(),
+      });
+
+      setName("");
+      setMessage("");
+      setMessageSuccess(true);
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
+  return (
+    <main className="relative min-h-screen overflow-hidden px-6 py-12 text-white">
+
+      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
 
         <div
@@ -72,10 +102,9 @@ export default function UploadPage() {
 
       </div>
 
-      {/* Dark Overlay */}
+      {/* Overlays */}
       <div className="absolute inset-0 bg-[#06142B]/55"></div>
 
-      {/* Vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
 
       {/* Background Logo */}
@@ -89,19 +118,19 @@ export default function UploadPage() {
 
       </div>
 
-      {/* Content */}
-      <div className="relative z-20 w-full max-w-2xl">
+      {/* Main Content */}
+      <div className="relative z-20 max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-16">
 
           <img
             src="/logo.png"
             alt="Club Logo"
-            className="w-32 h-32 mx-auto mb-5 drop-shadow-2xl"
+            className="w-36 h-36 mx-auto mb-6 drop-shadow-2xl"
           />
 
-          <h1 className="text-5xl font-extrabold text-white mb-3">
+          <h1 className="text-6xl font-extrabold text-white mb-3">
             Chatteris Town Football Club
           </h1>
 
@@ -109,101 +138,176 @@ export default function UploadPage() {
             style={{
               fontFamily: "'Playfair Display', serif",
             }}
-            className="text-[#EAF8FF] text-3xl italic font-semibold mb-6"
+            className="text-[#EAF8FF] text-4xl italic font-semibold mb-8"
           >
             Presentation Day
           </p>
 
-          <p className="text-white/80 text-lg text-center max-w-xl mx-auto leading-relaxed">
-            Upload your favourite moments from the season and
-            watch them appear live on the big screen throughout the event.
+          <p className="text-white/80 text-xl max-w-3xl mx-auto leading-relaxed">
+            Share your favourite moments from the season and leave
+            special memories and messages for Vicky.
           </p>
 
         </div>
 
-        {/* Upload Card */}
-        <div className="relative z-20 bg-white/12 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-[0_0_60px_rgba(255,255,255,0.12)]">
+        {/* Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
-          <div className="flex flex-col gap-6">
+          {/* Upload Photos */}
+          <div className="bg-white/12 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-[0_0_60px_rgba(255,255,255,0.12)]">
 
-            <label className="flex flex-col items-center justify-center border-2 border-dashed border-white/30 rounded-2xl p-10 cursor-pointer hover:border-white/60 transition">
+            <h2 className="text-4xl font-bold mb-4">
+              Upload Photos
+            </h2>
 
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files) {
-                    setImages(Array.from(e.target.files));
-                    setSuccess(false);
-                  }
-                }}
-              />
+            <p className="text-white/75 text-lg mb-8 leading-relaxed">
+              Share your favourite moments from the season and
+              watch them appear live on the big screen.
+            </p>
 
-              <div className="text-center">
+            <div className="flex flex-col gap-6">
 
-                <p className="text-2xl font-semibold mb-2">
-                  Choose Photos
-                </p>
+              <label className="flex flex-col items-center justify-center border-2 border-dashed border-white/30 rounded-2xl p-10 cursor-pointer hover:border-white/60 transition">
 
-                <p className="text-white/70">
-                  Tap here to upload from your phone
-                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      setImages(Array.from(e.target.files));
+                      setPhotoSuccess(false);
+                    }
+                  }}
+                />
 
-              </div>
+                <div className="text-center">
 
-            </label>
+                  <p className="text-2xl font-semibold mb-2">
+                    Choose Photos
+                  </p>
 
-            {images.length > 0 && (
-
-              <div className="bg-black/20 rounded-2xl p-5">
-
-                <p className="text-white/90 text-lg font-medium mb-2">
-                  {images.length} photo(s) selected
-                </p>
-
-                <div className="max-h-40 overflow-y-auto space-y-1 text-white/70 text-sm">
-
-                  {images.map((img, index) => (
-                    <p key={index} className="truncate">
-                      {img.name}
-                    </p>
-                  ))}
+                  <p className="text-white/70">
+                    Tap here to upload from your phone
+                  </p>
 
                 </div>
 
-              </div>
+              </label>
 
-            )}
+              {images.length > 0 && (
 
-            <button
-              onClick={handleUpload}
-              disabled={images.length === 0 || uploading}
-              className="bg-[#B9E6FF] text-[#06142B] font-bold text-xl py-4 rounded-2xl hover:bg-white transition disabled:opacity-40"
-            >
+                <div className="bg-black/20 rounded-2xl p-5">
 
-              {uploading
-                ? "Uploading..."
-                : "Upload Photos"}
+                  <p className="text-white/90 text-lg font-medium mb-2">
+                    {images.length} photo(s) selected
+                  </p>
 
-            </button>
+                  <div className="max-h-40 overflow-y-auto space-y-1 text-white/70 text-sm">
 
-            {success && (
+                    {images.map((img, index) => (
+                      <p key={index} className="truncate">
+                        {img.name}
+                      </p>
+                    ))}
 
-              <div className="bg-green-500/20 border border-green-400/40 rounded-2xl p-5 text-center">
+                  </div>
 
-                <p className="text-2xl font-bold text-[#D9FFE8] mb-2">
-                  Photos Uploaded!
-                </p>
+                </div>
 
-                <p className="text-white/80">
-                  Your photos may appear on the big screen shortly.
-                </p>
+              )}
 
-              </div>
+              <button
+                onClick={handlePhotoUpload}
+                disabled={images.length === 0 || uploading}
+                className="bg-[#B9E6FF] text-[#06142B] font-bold text-xl py-4 rounded-2xl hover:bg-white transition disabled:opacity-40"
+              >
 
-            )}
+                {uploading
+                  ? "Uploading..."
+                  : "Upload Photos"}
+
+              </button>
+
+              {photoSuccess && (
+
+                <div className="bg-green-500/20 border border-green-400/40 rounded-2xl p-5 text-center">
+
+                  <p className="text-2xl font-bold text-[#D9FFE8] mb-2">
+                    Photos Uploaded!
+                  </p>
+
+                  <p className="text-white/80">
+                    Your photos may appear on the big screen shortly.
+                  </p>
+
+                </div>
+
+              )}
+
+            </div>
+
+          </div>
+
+          {/* Messages for Vicky */}
+          <div className="bg-white/12 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-[0_0_60px_rgba(255,255,255,0.12)]">
+
+            <h2 className="text-4xl font-bold mb-4">
+              Messages for Vicky
+            </h2>
+
+            <p className="text-white/75 text-lg mb-8 leading-relaxed">
+              Leave a special message or share your favourite memory.
+            </p>
+
+            <div className="flex flex-col gap-6">
+
+              <input
+                type="text"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="bg-white/10 border border-white/20 rounded-2xl p-5 text-white placeholder:text-white/50 outline-none"
+              />
+
+              <textarea
+                placeholder="Write your message for Vicky..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={8}
+                className="bg-white/10 border border-white/20 rounded-2xl p-5 text-white placeholder:text-white/50 outline-none resize-none"
+              />
+
+              <button
+                onClick={submitMessage}
+                disabled={!name || !message || sendingMessage}
+                className="bg-[#B9E6FF] text-[#06142B] font-bold text-xl py-4 rounded-2xl hover:bg-white transition disabled:opacity-40"
+              >
+
+                {sendingMessage
+                  ? "Sending..."
+                  : "Submit Message"}
+
+              </button>
+
+              {messageSuccess && (
+
+                <div className="bg-green-500/20 border border-green-400/40 rounded-2xl p-5 text-center">
+
+                  <p className="text-2xl font-bold text-[#D9FFE8] mb-2">
+                    Message Sent!
+                  </p>
+
+                  <p className="text-white/80">
+                    Thank you for sharing your memories of Vicky.
+                  </p>
+
+                </div>
+
+              )}
+
+            </div>
 
           </div>
 
