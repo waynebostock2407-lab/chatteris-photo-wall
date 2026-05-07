@@ -135,6 +135,63 @@ export default function AdminPage() {
     setSelectedPhotos(pendingIds);
   };
 
+  const downloadAllPhotos = async () => {
+    try {
+      const approvedPhotos = photos.filter(
+        (photo) => photo.approved
+      );
+
+      approvedPhotos.forEach((photo, index) => {
+        const link = document.createElement("a");
+
+        link.href = photo.imageUrl;
+        link.download = `photo-${index + 1}.jpg`;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+
+    } catch (error) {
+      console.error("Error downloading photos:", error);
+    }
+  };
+
+  const downloadMessages = () => {
+    try {
+      const approvedMessages = messages.filter(
+        (message) => message.approved
+      );
+
+      const content = approvedMessages
+        .map(
+          (message) =>
+            `Name: ${message.name}\n\n${message.message}\n\n------------------------\n`
+        )
+        .join("\n");
+
+      const blob = new Blob([content], {
+        type: "text/plain;charset=utf-8",
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "vicky-messages.txt";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error("Error downloading messages:", error);
+    }
+  };
+
   const approveMessage = async (id: string) => {
     try {
       await updateDoc(doc(db, "guestbook", id), {
@@ -194,6 +251,20 @@ export default function AdminPage() {
               className="bg-red-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-red-500 transition disabled:opacity-40"
             >
               Delete Selected ({selectedPhotos.length})
+            </button>
+
+            <button
+              onClick={downloadAllPhotos}
+              className="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-500 transition"
+            >
+              Download Approved Photos
+            </button>
+
+            <button
+              onClick={downloadMessages}
+              className="bg-purple-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-purple-500 transition"
+            >
+              Download Messages
             </button>
 
           </div>
@@ -283,9 +354,19 @@ export default function AdminPage() {
                   className="relative group"
                 >
 
+                  <input
+                    type="checkbox"
+                    checked={selectedPhotos.includes(photo.id)}
+                    onChange={() => togglePhotoSelection(photo.id)}
+                    className="absolute top-2 left-2 z-20 w-5 h-5 accent-red-500 cursor-pointer"
+                  />
+
                   <img
                     src={photo.imageUrl}
                     alt="Approved"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
                     className="w-full aspect-square object-cover rounded-xl border border-white/10"
                   />
 
