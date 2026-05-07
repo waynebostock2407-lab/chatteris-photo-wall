@@ -99,7 +99,7 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* Animated Fabric Layer */}
+      {/* Animated Fabric Background */}
       <div className="absolute inset-0 overflow-hidden">
 
         <div
@@ -123,7 +123,7 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Dark Overlay */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
       {/* Vignette */}
@@ -152,13 +152,13 @@ export default function SlideshowPage() {
 
               </div>
 
-              {/* Elegant Message Card */}
+              {/* Message Card */}
               <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
 
-                {/* Soft Glow */}
+                {/* Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_45%)] pointer-events-none"></div>
 
-                {/* Quote Mark */}
+                {/* Quote */}
                 <div className="absolute top-6 left-10 text-white/10 text-[9rem] leading-none font-serif">
                   “
                 </div>
@@ -221,28 +221,12 @@ export default function SlideshowPage() {
           >
 
             {/* Polaroid */}
-            <div
-              className="
-                bg-white
-                p-5
-                pb-20
-                rounded-[0.6rem]
-                shadow-[0_25px_80px_rgba(0,0,0,0.45)]
-                rotate-[-1.5deg]
-                transition-all
-                duration-1000
-              "
-            >
+            <div className="bg-white p-5 pb-20 rounded-[0.6rem] shadow-[0_25px_80px_rgba(0,0,0,0.45)] rotate-[-1.5deg] transition-all duration-1000">
 
               <img
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
-                className="
-                  max-w-[74vw]
-                  max-h-[58vh]
-                  object-contain
-                  bg-[#f3f3f3]
-                "
+                className="max-w-[74vw] max-h-[58vh] object-contain bg-[#f3f3f3]"
               />
 
               {/* Caption */}
