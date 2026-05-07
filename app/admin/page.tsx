@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import {
   collection,
   deleteDoc,
@@ -10,6 +11,9 @@ import {
   query,
   updateDoc,
 } from "firebase/firestore";
+
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 import { db } from "@/lib/firebase";
 
@@ -135,34 +139,31 @@ export default function AdminPage() {
     setSelectedPhotos(pendingIds);
   };
 
-  const downloadAllPhotos = async () => {
+  const downloadSelectedPhotos = async () => {
     try {
-      const approvedPhotos = photos.filter(
-        (photo) => photo.approved
+      const selected = photos.filter((photo) =>
+        selectedPhotos.includes(photo.id)
       );
 
-      for (let i = 0; i < approvedPhotos.length; i++) {
-        const photo = approvedPhotos[i];
+      if (selected.length === 0) return;
+
+      const zip = new JSZip();
+
+      for (let i = 0; i < selected.length; i++) {
+        const photo = selected[i];
 
         const response = await fetch(photo.imageUrl);
 
         const blob = await response.blob();
 
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-
-        link.href = blobUrl;
-        link.download = `photo-${i + 1}.jpg`;
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-
-        window.URL.revokeObjectURL(blobUrl);
+        zip.file(`photo-${i + 1}.jpg`, blob);
       }
+
+      const content = await zip.generateAsync({
+        type: "blob",
+      });
+
+      saveAs(content, "presentation-day-photos.zip");
 
     } catch (error) {
       console.error("Error downloading photos:", error);
@@ -266,10 +267,11 @@ export default function AdminPage() {
             </button>
 
             <button
-              onClick={downloadAllPhotos}
-              className="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-500 transition"
+              onClick={downloadSelectedPhotos}
+              disabled={selectedPhotos.length === 0}
+              className="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-500 transition disabled:opacity-40"
             >
-              Download Approved Photos
+              Download Selected ({selectedPhotos.length})
             </button>
 
             <button
