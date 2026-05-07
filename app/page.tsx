@@ -9,16 +9,17 @@ export default function Home() {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0];
+const handleUpload = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const files = e.target.files;
 
-    if (!file) return;
+  if (!files || files.length === 0) return;
 
-    setUploading(true);
+  setUploading(true);
 
-    try {
+  try {
+    for (const file of Array.from(files)) {
       const storageRef = ref(
         storage,
         `photos/${Date.now()}-${file.name}`
@@ -33,15 +34,16 @@ export default function Home() {
         createdAt: serverTimestamp(),
         approved: false,
       });
-
-      setSuccess(true);
-    } catch (error) {
-      console.error(error);
-      alert("Upload failed");
     }
 
-    setUploading(false);
-  };
+    setSuccess(true);
+  } catch (error) {
+    console.error(error);
+    alert("Upload failed");
+  }
+
+  setUploading(false);
+};
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-900 via-sky-800 to-cyan-700 text-white flex items-center justify-center p-8">
