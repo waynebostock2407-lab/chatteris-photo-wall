@@ -149,21 +149,7 @@ export default function SlideshowPage() {
               style={{
                 fontFamily: "'Playfair Display', serif",
               }}
-              className="
-                text-white
-                text-[2.8rem]
-                leading-[1.35]
-                mb-10
-                font-semibold
-                max-w-4xl
-                mx-auto
-                drop-shadow-[0_3px_12px_rgba(0,0,0,0.65)]
-                bg-black/25
-                px-10
-                py-8
-                rounded-3xl
-                backdrop-blur-sm
-              "
+              className="text-white text-[2.8rem] leading-[1.35] mb-10 font-semibold max-w-4xl mx-auto drop-shadow-[0_3px_12px_rgba(0,0,0,0.65)] bg-black/25 px-10 py-8 rounded-3xl backdrop-blur-sm"
             >
               “{randomMessage.message}”
             </div>
@@ -292,7 +278,6 @@ export default function SlideshowPage() {
             rgba(255,255,255,0.9),
             transparent
           );
-
           transform: rotate(-18deg);
         }
 
@@ -303,7 +288,6 @@ export default function SlideshowPage() {
             rgba(147,197,253,0.9),
             transparent
           );
-
           transform: rotate(18deg);
         }
 
@@ -315,8 +299,6 @@ export default function SlideshowPage() {
             rgba(255,255,255,0.7),
             transparent
           );
-
-          transform: rotate(0deg);
         }
 
         @keyframes fabricFlutter {
