@@ -64,6 +64,7 @@ const handleUpload = async (
           <input
             type="file"
             accept="image/*"
+            multiple
             className="hidden"
             onChange={handleUpload}
           />
