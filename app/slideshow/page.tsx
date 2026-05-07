@@ -139,23 +139,37 @@ export default function SlideshowPage() {
 
         {showGuestbookSlide && randomMessage ? (
 
-          <div className="text-center max-w-6xl px-10 animate-fade z-20">
+          <div className="w-full flex justify-center items-center z-20 px-20">
 
-            <div className="text-5xl font-bold mb-8 text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.7)]">
-              Messages for Vicky
-            </div>
+            <div className="w-full max-w-5xl text-center animate-fade">
 
-            <div
-              style={{
-                fontFamily: "'Playfair Display', serif",
-              }}
-              className="text-white text-[2.8rem] leading-[1.35] mb-10 font-semibold max-w-4xl mx-auto drop-shadow-[0_3px_12px_rgba(0,0,0,0.65)] bg-black/25 px-10 py-8 rounded-3xl backdrop-blur-sm"
-            >
-              “{randomMessage.message}”
-            </div>
+              {/* Heading */}
+              <div className="mb-10">
 
-            <div className="text-2xl text-[#D9F3FF] tracking-wide font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
-              — {randomMessage.name}
+                <div className="text-7xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_20px_rgba(0,0,0,0.75)]">
+                  Messages for Vicky
+                </div>
+
+              </div>
+
+              {/* Safe Area Message Box */}
+              <div className="bg-black/40 border border-white/15 backdrop-blur-md rounded-[2.5rem] px-16 py-14 shadow-[0_0_60px_rgba(0,0,0,0.45)]">
+
+                <div
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                  }}
+                  className="text-[2.15rem] leading-[1.55] text-white font-medium break-words"
+                >
+                  “{randomMessage.message}”
+                </div>
+
+                <div className="mt-10 text-[#D9F3FF] text-3xl font-semibold tracking-wide">
+                  — {randomMessage.name}
+                </div>
+
+              </div>
+
             </div>
 
           </div>
