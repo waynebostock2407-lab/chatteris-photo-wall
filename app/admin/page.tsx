@@ -20,8 +20,17 @@ interface Photo {
   createdAt?: any;
 }
 
+interface GuestbookMessage {
+  id: string;
+  name: string;
+  message: string;
+  approved: boolean;
+  createdAt?: any;
+}
+
 export default function AdminPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
 
   useEffect(() => {
@@ -37,6 +46,24 @@ export default function AdminPage() {
       }));
 
       setPhotos(fetchedPhotos);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const q = query(
+      collection(db, "guestbook"),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedMessages = snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...(docSnap.data() as Omit<GuestbookMessage, "id">),
+      }));
+
+      setMessages(fetchedMessages);
     });
 
     return () => unsubscribe();
@@ -92,11 +119,30 @@ export default function AdminPage() {
     setSelectedPhotos(pendingIds);
   };
 
+  const approveMessage = async (id: string) => {
+    try {
+      await updateDoc(doc(db, "guestbook", id), {
+        approved: true,
+      });
+    } catch (error) {
+      console.error("Error approving message:", error);
+    }
+  };
+
+  const deleteMessage = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "guestbook", id));
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#081226] text-white p-8">
 
       <div className="max-w-7xl mx-auto">
 
+        {/* Header */}
         <div className="flex items-center justify-between mb-10 flex-wrap gap-6">
 
           <div>
@@ -105,7 +151,7 @@ export default function AdminPage() {
             </h1>
 
             <p className="text-white/70 text-lg">
-              Moderate uploaded event photos
+              Moderate uploaded event photos and guestbook messages
             </p>
           </div>
 
@@ -130,59 +176,126 @@ export default function AdminPage() {
 
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {/* Photos Section */}
+        <div>
 
-          {photos.map((photo) => (
-            <div
-              key={photo.id}
-              className="relative bg-white rounded-2xl overflow-hidden shadow-2xl"
-            >
+          <h2 className="text-4xl font-bold mb-8">
+            Uploaded Photos
+          </h2>
 
-              <div className="absolute top-3 left-3 z-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-                <input
-                  type="checkbox"
-                  checked={selectedPhotos.includes(photo.id)}
-                  onChange={() => togglePhotoSelection(photo.id)}
-                  className="w-6 h-6 accent-green-500 cursor-pointer"
-                />
+            {photos.map((photo) => (
+              <div
+                key={photo.id}
+                className="relative bg-white rounded-2xl overflow-hidden shadow-2xl"
+              >
 
-              </div>
+                <div className="absolute top-3 left-3 z-20">
 
-              {!photo.approved && (
-                <div className="absolute top-3 right-3 z-20 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full">
-                  Pending
+                  <input
+                    type="checkbox"
+                    checked={selectedPhotos.includes(photo.id)}
+                    onChange={() => togglePhotoSelection(photo.id)}
+                    className="w-6 h-6 accent-green-500 cursor-pointer"
+                  />
+
                 </div>
-              )}
-
-              <img
-                src={photo.imageUrl}
-                alt="Uploaded"
-                className="w-full h-72 object-cover"
-              />
-
-              <div className="p-5 flex gap-3">
 
                 {!photo.approved && (
-                  <button
-                    onClick={() => approvePhoto(photo.id)}
-                    className="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold py-3 rounded-xl transition"
-                  >
-                    Approve
-                  </button>
+                  <div className="absolute top-3 right-3 z-20 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full">
+                    Pending
+                  </div>
                 )}
 
-                <button
-                  onClick={() => deletePhoto(photo.id)}
-                  className="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 rounded-xl transition"
-                >
-                  Delete
-                </button>
+                <img
+                  src={photo.imageUrl}
+                  alt="Uploaded"
+                  className="w-full h-72 object-cover"
+                />
+
+                <div className="p-5 flex gap-3">
+
+                  {!photo.approved && (
+                    <button
+                      onClick={() => approvePhoto(photo.id)}
+                      className="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold py-3 rounded-xl transition"
+                    >
+                      Approve
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => deletePhoto(photo.id)}
+                    className="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 rounded-xl transition"
+                  >
+                    Delete
+                  </button>
+
+                </div>
 
               </div>
+            ))}
 
-            </div>
-          ))}
+          </div>
+
+        </div>
+
+        {/* Guestbook Messages */}
+        <div className="mt-24">
+
+          <h2 className="text-4xl font-bold mb-8">
+            Guestbook Messages
+          </h2>
+
+          <div className="grid gap-6">
+
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className="bg-white/10 border border-white/10 rounded-3xl p-6 backdrop-blur-md"
+              >
+
+                <div className="flex justify-between items-start gap-6 flex-wrap">
+
+                  <div className="flex-1">
+
+                    <p className="text-2xl font-bold mb-3 text-[#D9F3FF]">
+                      {message.name}
+                    </p>
+
+                    <p className="text-white/80 text-lg leading-relaxed whitespace-pre-wrap">
+                      {message.message}
+                    </p>
+
+                  </div>
+
+                  <div className="flex gap-3 flex-wrap">
+
+                    {!message.approved && (
+                      <button
+                        onClick={() => approveMessage(message.id)}
+                        className="bg-green-600 hover:bg-green-500 px-5 py-3 rounded-xl font-semibold transition"
+                      >
+                        Approve
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => deleteMessage(message.id)}
+                      className="bg-red-600 hover:bg-red-500 px-5 py-3 rounded-xl font-semibold transition"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+            ))}
+
+          </div>
 
         </div>
 

@@ -16,8 +16,16 @@ interface Photo {
   approved: boolean;
 }
 
+interface GuestbookMessage {
+  id: string;
+  name: string;
+  message: string;
+  approved: boolean;
+}
+
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
@@ -42,6 +50,26 @@ export default function SlideshowPage() {
   }, []);
 
   useEffect(() => {
+    const q = query(
+      collection(db, "guestbook"),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedMessages = snapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<GuestbookMessage, "id">),
+        }))
+        .filter((message: any) => message.approved);
+
+      setMessages(fetchedMessages);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (photos.length === 0) return;
 
     const interval = setInterval(() => {
@@ -58,6 +86,15 @@ export default function SlideshowPage() {
 
     return () => clearInterval(interval);
   }, [photos]);
+
+  const showGuestbookSlide =
+    messages.length > 0 &&
+    Date.now() % 240000 < 12000;
+
+  const randomMessage =
+    messages[
+      Math.floor(Math.random() * messages.length)
+    ];
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
@@ -97,25 +134,28 @@ export default function SlideshowPage() {
       <div className="spotlight spotlight-right"></div>
       <div className="spotlight spotlight-top"></div>
 
-      {/* Main Photo Area */}
+      {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52">
 
-        {Date.now() % 300000 < 7000 ? (
+        {showGuestbookSlide && randomMessage ? (
 
-          <div className="text-center animate-fade z-20">
+          <div className="text-center max-w-5xl px-10 animate-fade z-20">
 
-            <div className="text-8xl font-light mb-8 tracking-wide">
-              THANK YOU,
+            <div className="text-6xl font-light mb-8 text-white/90">
+              Messages for Vicky
             </div>
 
             <div
               style={{
                 fontFamily: "'Great Vibes', cursive",
-                transform: "rotate(-4deg)",
               }}
-              className="text-[12rem] text-[#C9EEFF]"
+              className="text-[#D9F3FF] text-[5rem] leading-tight mb-8"
             >
-              Vicky ♥
+              “{randomMessage.message}”
+            </div>
+
+            <div className="text-3xl text-white/80 tracking-wide">
+              — {randomMessage.name}
             </div>
 
           </div>
