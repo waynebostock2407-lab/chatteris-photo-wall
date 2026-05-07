@@ -53,99 +53,283 @@ export default function SlideshowPage() {
         );
 
         setFade(true);
-      }, 800);
+      }, 700);
     }, 7000);
 
     return () => clearInterval(interval);
   }, [photos]);
 
-  if (photos.length === 0) {
-    return (
-      <main className="min-h-screen bg-gradient-to-br from-sky-300 via-blue-400 to-cyan-300 text-white flex flex-col items-center justify-center">
+  return (
+    <main className="relative w-screen h-screen overflow-hidden text-white">
+
+      {/* Animated Fabric Layer */}
+      <div className="absolute inset-0 overflow-hidden">
+
+        <div
+          className="fabric-layer"
+          style={{
+            backgroundImage: "url('/stripe-bg.jpg')",
+          }}
+        >
+
+          <div className="absolute inset-0 flex items-center justify-center">
+
+            <img
+              src="/logo.png"
+              alt="Background Logo"
+              className="w-[780px] opacity-[0.16] blur-[1px] drop-shadow-[0_0_40px_rgba(255,255,255,0.18)]"
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-[#06142B]/45"></div>
+
+      {/* Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
+
+      {/* Spotlights */}
+      <div className="spotlight spotlight-left"></div>
+      <div className="spotlight spotlight-right"></div>
+      <div className="spotlight spotlight-top"></div>
+
+      {/* Main Photo Area */}
+      <div className="absolute inset-0 flex items-center justify-center px-16 pb-52">
+
+        {Date.now() % 300000 < 7000 ? (
+
+          <div className="text-center animate-fade z-20">
+
+            <div className="text-8xl font-light mb-8 tracking-wide">
+              THANK YOU,
+            </div>
+
+            <div
+              style={{
+                fontFamily: "'Great Vibes', cursive",
+                transform: "rotate(-4deg)",
+              }}
+              className="text-[12rem] text-[#C9EEFF]"
+            >
+              Vicky ♥
+            </div>
+
+          </div>
+
+        ) : (
+
+          <div
+            key={photos[currentIndex]?.id}
+            className={`transition-all duration-1000 ${
+              fade ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            }`}
+          >
+
+            {photos[currentIndex] && (
+              <img
+                src={photos[currentIndex].imageUrl}
+                alt="Slideshow"
+                className="max-w-[82vw] max-h-[66vh] object-contain rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.35)] border border-white/30"
+              />
+            )}
+
+          </div>
+
+        )}
+
+      </div>
+
+      {/* Bottom Branding Bar */}
+      <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
+
         <img
           src="/logo.png"
           alt="Club Logo"
-          className="w-44 h-44 object-contain mb-8"
+          className="w-40 h-40 object-contain drop-shadow-2xl"
         />
 
-        <h1 className="text-6xl font-black mb-6 text-center px-6">
-          Chatteris Town Presentation Day
-        </h1>
+        <div className="flex flex-col justify-end">
 
-        <p className="text-3xl text-blue-100 animate-pulse">
-          Waiting for approved photos...
-        </p>
-      </main>
-    );
-  }
+          <h1 className="leading-none">
 
-  return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-300 via-blue-400 to-cyan-300 text-white">
-      {/* Soft Overlay */}
-      <div className="absolute inset-0 bg-white/5"></div>
+            <span className="text-white text-5xl font-extrabold tracking-wide drop-shadow-[0_3px_18px_rgba(255,255,255,0.2)]">
+              Chatteris Town Football Club
+            </span>
 
-      {/* Header */}
-<div className="absolute top-0 left-0 right-0 z-20 flex items-center gap-6 px-10 py-4 bg-white/10 backdrop-blur-2xl border-b border-white/20 shadow-[0_8px_32px_rgba(255,255,255,0.08)]">
+            <br />
 
-  <img
-    src="/logo.png"
-    alt="Club Logo"
-    className="w-24 h-24 object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]"
-  />
+            <span
+              style={{
+                fontFamily: "'Playfair Display', serif",
+              }}
+              className="text-[#EAF8FF] text-[4rem] italic font-semibold tracking-[0.04em] drop-shadow-[0_2px_12px_rgba(255,255,255,0.18)]"
+            >
+              Presentation Day
+            </span>
 
-  <div>
-    <div className="uppercase tracking-[0.5em] text-cyan-100 text-sm mb-2 font-semibold">
-      ONE CLUB | ONE FAMILY | THE LILIES
-    </div>
+            <span className="block mt-3 uppercase tracking-[0.22em] text-[#EAF8FF] text-[1.55rem] font-semibold drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
+              ONE CLUB | ONE FAMILY | THE LILIES
+            </span>
 
-    <h1 className="relative text-5xl xl:text-6xl font-black tracking-wide whitespace-nowrap overflow-hidden">
-  <span className="bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent drop-shadow-[0_4px_25px_rgba(255,255,255,0.25)]">
-    Chatteris Town Presentation Day
-  </span>
+          </h1>
 
-  {/* Shimmer */}
-  <span className="absolute inset-0 shimmer"></span>
-</h1>
+        </div>
 
-    <div className="mt-4 h-1 w-48 rounded-full bg-gradient-to-r from-cyan-200 via-white to-blue-200 shadow-[0_0_20px_rgba(255,255,255,0.4)]"></div>
-  </div>
-</div>
+      </div>
 
-      {/* Main Image */}
-{/* Main Image */}
-<div className="absolute inset-0 flex items-center justify-center px-12 pt-36 pb-16">
+      {/* QR Panel */}
+      <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
 
-  <div
-    key={photos[currentIndex].id}
-    className={`relative flex items-center justify-center w-full h-full transition-all duration-1000 ${
-      fade ? "opacity-100" : "opacity-0"
-    }`}
-  >
-    <div className="relative overflow-hidden rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.35)] max-w-full max-h-full">
-
-      <img
-        src={photos[currentIndex].imageUrl}
-        alt="Slideshow"
-        className="max-w-[88vw] max-h-[68vh] object-contain animate-kenburns"
-      />
-
-    </div>
-  </div>
-
-</div>
-
-      {/* Floating QR */}
-      <div className="absolute bottom-8 right-8 z-20 bg-white/90 p-4 rounded-3xl shadow-2xl backdrop-blur-md">
-        <div className="text-center text-black font-bold text-sm mb-3">
-          Share Your Memories
+        <div className="text-center text-[#0A1E3D] font-bold text-lg mb-3">
+          UPLOAD PHOTOS
         </div>
 
         <img
           src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-          alt="QR Code"
-          className="rounded-2xl"
+          alt="QR"
+          className="rounded-xl"
         />
+
       </div>
+
+      <style jsx>{`
+        .fabric-layer {
+          position: absolute;
+          inset: -4%;
+          background-size: cover;
+          background-position: center;
+          animation: fabricFlutter 9s ease-in-out infinite;
+          transform-origin: center;
+          filter: saturate(1.05);
+        }
+
+        .spotlight {
+          position: absolute;
+          width: 500px;
+          height: 120vh;
+          top: -20vh;
+          filter: blur(30px);
+          opacity: 0.18;
+          pointer-events: none;
+        }
+
+        .spotlight-left {
+          left: -120px;
+          background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.9),
+            transparent
+          );
+
+          transform: rotate(-18deg);
+        }
+
+        .spotlight-right {
+          right: -120px;
+          background: linear-gradient(
+            to bottom,
+            rgba(147,197,253,0.9),
+            transparent
+          );
+
+          transform: rotate(18deg);
+        }
+
+        .spotlight-top {
+          left: 40%;
+          top: -40vh;
+          background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.7),
+            transparent
+          );
+
+          transform: rotate(0deg);
+        }
+
+        @keyframes fabricFlutter {
+          0% {
+            transform:
+              perspective(1200px)
+              rotateY(0deg)
+              rotateX(0deg)
+              scale(1.06)
+              translateX(0px)
+              translateY(0px);
+          }
+
+          20% {
+            transform:
+              perspective(1200px)
+              rotateY(2deg)
+              rotateX(1deg)
+              scale(1.08)
+              translateX(-10px)
+              translateY(-3px);
+          }
+
+          40% {
+            transform:
+              perspective(1200px)
+              rotateY(-2deg)
+              rotateX(-1deg)
+              scale(1.07)
+              translateX(8px)
+              translateY(2px);
+          }
+
+          60% {
+            transform:
+              perspective(1200px)
+              rotateY(1.5deg)
+              rotateX(0.5deg)
+              scale(1.09)
+              translateX(-6px)
+              translateY(-2px);
+          }
+
+          80% {
+            transform:
+              perspective(1200px)
+              rotateY(-1.5deg)
+              rotateX(-0.5deg)
+              scale(1.07)
+              translateX(6px)
+              translateY(1px);
+          }
+
+          100% {
+            transform:
+              perspective(1200px)
+              rotateY(0deg)
+              rotateX(0deg)
+              scale(1.06)
+              translateX(0px)
+              translateY(0px);
+          }
+        }
+
+        @keyframes fade {
+          from {
+            opacity: 0;
+            transform: scale(0.96);
+          }
+
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-fade {
+          animation: fade 1.5s ease;
+        }
+      `}</style>
+
     </main>
   );
 }
