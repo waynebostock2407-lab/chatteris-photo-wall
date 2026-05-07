@@ -141,16 +141,28 @@ export default function AdminPage() {
         (photo) => photo.approved
       );
 
-      approvedPhotos.forEach((photo, index) => {
+      for (let i = 0; i < approvedPhotos.length; i++) {
+        const photo = approvedPhotos[i];
+
+        const response = await fetch(photo.imageUrl);
+
+        const blob = await response.blob();
+
+        const blobUrl = window.URL.createObjectURL(blob);
+
         const link = document.createElement("a");
 
-        link.href = photo.imageUrl;
-        link.download = `photo-${index + 1}.jpg`;
+        link.href = blobUrl;
+        link.download = `photo-${i + 1}.jpg`;
 
         document.body.appendChild(link);
+
         link.click();
+
         document.body.removeChild(link);
-      });
+
+        window.URL.revokeObjectURL(blobUrl);
+      }
 
     } catch (error) {
       console.error("Error downloading photos:", error);
