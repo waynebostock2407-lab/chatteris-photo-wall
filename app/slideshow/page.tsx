@@ -25,13 +25,15 @@ export default function SlideshowPage() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedPhotos = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Photo, "id">),
-      }));
+  const fetchedPhotos = snapshot.docs
+    .map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Photo, "id">),
+    }))
+    .filter((photo: any) => photo.approved);
 
-      setPhotos(fetchedPhotos);
-    });
+  setPhotos(fetchedPhotos);
+});
 
     return () => unsubscribe();
   }, []);
