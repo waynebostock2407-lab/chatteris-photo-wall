@@ -139,22 +139,36 @@ export default function SlideshowPage() {
 
         {showGuestbookSlide && randomMessage ? (
 
-          <div className="text-center max-w-5xl px-10 animate-fade z-20">
+          <div className="text-center max-w-6xl px-10 animate-fade z-20">
 
-            <div className="text-6xl font-light mb-8 text-white/90">
+            <div className="text-5xl font-bold mb-8 text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.7)]">
               Messages for Vicky
             </div>
 
             <div
               style={{
-                fontFamily: "'Great Vibes', cursive",
+                fontFamily: "'Playfair Display', serif",
               }}
-              className="text-[#D9F3FF] text-[5rem] leading-tight mb-8"
+              className="
+                text-white
+                text-[2.8rem]
+                leading-[1.35]
+                mb-10
+                font-semibold
+                max-w-4xl
+                mx-auto
+                drop-shadow-[0_3px_12px_rgba(0,0,0,0.65)]
+                bg-black/25
+                px-10
+                py-8
+                rounded-3xl
+                backdrop-blur-sm
+              "
             >
               “{randomMessage.message}”
             </div>
 
-            <div className="text-3xl text-white/80 tracking-wide">
+            <div className="text-2xl text-[#D9F3FF] tracking-wide font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)]">
               — {randomMessage.name}
             </div>
 

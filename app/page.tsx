@@ -14,6 +14,8 @@ import {
   uploadBytes,
 } from "firebase/storage";
 
+import imageCompression from "browser-image-compression";
+
 import { db, storage } from "@/lib/firebase";
 
 export default function HomePage() {
@@ -35,12 +37,18 @@ export default function HomePage() {
       await Promise.all(
         images.map(async (image) => {
 
+          const compressedImage = await imageCompression(image, {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+          });
+
           const storageRef = ref(
             storage,
             `photos/${Date.now()}-${image.name}`
           );
 
-          await uploadBytes(storageRef, image);
+          await uploadBytes(storageRef, compressedImage);
 
           const downloadURL = await getDownloadURL(storageRef);
 
