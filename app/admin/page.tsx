@@ -12,9 +12,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
-
 import { db } from "@/lib/firebase";
 
 interface Photo {
@@ -147,26 +144,48 @@ export default function AdminPage() {
 
       if (selected.length === 0) return;
 
-      const zip = new JSZip();
+      const response = await fetch(
+        "/api/download-photos",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            photos: selected.map(
+              (photo) => photo.imageUrl
+            ),
+          }),
+        }
+      );
 
-      for (let i = 0; i < selected.length; i++) {
-        const photo = selected[i];
-
-        const response = await fetch(photo.imageUrl);
-
-        const blob = await response.blob();
-
-        zip.file(`photo-${i + 1}.jpg`, blob);
+      if (!response.ok) {
+        throw new Error("Failed to download");
       }
 
-      const content = await zip.generateAsync({
-        type: "blob",
-      });
+      const blob = await response.blob();
 
-      saveAs(content, "presentation-day-photos.zip");
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download =
+        "presentation-day-photos.zip";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
 
     } catch (error) {
-      console.error("Error downloading photos:", error);
+      console.error(
+        "Error downloading photos:",
+        error
+      );
     }
   };
 
@@ -237,7 +256,7 @@ export default function AdminPage() {
             </h1>
 
             <p className="text-white/70 text-lg">
-              Moderate uploaded event photos and guestbook messages
+              Moderate uploaded photos and messages
             </p>
           </div>
 
@@ -399,7 +418,7 @@ export default function AdminPage() {
 
         </div>
 
-        {/* Guestbook Messages */}
+        {/* Messages */}
         <div className="mt-24">
 
           <h2 className="text-4xl font-bold mb-8">
