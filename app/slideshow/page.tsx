@@ -160,6 +160,20 @@ export default function SlideshowPage() {
 
           </div>
 
+        ) : photos.length === 0 ? (
+
+          <div className="text-center z-20">
+
+            <div className="text-6xl font-bold text-white mb-6">
+              Awaiting Photos
+            </div>
+
+            <div className="text-2xl text-white/70">
+              Upload photos or messages using the QR code
+            </div>
+
+          </div>
+
         ) : (
 
           <div
@@ -169,13 +183,11 @@ export default function SlideshowPage() {
             }`}
           >
 
-            {photos[currentIndex] && (
-              <img
-                src={photos[currentIndex].imageUrl}
-                alt="Slideshow"
-                className="max-w-[82vw] max-h-[66vh] object-contain rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.35)] border border-white/30"
-              />
-            )}
+            <img
+              src={photos[currentIndex].imageUrl}
+              alt="Slideshow"
+              className="max-w-[82vw] max-h-[66vh] object-contain rounded-2xl shadow-[0_0_60px_rgba(255,255,255,0.35)] border border-white/30"
+            />
 
           </div>
 
@@ -222,21 +234,21 @@ export default function SlideshowPage() {
       </div>
 
       {/* QR Panel */}
-<div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
+      <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
 
-  <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
-    UPLOAD PHOTOS
-    <br />
-    & MESSAGES
-  </div>
+        <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
+          UPLOAD PHOTOS
+          <br />
+          & MESSAGES
+        </div>
 
-  <img
-    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-    alt="QR"
-    className="rounded-xl"
-  />
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
+          alt="QR"
+          className="rounded-xl"
+        />
 
-</div>
+      </div>
 
       <style jsx>{`
         .fabric-layer {
