@@ -184,9 +184,8 @@ export default function SlideshowPage() {
                 <div
                   style={{
                     fontFamily: "'Cormorant Garamond', serif",
-                    whiteSpace: "pre-wrap",
                   }}
-                  className="relative z-10 text-[2.05rem] leading-[1.7] text-[#F8FBFF] font-medium tracking-[0.01em] text-left max-h-[42vh] overflow-hidden drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
+                  className="relative z-10 text-[1.85rem] leading-[1.7] text-[#F8FBFF] font-medium tracking-[0.01em] text-left whitespace-pre-wrap break-words overflow-y-auto max-h-[52vh] pr-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
                 >
                   {randomMessage.message}
                 </div>
@@ -245,7 +244,7 @@ export default function SlideshowPage() {
               <img
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
-                className="max-w-[74vw] max-h-[58vh] object-cover bg-[#f3f3f3]"
+                className="w-[74vw] h-[58vh] object-contain bg-[#f3f3f3]"
               />
 
               {/* Caption */}
