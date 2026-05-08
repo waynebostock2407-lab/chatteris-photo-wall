@@ -111,9 +111,9 @@ export default function HomePage() {
       </div>
 
       {/* Overlays */}
-      <div className="absolute inset-0 bg-[#06142B]/55"></div>
+      <div className="absolute inset-0 bg-[#0A2A5E]/35"></div>
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_55%,rgba(0,0,0,0.22)_100%)]"></div>
 
       {/* Background Logo */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
