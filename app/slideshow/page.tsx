@@ -239,12 +239,13 @@ export default function SlideshowPage() {
           >
 
             {/* Polaroid */}
-            <div className="bg-white p-5 pb-20 rounded-[0.6rem] shadow-[0_18px_50px_rgba(0,0,0,0.38)] rotate-[-1.5deg]">
+            <div className="inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.6rem]
+shadow-[0_18px_50px_rgba(0,0,0,0.38)] rotate-[-1.5deg] max-w-[82vw]">
 
               <img
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
-                className="w-[74vw] h-[58vh] object-contain bg-[#f3f3f3]"
+                className="max-w-[74vw] max-h-[58vh] object-contain bg-[#f3f3f3]"
               />
 
               {/* Caption */}
