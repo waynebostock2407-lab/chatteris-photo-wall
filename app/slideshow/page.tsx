@@ -20,7 +20,7 @@ interface GuestbookMessage {
   id: string;
   name: string;
   message: string;
- approved: boolean;
+  approved: boolean;
 }
 
 export default function SlideshowPage() {
@@ -131,7 +131,7 @@ export default function SlideshowPage() {
             <img
               src="/logo.png"
               alt="Background Logo"
-              className="w-[780px] opacity-[0.16] blur-[1px]"
+              className="w-[780px] opacity-[0.16]"
             />
 
           </div>
@@ -140,9 +140,10 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Overlays */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
+      {/* Vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
 
       {/* Spotlights */}
@@ -248,17 +249,41 @@ export default function SlideshowPage() {
               />
 
               {/* Caption */}
-              <div className="mt-6 text-center">
+              <div className="mt-6 flex items-center justify-center gap-6">
 
-                <div
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                  }}
-                  className="text-[#1A1A1A] text-3xl italic"
-                >
-                  Chatteris Town Football Club 
-                  Memories
+                <img
+                  src="/logo 2.png"
+                  alt="Logo Left"
+                  className="w-14 h-14 object-contain"
+                />
+
+                <div className="text-center leading-tight">
+
+                  <div
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                    }}
+                    className="text-[#1A1A1A] text-[2rem] font-bold tracking-wide"
+                  >
+                    Chatteris Town Football Club
+                  </div>
+
+                  <div
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                    }}
+                    className="text-[#444] text-[2.1rem] italic mt-1"
+                  >
+                    Memories
+                  </div>
+
                 </div>
+
+                <img
+                  src="/logo 3.png"
+                  alt="Logo Right"
+                  className="w-14 h-14 object-contain"
+                />
 
               </div>
 
@@ -331,8 +356,6 @@ export default function SlideshowPage() {
           inset: -4%;
           background-size: cover;
           background-position: center;
-          background-size: cover;
-          transform-origin: center;
           filter: saturate(1.05);
         }
 
@@ -364,6 +387,20 @@ export default function SlideshowPage() {
             transparent
           );
           transform: rotate(18deg);
+        }
+
+        @keyframes fade {
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 1;
+          }
+        }
+
+        .animate-fade {
+          animation: fade 1.2s ease;
         }
       `}</style>
 
