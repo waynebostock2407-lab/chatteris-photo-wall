@@ -207,18 +207,47 @@ export default function HomePage() {
               Share your favourite moments from the season.
             </p>
 
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => setPhotos(e.target.files)}
-              className="w-full bg-[#F4F7FB] border border-[#DCE6F3] rounded-2xl p-4 text-[#0A1E3D] mb-6"
-            />
+            {/* Upload Area */}
+            <label className="block cursor-pointer mb-6">
+
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => setPhotos(e.target.files)}
+                className="hidden"
+              />
+
+              <div className="w-full border-2 border-dashed border-[#BCD3F2] bg-[#F4F7FB] hover:bg-[#EDF4FF] transition rounded-3xl p-8 text-center">
+
+                <div className="text-5xl mb-4">
+                  📸
+                </div>
+
+                <div className="text-2xl font-bold text-[#123C7B] mb-2">
+                  Tap Here To Choose Photos
+                </div>
+
+                <div className="text-[#5D7091] text-lg leading-relaxed">
+                  Select photos from your phone camera roll
+                  <br />
+                  and upload them to the Presentation Day wall
+                </div>
+
+                {photos && photos.length > 0 && (
+                  <div className="mt-5 text-[#123C7B] font-semibold text-lg">
+                    {photos.length} photo(s) selected ✓
+                  </div>
+                )}
+
+              </div>
+
+            </label>
 
             <button
               onClick={handlePhotoUpload}
-              disabled={uploading}
-              className="w-full bg-[#123C7B] text-white font-bold py-4 rounded-2xl hover:bg-[#174A97] transition text-lg shadow-xl"
+              disabled={uploading || !photos || photos.length === 0}
+              className="w-full bg-[#123C7B] text-white font-bold py-4 rounded-2xl hover:bg-[#174A97] transition text-lg shadow-xl disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {uploading
                 ? "Uploading..."
@@ -275,7 +304,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Recent Memories */}
+        {/* Recent Messages */}
         <div className="mt-24 w-full max-w-6xl">
 
           <div className="text-center mb-12">
