@@ -256,6 +256,7 @@ export default function SlideshowPage() {
                   }}
                   className="text-[#1A1A1A] text-3xl italic"
                 >
+                  Chatteris Town Football Club 
                   Memories
                 </div>
 
