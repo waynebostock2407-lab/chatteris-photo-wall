@@ -28,7 +28,9 @@ export default function SlideshowPage() {
   const [messages, setMessages] = useState<GuestbookMessage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fade, setFade] = useState(true);
+  const [flash, setFlash] = useState(false);
 
+  /* Photos */
   useEffect(() => {
     const q = query(
       collection(db, "photos"),
@@ -49,6 +51,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
+  /* Messages */
   useEffect(() => {
     const q = query(
       collection(db, "guestbook"),
@@ -74,19 +77,31 @@ export default function SlideshowPage() {
     if (photos.length === 0) return;
 
     const interval = setInterval(() => {
+
+      /* Camera Flash */
+      setFlash(true);
+
+      setTimeout(() => {
+        setFlash(false);
+      }, 180);
+
+      /* Fade current */
       setFade(false);
 
       setTimeout(() => {
+
         setCurrentIndex((prev) =>
           prev === photos.length - 1 ? 0 : prev + 1
         );
 
         setFade(true);
-      }, 350);
+
+      }, 450);
 
     }, 6500);
 
     return () => clearInterval(interval);
+
   }, [photos]);
 
   /* Preload Next Image */
@@ -149,6 +164,17 @@ export default function SlideshowPage() {
       {/* Spotlights */}
       <div className="spotlight spotlight-left"></div>
       <div className="spotlight spotlight-right"></div>
+
+      {/* Camera Flash */}
+      <div
+        className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-200 ${
+          flash ? "opacity-100" : "opacity-0"
+        }`}
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.75) 35%, rgba(255,255,255,0) 100%)",
+        }}
+      ></div>
 
       {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52">
@@ -233,8 +259,10 @@ export default function SlideshowPage() {
           /* Photo Slide */
           <div
             key={photos[currentIndex]?.id}
-            className={`transition-opacity duration-700 will-change-opacity ${
-              fade ? "opacity-100" : "opacity-0"
+            className={`transition-all duration-700 ease-out will-change-transform will-change-opacity ${
+              fade
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-[0.97] translate-y-2"
             }`}
           >
 

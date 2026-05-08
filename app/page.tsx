@@ -28,30 +28,7 @@ export default function HomePage() {
   const [uploading, setUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const [recentPhotos, setRecentPhotos] = useState<any[]>([]);
   const [recentMessages, setRecentMessages] = useState<any[]>([]);
-
-  /* Approved Photos */
-  useEffect(() => {
-    const q = query(
-      collection(db, "photos"),
-      orderBy("createdAt", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const approved = snapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as any),
-        }))
-        .filter((photo: any) => photo.approved)
-        .slice(0, 6);
-
-      setRecentPhotos(approved);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   /* Approved Messages */
   useEffect(() => {
@@ -211,7 +188,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-lg md:text-2xl text-white/85 leading-relaxed max-w-2xl mx-auto">
-            Upload your photos and messages now ready for the big day — and see them featured LIVE on the big screen during the event.
+            Upload your Presentation Day photos and messages now ready for the big day — and see them featured LIVE on the big screen during the event.
           </p>
 
         </div>
@@ -304,34 +281,12 @@ export default function HomePage() {
           <div className="text-center mb-12">
 
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 uppercase tracking-tight">
-              Recent Memories
+              Recent Messages
             </h2>
 
             <p className="text-white/70 text-xl">
-              Approved photos and messages from the CTFC family
+              Approved messages from the CTFC family
             </p>
-
-          </div>
-
-          {/* Photos */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-10">
-
-            {recentPhotos.map((photo: any) => (
-
-              <div
-                key={photo.id}
-                className="overflow-hidden rounded-[2rem] bg-white shadow-2xl"
-              >
-
-                <img
-                  src={photo.imageUrl}
-                  alt="Memory"
-                  className="w-full aspect-square object-cover"
-                />
-
-              </div>
-
-            ))}
 
           </div>
 
