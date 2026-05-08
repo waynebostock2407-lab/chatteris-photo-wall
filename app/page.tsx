@@ -211,7 +211,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-lg md:text-2xl text-white/85 leading-relaxed max-w-2xl mx-auto">
-            Upload your Presentation Day photos and messages now ready for the big day — and see them featured LIVE on the big screen during the event.
+            Upload your photos and messages now ready for the big day — and see them featured LIVE on the big screen during the event.
           </p>
 
         </div>
