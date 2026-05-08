@@ -272,7 +272,10 @@ export default function SlideshowPage() {
               <img
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
-                className="max-w-[74vw] max-h-[58vh] object-contain bg-[#f3f3f3]"
+                className="max-w-[74vw] max-h-[58vh] object-contain"
+                style={{
+                  imageRendering: "auto",
+                }}
               />
 
               {/* Caption */}
