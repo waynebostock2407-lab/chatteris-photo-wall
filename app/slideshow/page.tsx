@@ -200,11 +200,13 @@ export default function SlideshowPage() {
       <div className="absolute inset-0 overflow-hidden">
 
         <div
-          className="fabric-layer"
+          className="fabric-layer opacity-[0.45]"
           style={{
             backgroundImage: "url('/stripe-bg.jpg')",
           }}
         >
+
+          <div className="absolute inset-0 bg-[#06142B]/35"></div>
 
           {/* Logo Watermark */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -221,10 +223,22 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Stadium Glow */}
-      <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[#5EA8FF]/20 rounded-full blur-[180px]"></div>
+      {/* Stadium Lighting */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
 
-      <div className="absolute bottom-[-300px] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[#0A56C5]/20 rounded-full blur-[160px]"></div>
+        {/* Top Stadium Glow */}
+        <div className="absolute top-[-300px] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-[#7EC3FF]/35 rounded-full blur-[170px]"></div>
+
+        {/* Bottom Blue Glow */}
+        <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[#0A56C5]/30 rounded-full blur-[160px]"></div>
+
+        {/* Left Ambient Glow */}
+        <div className="absolute left-[-250px] top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#5EA8FF]/18 rounded-full blur-[150px]"></div>
+
+        {/* Right Ambient Glow */}
+        <div className="absolute right-[-250px] top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#5EA8FF]/18 rounded-full blur-[150px]"></div>
+
+      </div>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-[#06142B]/45"></div>
@@ -244,13 +258,13 @@ export default function SlideshowPage() {
       ></div>
 
       {/* Main Content */}
-      <div className="absolute inset-0 flex items-center justify-center px-16 pb-52">
+      <div className="absolute inset-0 flex items-center justify-center px-16 pb-52 z-20">
 
         {/* Guestbook Slides */}
         {showMessages && messages[messageIndex] ? (
 
           <div
-            className={`w-full flex justify-center items-center z-20 px-20 transition-all duration-700 ${
+            className={`w-full flex justify-center items-center px-20 transition-all duration-700 ${
               fade
                 ? "opacity-100 scale-100"
                 : "opacity-0 scale-[0.98]"
@@ -340,7 +354,7 @@ export default function SlideshowPage() {
         ) : photos.length === 0 ? (
 
           /* Empty State */
-          <div className="text-center z-20">
+          <div className="text-center">
 
             <div className="text-6xl font-bold text-white mb-6">
               Awaiting Photos
