@@ -35,6 +35,16 @@ export default function SlideshowPage() {
 
   const [showMessages, setShowMessages] = useState(false);
 
+  /* Polaroid Random Styles */
+  const polaroidStyles = [
+    "rotate-[-2deg] translate-y-1",
+    "rotate-[1.8deg] -translate-y-1",
+    "rotate-[-1deg] translate-y-2",
+    "rotate-[2.4deg]",
+    "rotate-[-2.5deg]",
+    "rotate-[1deg] translate-y-1",
+  ];
+
   /* Photos */
   useEffect(() => {
     const q = query(
@@ -156,7 +166,13 @@ export default function SlideshowPage() {
 
       }, 350);
 
-    }, 9000);
+    }, Math.min(
+      Math.max(
+        9000,
+        messages[messageIndex]?.message.length * 60
+      ),
+      30000
+    ));
 
     return () => clearInterval(interval);
 
@@ -190,6 +206,7 @@ export default function SlideshowPage() {
           }}
         >
 
+          {/* Logo Watermark */}
           <div className="absolute inset-0 flex items-center justify-center">
 
             <img
@@ -204,15 +221,16 @@ export default function SlideshowPage() {
 
       </div>
 
+      {/* Stadium Glow */}
+      <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[#5EA8FF]/20 rounded-full blur-[180px]"></div>
+
+      <div className="absolute bottom-[-300px] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[#0A56C5]/20 rounded-full blur-[160px]"></div>
+
       {/* Overlay */}
       <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
       {/* Vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
-
-      {/* Spotlights */}
-      <div className="spotlight spotlight-left"></div>
-      <div className="spotlight spotlight-right"></div>
 
       {/* Camera Flash */}
       <div
@@ -347,7 +365,26 @@ export default function SlideshowPage() {
           >
 
             {/* Polaroid */}
-            <div className="inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.6rem] shadow-[0_18px_50px_rgba(0,0,0,0.38)] rotate-[-1.5deg] max-w-[82vw]">
+            <div
+              className={`
+                inline-flex
+                flex-col
+                items-center
+                bg-white
+                p-5
+                pb-16
+                rounded-[0.6rem]
+                shadow-[0_18px_50px_rgba(0,0,0,0.38)]
+                max-w-[82vw]
+                transition-transform
+                duration-700
+                ${
+                  polaroidStyles[
+                    currentIndex % polaroidStyles.length
+                  ]
+                }
+              `}
+            >
 
               <img
                 src={photos[currentIndex].imageUrl}
@@ -467,36 +504,6 @@ export default function SlideshowPage() {
           background-size: cover;
           background-position: center;
           filter: saturate(1.05);
-        }
-
-        .spotlight {
-          position: absolute;
-          width: 500px;
-          height: 120vh;
-          top: -20vh;
-          filter: blur(30px);
-          opacity: 0.15;
-          pointer-events: none;
-        }
-
-        .spotlight-left {
-          left: -120px;
-          background: linear-gradient(
-            to bottom,
-            rgba(255,255,255,0.9),
-            transparent
-          );
-          transform: rotate(-18deg);
-        }
-
-        .spotlight-right {
-          right: -120px;
-          background: linear-gradient(
-            to bottom,
-            rgba(147,197,253,0.8),
-            transparent
-          );
-          transform: rotate(18deg);
         }
       `}</style>
 
