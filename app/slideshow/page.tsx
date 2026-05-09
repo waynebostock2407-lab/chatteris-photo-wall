@@ -26,9 +26,14 @@ interface GuestbookMessage {
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [messages, setMessages] = useState<GuestbookMessage[]>([]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [messageIndex, setMessageIndex] = useState(0);
+
   const [fade, setFade] = useState(true);
   const [flash, setFlash] = useState(false);
+
+  const [showMessages, setShowMessages] = useState(false);
 
   /* Photos */
   useEffect(() => {
@@ -72,37 +77,90 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Slideshow Rotation */
+  /* Photo Loop */
   useEffect(() => {
     if (photos.length === 0) return;
 
+    let interval: NodeJS.Timeout;
+
+    if (!showMessages) {
+
+      interval = setInterval(() => {
+
+        /* Camera Flash */
+        setFlash(true);
+
+        setTimeout(() => {
+          setFlash(false);
+        }, 180);
+
+        setFade(false);
+
+        setTimeout(() => {
+
+          setCurrentIndex((prev) =>
+            prev === photos.length - 1 ? 0 : prev + 1
+          );
+
+          setFade(true);
+
+        }, 450);
+
+      }, 6500);
+
+    }
+
+    return () => clearInterval(interval);
+
+  }, [photos, showMessages]);
+
+  /* Trigger Message Mode Every 5 Minutes */
+  useEffect(() => {
+
+    if (messages.length === 0) return;
+
+    const cycle = setInterval(() => {
+
+      setShowMessages(true);
+      setMessageIndex(0);
+
+    }, 300000);
+
+    return () => clearInterval(cycle);
+
+  }, [messages]);
+
+  /* Message Loop */
+  useEffect(() => {
+
+    if (!showMessages) return;
+
     const interval = setInterval(() => {
 
-      /* Camera Flash */
-      setFlash(true);
-
-      setTimeout(() => {
-        setFlash(false);
-      }, 180);
-
-      /* Fade current */
       setFade(false);
 
       setTimeout(() => {
 
-        setCurrentIndex((prev) =>
-          prev === photos.length - 1 ? 0 : prev + 1
-        );
+        if (messageIndex >= messages.length - 1) {
+
+          setShowMessages(false);
+          setMessageIndex(0);
+
+        } else {
+
+          setMessageIndex((prev) => prev + 1);
+
+        }
 
         setFade(true);
 
-      }, 450);
+      }, 350);
 
-    }, 6500);
+    }, 9000);
 
     return () => clearInterval(interval);
 
-  }, [photos]);
+  }, [showMessages, messageIndex, messages]);
 
   /* Preload Next Image */
   useEffect(() => {
@@ -118,15 +176,6 @@ export default function SlideshowPage() {
     nextImage.src = photos[nextIndex]?.imageUrl;
 
   }, [currentIndex, photos]);
-
-  const showGuestbookSlide =
-    messages.length > 0 &&
-    Date.now() % 240000 < 12000;
-
-  const randomMessage =
-    messages[
-      Math.floor(Math.random() * messages.length)
-    ];
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
@@ -179,12 +228,18 @@ export default function SlideshowPage() {
       {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52">
 
-        {/* Guestbook Slide */}
-        {showGuestbookSlide && randomMessage ? (
+        {/* Guestbook Slides */}
+        {showMessages && messages[messageIndex] ? (
 
-          <div className="w-full flex justify-center items-center z-20 px-20">
+          <div
+            className={`w-full flex justify-center items-center z-20 px-20 transition-all duration-700 ${
+              fade
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-[0.98]"
+            }`}
+          >
 
-            <div className="w-full max-w-5xl text-center animate-fade">
+            <div className="w-full max-w-5xl text-center">
 
               {/* Heading */}
               <div className="mb-10">
@@ -209,11 +264,11 @@ export default function SlideshowPage() {
                 {/* Message */}
                 <div
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Caveat', cursive",
                   }}
-                  className="relative z-10 text-[1.85rem] leading-[1.7] text-[#F8FBFF] font-medium tracking-[0.01em] text-left whitespace-pre-wrap break-words overflow-y-auto max-h-[52vh] pr-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
+                  className="relative z-10 text-[2.6rem] leading-[1.45] text-[#F8FBFF] font-semibold tracking-[0.01em] text-left whitespace-pre-wrap break-words overflow-y-auto max-h-[52vh] pr-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
                 >
-                  {randomMessage.message}
+                  {messages[messageIndex].message}
                 </div>
 
                 {/* Signature */}
@@ -225,8 +280,13 @@ export default function SlideshowPage() {
                       Shared by
                     </div>
 
-                    <div className="text-[#D9F3FF] text-[2rem] font-semibold tracking-wide">
-                      {randomMessage.name}
+                    <div
+                      style={{
+                        fontFamily: "'Caveat', cursive",
+                      }}
+                      className="text-[#D9F3FF] text-[2.7rem] font-bold"
+                    >
+                      {messages[messageIndex].name}
                     </div>
 
                   </div>
@@ -256,7 +316,7 @@ export default function SlideshowPage() {
 
         ) : (
 
-          /* Photo Slide */
+          /* Photo Slides */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out will-change-transform will-change-opacity ${
@@ -417,20 +477,6 @@ export default function SlideshowPage() {
             transparent
           );
           transform: rotate(18deg);
-        }
-
-        @keyframes fade {
-          from {
-            opacity: 0;
-          }
-
-          to {
-            opacity: 1;
-          }
-        }
-
-        .animate-fade {
-          animation: fade 1.2s ease;
         }
       `}</style>
 
