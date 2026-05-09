@@ -266,7 +266,27 @@ export default function SlideshowPage() {
                   style={{
                     fontFamily: "'Caveat', cursive",
                   }}
-                  className="relative z-10 text-[2.6rem] leading-[1.45] text-[#F8FBFF] font-semibold tracking-[0.01em] text-left whitespace-pre-wrap break-words overflow-y-auto max-h-[52vh] pr-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
+                  className={`
+                    relative z-10
+                    text-[#F8FBFF]
+                    font-semibold
+                    tracking-[0.01em]
+                    text-left
+                    whitespace-pre-wrap
+                    break-words
+                    drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]
+                    leading-[1.4]
+
+                    ${
+                      messages[messageIndex].message.length < 180
+                        ? "text-[3.2rem]"
+                        : messages[messageIndex].message.length < 350
+                        ? "text-[2.6rem]"
+                        : messages[messageIndex].message.length < 550
+                        ? "text-[2.1rem]"
+                        : "text-[1.7rem]"
+                    }
+                  `}
                 >
                   {messages[messageIndex].message}
                 </div>
