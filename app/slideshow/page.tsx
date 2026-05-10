@@ -45,7 +45,7 @@ export default function SlideshowPage() {
     }
   };
 
-  /* Detect fullscreen state */
+  /* Detect fullscreen */
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -64,7 +64,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* Polaroid Random Styles */
+  /* Polaroid styles */
   const polaroidStyles = [
     "rotate-[-2deg] translate-y-1",
     "rotate-[1.8deg] -translate-y-1",
@@ -116,13 +116,14 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Photo Loop */
+  /* Photo loop */
   useEffect(() => {
     if (photos.length === 0) return;
 
     let interval: NodeJS.Timeout;
 
     if (!showMessages) {
+
       interval = setInterval(() => {
 
         setFlash(true);
@@ -144,6 +145,7 @@ export default function SlideshowPage() {
         }, 450);
 
       }, 6500);
+
     }
 
     return () => clearInterval(interval);
@@ -214,6 +216,7 @@ export default function SlideshowPage() {
         : currentIndex + 1;
 
     const nextImage = new Image();
+
     nextImage.src = photos[nextIndex]?.imageUrl;
 
   }, [currentIndex, photos]);
@@ -233,7 +236,7 @@ export default function SlideshowPage() {
 
           <div className="absolute inset-0 bg-[#06142B]/35"></div>
 
-          {/* Logo Watermark */}
+          {/* Watermark */}
           <div className="absolute inset-0 flex items-center justify-center">
 
             <img
@@ -302,10 +305,10 @@ export default function SlideshowPage() {
             }`}
           >
 
-            <div className="w-full max-w-5xl text-center">
+            <div className="w-full max-w-5xl text-center flex flex-col items-center">
 
               {/* Heading */}
-              <div className="mb-10">
+              <div className="mb-8 flex-shrink-0">
 
                 <div className="text-7xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_20px_rgba(0,0,0,0.75)]">
                   Messages for Vicky
@@ -314,7 +317,7 @@ export default function SlideshowPage() {
               </div>
 
               {/* Message Card */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
+              <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)] h-[58vh] flex flex-col justify-between">
 
                 {/* Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_45%)] pointer-events-none"></div>
@@ -339,15 +342,20 @@ export default function SlideshowPage() {
                     break-words
                     drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]
                     leading-[1.4]
+                    flex-1
+                    flex
+                    items-center
 
                     ${
                       messages[messageIndex].message.length < 180
                         ? "text-[3.2rem]"
-                        : messages[messageIndex].message.length < 350
-                        ? "text-[2.6rem]"
-                        : messages[messageIndex].message.length < 550
-                        ? "text-[2.1rem]"
-                        : "text-[1.7rem]"
+                        : messages[messageIndex].message.length < 320
+                        ? "text-[2.5rem]"
+                        : messages[messageIndex].message.length < 500
+                        ? "text-[2rem]"
+                        : messages[messageIndex].message.length < 700
+                        ? "text-[1.6rem]"
+                        : "text-[1.35rem]"
                     }
                   `}
                 >
@@ -355,7 +363,7 @@ export default function SlideshowPage() {
                 </div>
 
                 {/* Signature */}
-                <div className="relative z-10 mt-12 flex items-center justify-end">
+                <div className="relative z-10 mt-10 flex items-center justify-end flex-shrink-0">
 
                   <div className="text-right">
 
