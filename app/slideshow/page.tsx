@@ -34,6 +34,7 @@ export default function SlideshowPage() {
   const [flash, setFlash] = useState(false);
 
   const [showMessages, setShowMessages] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   /* Fullscreen */
   const toggleFullscreen = async () => {
@@ -43,6 +44,25 @@ export default function SlideshowPage() {
       await document.exitFullscreen();
     }
   };
+
+  /* Detect fullscreen state */
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener(
+      "fullscreenchange",
+      handleFullscreenChange
+    );
+
+    return () => {
+      document.removeEventListener(
+        "fullscreenchange",
+        handleFullscreenChange
+      );
+    };
+  }, []);
 
   /* Polaroid Random Styles */
   const polaroidStyles = [
@@ -103,10 +123,8 @@ export default function SlideshowPage() {
     let interval: NodeJS.Timeout;
 
     if (!showMessages) {
-
       interval = setInterval(() => {
 
-        /* Camera Flash */
         setFlash(true);
 
         setTimeout(() => {
@@ -126,14 +144,13 @@ export default function SlideshowPage() {
         }, 450);
 
       }, 6500);
-
     }
 
     return () => clearInterval(interval);
 
   }, [photos, showMessages]);
 
-  /* Trigger Message Mode Every 5 Minutes */
+  /* Trigger messages every 5 mins */
   useEffect(() => {
 
     if (messages.length === 0) return;
@@ -149,7 +166,7 @@ export default function SlideshowPage() {
 
   }, [messages]);
 
-  /* Message Loop */
+  /* Message loop */
   useEffect(() => {
 
     if (!showMessages) return;
@@ -187,7 +204,7 @@ export default function SlideshowPage() {
 
   }, [showMessages, messageIndex, messages]);
 
-  /* Preload Next Image */
+  /* Preload next image */
   useEffect(() => {
     if (photos.length === 0) return;
 
@@ -197,7 +214,6 @@ export default function SlideshowPage() {
         : currentIndex + 1;
 
     const nextImage = new Image();
-
     nextImage.src = photos[nextIndex]?.imageUrl;
 
   }, [currentIndex, photos]);
@@ -263,12 +279,14 @@ export default function SlideshowPage() {
       ></div>
 
       {/* Fullscreen Button */}
-      <button
-        onClick={toggleFullscreen}
-        className="absolute top-6 right-6 z-40 bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl text-lg font-semibold transition shadow-2xl"
-      >
-        ⛶ Full Screen
-      </button>
+      {!isFullscreen && (
+        <button
+          onClick={toggleFullscreen}
+          className="absolute top-6 right-6 z-40 bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl text-lg font-semibold transition shadow-2xl"
+        >
+          ⛶ Full Screen
+        </button>
+      )}
 
       {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52 z-20">
@@ -286,6 +304,7 @@ export default function SlideshowPage() {
 
             <div className="w-full max-w-5xl text-center">
 
+              {/* Heading */}
               <div className="mb-10">
 
                 <div className="text-7xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_20px_rgba(0,0,0,0.75)]">
@@ -294,14 +313,18 @@ export default function SlideshowPage() {
 
               </div>
 
+              {/* Message Card */}
               <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
 
+                {/* Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_45%)] pointer-events-none"></div>
 
+                {/* Quote */}
                 <div className="absolute top-6 left-10 text-white/10 text-[9rem] leading-none font-serif">
                   “
                 </div>
 
+                {/* Message */}
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
@@ -331,6 +354,7 @@ export default function SlideshowPage() {
                   {messages[messageIndex].message}
                 </div>
 
+                {/* Signature */}
                 <div className="relative z-10 mt-12 flex items-center justify-end">
 
                   <div className="text-right">
@@ -414,6 +438,7 @@ export default function SlideshowPage() {
                 }}
               />
 
+              {/* Caption */}
               <div className="mt-6 flex items-center justify-center gap-6">
 
                 <img
