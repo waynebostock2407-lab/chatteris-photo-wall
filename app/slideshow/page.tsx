@@ -35,6 +35,15 @@ export default function SlideshowPage() {
 
   const [showMessages, setShowMessages] = useState(false);
 
+  /* Fullscreen */
+  const toggleFullscreen = async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  };
+
   /* Polaroid Random Styles */
   const polaroidStyles = [
     "rotate-[-2deg] translate-y-1",
@@ -226,16 +235,12 @@ export default function SlideshowPage() {
       {/* Stadium Lighting */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
 
-        {/* Top Stadium Glow */}
         <div className="absolute top-[-300px] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-[#7EC3FF]/35 rounded-full blur-[170px]"></div>
 
-        {/* Bottom Blue Glow */}
         <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[#0A56C5]/30 rounded-full blur-[160px]"></div>
 
-        {/* Left Ambient Glow */}
         <div className="absolute left-[-250px] top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#5EA8FF]/18 rounded-full blur-[150px]"></div>
 
-        {/* Right Ambient Glow */}
         <div className="absolute right-[-250px] top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#5EA8FF]/18 rounded-full blur-[150px]"></div>
 
       </div>
@@ -257,6 +262,14 @@ export default function SlideshowPage() {
         }}
       ></div>
 
+      {/* Fullscreen Button */}
+      <button
+        onClick={toggleFullscreen}
+        className="absolute top-6 right-6 z-40 bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl text-lg font-semibold transition shadow-2xl"
+      >
+        ⛶ Full Screen
+      </button>
+
       {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52 z-20">
 
@@ -273,7 +286,6 @@ export default function SlideshowPage() {
 
             <div className="w-full max-w-5xl text-center">
 
-              {/* Heading */}
               <div className="mb-10">
 
                 <div className="text-7xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_20px_rgba(0,0,0,0.75)]">
@@ -282,18 +294,14 @@ export default function SlideshowPage() {
 
               </div>
 
-              {/* Message Card */}
               <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
 
-                {/* Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_45%)] pointer-events-none"></div>
 
-                {/* Quote */}
                 <div className="absolute top-6 left-10 text-white/10 text-[9rem] leading-none font-serif">
                   “
                 </div>
 
-                {/* Message */}
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
@@ -323,7 +331,6 @@ export default function SlideshowPage() {
                   {messages[messageIndex].message}
                 </div>
 
-                {/* Signature */}
                 <div className="relative z-10 mt-12 flex items-center justify-end">
 
                   <div className="text-right">
@@ -353,7 +360,6 @@ export default function SlideshowPage() {
 
         ) : photos.length === 0 ? (
 
-          /* Empty State */
           <div className="text-center">
 
             <div className="text-6xl font-bold text-white mb-6">
@@ -368,7 +374,6 @@ export default function SlideshowPage() {
 
         ) : (
 
-          /* Photo Slides */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out will-change-transform will-change-opacity ${
@@ -409,7 +414,6 @@ export default function SlideshowPage() {
                 }}
               />
 
-              {/* Caption */}
               <div className="mt-6 flex items-center justify-center gap-6">
 
                 <img
