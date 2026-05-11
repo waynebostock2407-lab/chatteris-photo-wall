@@ -64,7 +64,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* Initial Intro */
+  /* INITIAL INTRO */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -73,7 +73,7 @@ export default function SlideshowPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  /* Intro Every 10 Minutes */
+  /* INTRO EVERY 10 MINUTES */
   useEffect(() => {
     const introCycle = setInterval(() => {
       setShowIntro(true);
@@ -81,6 +81,7 @@ export default function SlideshowPage() {
       setTimeout(() => {
         setShowIntro(false);
       }, 20000);
+
     }, 600000);
 
     return () => clearInterval(introCycle);
@@ -95,7 +96,7 @@ export default function SlideshowPage() {
     "rotate-[1deg] translate-y-1",
   ];
 
-  /* Photos */
+  /* PHOTOS */
   useEffect(() => {
     const q = query(
       collection(db, "photos"),
@@ -116,7 +117,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Messages */
+  /* MESSAGES */
   useEffect(() => {
     const q = query(
       collection(db, "guestbook"),
@@ -137,64 +138,84 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Photo Loop */
+  /* PHOTO LOOP */
   useEffect(() => {
     if (photos.length === 0) return;
 
     let interval: NodeJS.Timeout;
 
     if (!showMessages && !showIntro) {
+
       interval = setInterval(() => {
+
         setFlash(true);
 
         setTimeout(() => {
           setFlash(false);
-        }, 180);
+        }, 90);
 
         setFade(false);
 
         setTimeout(() => {
+
           setCurrentIndex((prev) =>
             prev === photos.length - 1 ? 0 : prev + 1
           );
 
           setFade(true);
-        }, 450);
+
+        }, 650);
+
       }, 6500);
+
     }
 
     return () => clearInterval(interval);
+
   }, [photos, showMessages, showIntro]);
 
-  /* Messages Every 5 Minutes */
+  /* MESSAGE CYCLE */
   useEffect(() => {
+
     if (messages.length === 0) return;
 
     const cycle = setInterval(() => {
+
       setShowMessages(true);
       setMessageIndex(0);
+
     }, 300000);
 
     return () => clearInterval(cycle);
+
   }, [messages]);
 
-  /* Message Loop */
+  /* MESSAGE LOOP */
   useEffect(() => {
+
     if (!showMessages) return;
 
     const interval = setInterval(() => {
+
       setFade(false);
 
       setTimeout(() => {
+
         if (messageIndex >= messages.length - 1) {
+
           setShowMessages(false);
           setMessageIndex(0);
+
         } else {
+
           setMessageIndex((prev) => prev + 1);
+
         }
 
         setFade(true);
+
       }, 350);
+
     }, Math.min(
       Math.max(
         9000,
@@ -204,6 +225,7 @@ export default function SlideshowPage() {
     ));
 
     return () => clearInterval(interval);
+
   }, [showMessages, messageIndex, messages]);
 
   return (
@@ -214,7 +236,7 @@ export default function SlideshowPage() {
 
         <div className="absolute inset-0 overflow-hidden">
 
-          {/* STAGE IMAGE */}
+          {/* STAGE */}
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
@@ -222,7 +244,7 @@ export default function SlideshowPage() {
             }}
           />
 
-          {/* DARK OVERLAY */}
+          {/* OVERLAY */}
           <div className="absolute inset-0 bg-black/10" />
 
           {/* LIGHT BEAMS */}
@@ -248,6 +270,10 @@ export default function SlideshowPage() {
 
             <div className="absolute inset-0 bg-[#06142B]/45" />
 
+            {/* PARTICLES */}
+            <div className="slideshow-particles" />
+
+            {/* BACKGROUND LOGO */}
             <div className="absolute inset-0 flex items-center justify-center">
 
               <img
@@ -266,7 +292,7 @@ export default function SlideshowPage() {
 
       {/* FLASH */}
       <div
-        className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-200 ${
+        className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
           flash ? "opacity-100" : "opacity-0"
         }`}
         style={{
@@ -315,6 +341,7 @@ export default function SlideshowPage() {
               CHATTERIS TOWN FC
             </h1>
 
+            {/* SUBTITLE */}
             <div
               style={{
                 fontFamily: "var(--font-great-vibes)",
@@ -324,6 +351,7 @@ export default function SlideshowPage() {
               Presentation Day
             </div>
 
+            {/* DIVIDER */}
             <div className="flex items-center justify-center mt-8">
 
               <div className="w-44 h-[1px] bg-white/50" />
@@ -457,10 +485,10 @@ export default function SlideshowPage() {
           /* PHOTOS */
           <div
             key={photos[currentIndex]?.id}
-            className={`transition-all duration-700 ease-out ${
+            className={`transition-all duration-[1400ms] ease-out ${
               fade
                 ? "opacity-100 scale-100 translate-y-0"
-                : "opacity-0 scale-[0.97] translate-y-2"
+                : "opacity-0 scale-[1.03] translate-y-4 blur-[2px]"
             }`}
           >
 
@@ -658,9 +686,9 @@ export default function SlideshowPage() {
           background:
             linear-gradient(
               to bottom,
-              rgba(255,255,255,0.95) 0%,
-              rgba(255,255,255,0.6) 16%,
-              rgba(255,255,255,0.18) 42%,
+              rgba(255,255,255,0.9) 0%,
+              rgba(255,255,255,0.42) 16%,
+              rgba(255,255,255,0.08) 42%,
               rgba(255,255,255,0) 100%
             );
 
@@ -684,9 +712,9 @@ export default function SlideshowPage() {
           background:
             linear-gradient(
               to bottom,
-              rgba(255,255,255,0.95) 0%,
-              rgba(255,255,255,0.6) 16%,
-              rgba(255,255,255,0.18) 42%,
+              rgba(255,255,255,0.9) 0%,
+              rgba(255,255,255,0.42) 16%,
+              rgba(255,255,255,0.08) 42%,
               rgba(255,255,255,0) 100%
             );
 
@@ -701,7 +729,7 @@ export default function SlideshowPage() {
             blur(7px)
             drop-shadow(0 0 28px rgba(255,255,255,0.7));
 
-          animation: sweepRight 6s ease-in-out infinite;
+          animation: sweepRight 7s ease-in-out infinite;
         }
 
         .beam-center {
@@ -744,6 +772,25 @@ export default function SlideshowPage() {
           opacity: 0.35;
 
           animation: particlesDrift 12s linear infinite;
+        }
+
+        .slideshow-particles {
+          position: absolute;
+          inset: 0;
+
+          background-image:
+            radial-gradient(
+              rgba(255,255,255,0.8) 1px,
+              transparent 1px
+            );
+
+          background-size: 140px 140px;
+
+          opacity: 0.08;
+
+          animation: slideshowParticles 40s linear infinite;
+
+          pointer-events: none;
         }
 
         @keyframes silverShimmer {
@@ -823,6 +870,16 @@ export default function SlideshowPage() {
 
           to {
             transform: translateY(-180px);
+          }
+        }
+
+        @keyframes slideshowParticles {
+          from {
+            transform: translateY(0);
+          }
+
+          to {
+            transform: translateY(-120px);
           }
         }
       `}</style>
