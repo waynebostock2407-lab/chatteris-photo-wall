@@ -37,7 +37,6 @@ export default function SlideshowPage() {
   const [showIntro, setShowIntro] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  /* Fullscreen */
   const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
       await document.documentElement.requestFullscreen();
@@ -46,7 +45,6 @@ export default function SlideshowPage() {
     }
   };
 
-  /* Detect fullscreen */
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -65,7 +63,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* Initial Intro */
+  /* Intro First Load */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -74,7 +72,7 @@ export default function SlideshowPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  /* Intro every 10 mins */
+  /* Intro Every 10 Minutes */
   useEffect(() => {
     const introCycle = setInterval(() => {
 
@@ -89,7 +87,6 @@ export default function SlideshowPage() {
     return () => clearInterval(introCycle);
   }, []);
 
-  /* Polaroid styles */
   const polaroidStyles = [
     "rotate-[-2deg] translate-y-1",
     "rotate-[1.8deg] -translate-y-1",
@@ -141,7 +138,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Photo loop */
+  /* Photo Loop */
   useEffect(() => {
     if (photos.length === 0) return;
 
@@ -177,7 +174,7 @@ export default function SlideshowPage() {
 
   }, [photos, showMessages, showIntro]);
 
-  /* Messages every 5 mins */
+  /* Messages Every 5 Minutes */
   useEffect(() => {
 
     if (messages.length === 0) return;
@@ -193,7 +190,7 @@ export default function SlideshowPage() {
 
   }, [messages]);
 
-  /* Message loop */
+  /* Message Loop */
   useEffect(() => {
 
     if (!showMessages) return;
@@ -252,7 +249,6 @@ export default function SlideshowPage() {
 
             <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
-            {/* Watermark */}
             <div className="absolute inset-0 flex items-center justify-center">
 
               <img
@@ -268,15 +264,6 @@ export default function SlideshowPage() {
         </div>
 
       )}
-
-      {/* Glow */}
-      <div className="absolute inset-0 overflow-hidden">
-
-        <div className="absolute top-[-300px] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-white/20 rounded-full blur-[180px] animate-pulse"></div>
-
-        <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-sky-300/20 rounded-full blur-[160px] animate-pulse"></div>
-
-      </div>
 
       {/* Flash */}
       <div
@@ -308,8 +295,31 @@ export default function SlideshowPage() {
           <div className="absolute inset-0 overflow-hidden flex flex-col items-center justify-center">
 
             {/* Glitter Curtains */}
-            <div className="glitter-left"></div>
-            <div className="glitter-right"></div>
+            <div className="glitter-left">
+              {Array.from({ length: 18 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="light-strand"
+                  style={{
+                    left: `${i * 12}px`,
+                    animationDelay: `${i * 0.15}s`,
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="glitter-right">
+              {Array.from({ length: 18 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="light-strand"
+                  style={{
+                    left: `${i * 12}px`,
+                    animationDelay: `${i * 0.15}s`,
+                  }}
+                />
+              ))}
+            </div>
 
             {/* Stage Glow */}
             <div className="absolute bottom-[-15%] left-1/2 -translate-x-1/2 w-[1200px] h-[400px] rounded-full bg-white/35 blur-[120px]"></div>
@@ -326,14 +336,6 @@ export default function SlideshowPage() {
 
             {/* Particles */}
             <div className="particles"></div>
-
-            {/* Sparkles */}
-            <div className="spark sparkle-1"></div>
-            <div className="spark sparkle-2"></div>
-            <div className="spark sparkle-3"></div>
-            <div className="spark sparkle-4"></div>
-            <div className="spark sparkle-5"></div>
-            <div className="spark sparkle-6"></div>
 
             {/* Logos */}
             <div className="relative z-20 flex items-center gap-20 mb-14 animate-[floatLogos_8s_ease-in-out_infinite]">
@@ -387,7 +389,6 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
-          /* Messages */
           <div className="w-full flex justify-center items-center px-20">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
@@ -474,7 +475,6 @@ export default function SlideshowPage() {
 
         ) : (
 
-          /* Photos */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out ${
@@ -511,7 +511,7 @@ export default function SlideshowPage() {
                 className="max-w-[74vw] max-h-[58vh] object-contain"
               />
 
-              {/* Polaroid Footer */}
+              {/* Footer */}
               <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
@@ -524,7 +524,7 @@ export default function SlideshowPage() {
                   style={{
                     fontFamily: "var(--font-great-vibes)",
                   }}
-                  className="text-[#222] text-[3.2rem] leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.12)]"
+                  className="text-[#222] text-[3.2rem] leading-none"
                 >
                   Memories
                 </div>
@@ -545,7 +545,7 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Bottom Branding */}
+      {/* Branding */}
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
 
@@ -569,13 +569,9 @@ export default function SlideshowPage() {
                 style={{
                   fontFamily: "var(--font-great-vibes)",
                 }}
-                className="text-sky-100 text-[4rem] drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                className="text-sky-100 text-[4rem]"
               >
                 Presentation Day
-              </span>
-
-              <span className="block mt-3 uppercase tracking-[0.22em] text-sky-100 text-[1.55rem] font-semibold">
-                ONE CLUB | ONE FAMILY | THE LILIES
               </span>
 
             </h1>
@@ -610,7 +606,6 @@ export default function SlideshowPage() {
           inset: -4%;
           background-size: cover;
           background-position: center;
-          filter: saturate(1.05);
         }
 
         .silver-title {
@@ -651,9 +646,6 @@ export default function SlideshowPage() {
           text-shadow:
             0 0 15px rgba(255,255,255,0.6),
             0 0 35px rgba(255,255,255,0.3);
-
-          animation:
-            titleFloat 8s ease-in-out infinite;
         }
 
         .silver-logo {
@@ -668,99 +660,71 @@ export default function SlideshowPage() {
         }
 
         .glitter-left,
-.glitter-right {
-  position: absolute;
-  top: 0;
-  width: 220px;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.glitter-left {
-  left: 0;
-}
-
-.glitter-right {
-  right: 0;
-}
-
-.glitter-left::before,
-.glitter-right::before {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.95) 0px,
-      rgba(255,255,255,0.95) 2px,
-      transparent 2px,
-      transparent 24px
-    );
-
-  background-size: 100% 120px;
-
-  opacity: 0.16;
-
-  filter:
-    blur(0.3px)
-    drop-shadow(0 0 6px rgba(255,255,255,0.8))
-    drop-shadow(0 0 16px rgba(255,255,255,0.55));
-
-  animation: shimmerCurtain 4s linear infinite;
-}
-
-        .spark {
+        .glitter-right {
           position: absolute;
-          width: 10px;
-          height: 10px;
+          top: 0;
+          width: 220px;
+          height: 100%;
+          overflow: hidden;
+          pointer-events: none;
+        }
+
+        .glitter-left {
+          left: 0;
+        }
+
+        .glitter-right {
+          right: 0;
+        }
+
+        .light-strand {
+          position: absolute;
+          top: -10%;
+          width: 2px;
+          height: 120%;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0),
+              rgba(255,255,255,0.85),
+              rgba(255,255,255,0)
+            );
+
+          opacity: 0.35;
+
+          filter:
+            drop-shadow(0 0 6px rgba(255,255,255,0.95))
+            drop-shadow(0 0 18px rgba(255,255,255,0.65));
+
+          animation: strandTwinkle 3.5s ease-in-out infinite;
+        }
+
+        .light-strand::before,
+        .light-strand::after {
+          content: "";
+
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+
+          width: 8px;
+          height: 8px;
           border-radius: 999px;
 
           background: rgba(255,255,255,0.95);
 
           box-shadow:
             0 0 12px rgba(255,255,255,1),
-            0 0 28px rgba(255,255,255,0.7);
-
-          animation: sparkleFloat 5s infinite ease-in-out;
+            0 0 24px rgba(255,255,255,0.8);
         }
 
-        .sparkle-1 {
-          top: 16%;
-          left: 18%;
+        .light-strand::before {
+          top: 18%;
         }
 
-        .sparkle-2 {
-          top: 24%;
-          right: 22%;
-          animation-delay: 1s;
-        }
-
-        .sparkle-3 {
-          bottom: 24%;
-          left: 26%;
-          animation-delay: 2s;
-        }
-
-        .sparkle-4 {
-          bottom: 18%;
-          right: 18%;
-          animation-delay: 3s;
-        }
-
-        .sparkle-5 {
-          top: 55%;
-          left: 50%;
-          animation-delay: 1.5s;
-        }
-
-        .sparkle-6 {
-          top: 36%;
-          left: 72%;
-          animation-delay: 2.5s;
+        .light-strand::after {
+          top: 72%;
         }
 
         .spotlight {
@@ -836,20 +800,6 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes titleFloat {
-          0% {
-            transform: translateY(0px);
-          }
-
-          50% {
-            transform: translateY(-6px);
-          }
-
-          100% {
-            transform: translateY(0px);
-          }
-        }
-
         @keyframes logoPulse {
           0% {
             transform: scale(1);
@@ -864,40 +814,22 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes sparkleFloat {
+        @keyframes strandTwinkle {
           0% {
-            transform: translateY(0px) scale(1);
-            opacity: 0.3;
+            opacity: 0.12;
+            transform: translateY(0px);
           }
 
           50% {
-            transform: translateY(-20px) scale(1.5);
-            opacity: 1;
+            opacity: 0.55;
+            transform: translateY(12px);
           }
 
           100% {
-            transform: translateY(0px) scale(1);
-            opacity: 0.3;
+            opacity: 0.12;
+            transform: translateY(0px);
           }
         }
-
-        @keyframes shimmerCurtain {
-
-  0% {
-    opacity: 0.08;
-    transform: translateY(0px);
-  }
-
-  50% {
-    opacity: 0.22;
-  }
-
-  100% {
-    opacity: 0.08;
-    transform: translateY(40px);
-  }
-
-}
 
         @keyframes moveLeft {
           0% {
