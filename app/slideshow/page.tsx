@@ -237,7 +237,7 @@ export default function SlideshowPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/presentation-stage.png')",
+            backgroundImage: "url('/presentation-stage.jpg')",
           }}
         >
 
