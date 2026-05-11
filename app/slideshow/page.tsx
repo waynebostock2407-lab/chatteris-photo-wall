@@ -65,16 +65,16 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* Initial intro */
+  /* Initial Intro - 60 Seconds */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
-    }, 12000);
+    }, 60000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  /* Intro every 10 mins */
+  /* Intro Every 10 Minutes - 20 Seconds */
   useEffect(() => {
     const introCycle = setInterval(() => {
 
@@ -82,14 +82,14 @@ export default function SlideshowPage() {
 
       setTimeout(() => {
         setShowIntro(false);
-      }, 12000);
+      }, 20000);
 
     }, 600000);
 
     return () => clearInterval(introCycle);
   }, []);
 
-  /* Polaroid styles */
+  /* Polaroid Styles */
   const polaroidStyles = [
     "rotate-[-2deg] translate-y-1",
     "rotate-[1.8deg] -translate-y-1",
@@ -141,7 +141,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Photo loop */
+  /* Photo Loop */
   useEffect(() => {
     if (photos.length === 0) return;
 
@@ -177,7 +177,7 @@ export default function SlideshowPage() {
 
   }, [photos, showMessages, showIntro]);
 
-  /* Trigger messages every 5 mins */
+  /* Trigger Messages Every 5 Minutes */
   useEffect(() => {
 
     if (messages.length === 0) return;
@@ -193,7 +193,7 @@ export default function SlideshowPage() {
 
   }, [messages]);
 
-  /* Message loop */
+  /* Message Loop */
   useEffect(() => {
 
     if (!showMessages) return;
@@ -232,46 +232,22 @@ export default function SlideshowPage() {
   }, [showMessages, messageIndex, messages]);
 
   return (
-    <main className="relative w-screen h-screen overflow-hidden text-white bg-sky-900">
+    <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* Background */}
+      {/* SKY BLUE BACKGROUND */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#63B8FF] via-[#2F7FD8] to-[#0A3F91]"></div>
+
+      {/* Animated Glow */}
       <div className="absolute inset-0 overflow-hidden">
 
-        <div
-          className="fabric-layer opacity-[0.45]"
-          style={{
-            backgroundImage: "url('/stripe-bg.jpg')",
-          }}
-        >
+        <div className="absolute top-[-300px] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-white/20 rounded-full blur-[180px] animate-pulse"></div>
 
-          <div className="absolute inset-0 bg-[#06142B]/35"></div>
-
-          {/* Watermark */}
-          <div className="absolute inset-0 flex items-center justify-center">
-
-            <img
-              src="/logo.png"
-              alt="Background Logo"
-              className="w-[780px] opacity-[0.16]"
-            />
-
-          </div>
-
-        </div>
+        <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-sky-300/20 rounded-full blur-[160px] animate-pulse"></div>
 
       </div>
 
-      {/* Stadium Lighting */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-
-        <div className="absolute top-[-300px] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-[#7EC3FF]/35 rounded-full blur-[170px]"></div>
-
-        <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[#0A56C5]/30 rounded-full blur-[160px]"></div>
-
-      </div>
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-[#06142B]/45"></div>
+      {/* Floating Particles */}
+      <div className="particles"></div>
 
       {/* Camera Flash */}
       <div
@@ -288,24 +264,28 @@ export default function SlideshowPage() {
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
-          className="absolute top-6 right-6 z-40 bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl text-lg font-semibold transition shadow-2xl"
+          className="absolute top-6 right-6 z-40 bg-black/30 hover:bg-black/50 backdrop-blur-md border border-white/10 text-white px-5 py-3 rounded-2xl text-lg font-semibold transition shadow-2xl"
         >
           ⛶ Full Screen
         </button>
       )}
 
-      {/* Main Content */}
-      <div className="absolute inset-0 flex items-center justify-center px-16 pb-52 z-20">
+      {/* MAIN CONTENT */}
+      <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
-        {/* Intro Screen */}
+        {/* INTRO SCREEN */}
         {showIntro ? (
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center animate-[slowZoom_20s_ease-in-out_infinite]">
 
-            {/* Animated Rings */}
+            {/* Spotlight Beams */}
+            <div className="spotlight spotlight-left"></div>
+            <div className="spotlight spotlight-right"></div>
+
+            {/* Silver Rings */}
             <div className="absolute w-[900px] h-[900px] border border-white/10 rounded-full animate-ping opacity-20"></div>
 
-            <div className="absolute w-[700px] h-[700px] border border-sky-200/20 rounded-full animate-pulse"></div>
+            <div className="absolute w-[700px] h-[700px] border border-sky-100/20 rounded-full animate-pulse"></div>
 
             {/* Sparkles */}
             <div className="sparkle sparkle-1"></div>
@@ -315,39 +295,55 @@ export default function SlideshowPage() {
             <div className="sparkle sparkle-5"></div>
 
             {/* Logos */}
-            <div className="flex items-center gap-16 mb-12 z-10">
+            <div className="flex items-center gap-20 mb-16 z-10">
 
               <img
                 src="/logo 4.png"
-                alt="Young Lilies Logo"
-                className="w-48 h-48 object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+                alt="Young Lilies"
+                className="w-56 h-56 object-contain animate-pulse drop-shadow-[0_0_60px_rgba(255,255,255,0.35)]"
               />
 
               <img
                 src="/logo.png"
-                alt="The Lilies Logo"
-                className="w-48 h-48 object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+                alt="The Lilies"
+                className="w-56 h-56 object-contain animate-pulse drop-shadow-[0_0_60px_rgba(255,255,255,0.35)]"
               />
 
             </div>
 
-            {/* Title */}
-            <div className="relative z-10 text-center px-10">
+            {/* Main Title */}
+            <div className="relative z-10 text-center">
 
               <h1
-                style={{
-                  fontFamily: "'Playfair Display', serif",
-                }}
-                className="text-white text-[6rem] leading-none font-bold tracking-wide drop-shadow-[0_0_35px_rgba(255,255,255,0.3)]"
+                className="
+                  text-[7rem]
+                  font-black
+                  uppercase
+                  tracking-[0.08em]
+                  leading-none
+                  bg-gradient-to-b
+                  from-white
+                  via-[#E5E7EB]
+                  to-[#AEB7C2]
+                  bg-clip-text
+                  text-transparent
+                  drop-shadow-[0_0_35px_rgba(255,255,255,0.35)]
+                  animate-[silverShine_6s_linear_infinite]
+                "
               >
                 Chatteris Town FC
               </h1>
 
               <div
                 style={{
-                  fontFamily: "'Cormorant Garamond', serif",
+                  fontFamily: "var(--font-great-vibes)",
                 }}
-                className="mt-6 text-sky-100 text-[4rem] italic tracking-[0.08em] drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+                className="
+                  mt-8
+                  text-[5rem]
+                  text-white
+                  drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]
+                "
               >
                 Presentation Day
               </div>
@@ -358,6 +354,7 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
+          /* Guestbook */
           <div className="w-full flex justify-center items-center px-20">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
@@ -370,7 +367,7 @@ export default function SlideshowPage() {
 
               </div>
 
-              <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)] h-[58vh] flex flex-col justify-between">
+              <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.35)] h-[58vh] flex flex-col justify-between">
 
                 <div
                   style={{
@@ -378,7 +375,7 @@ export default function SlideshowPage() {
                   }}
                   className={`
                     relative z-10
-                    text-[#F8FBFF]
+                    text-white
                     font-semibold
                     tracking-[0.01em]
                     text-left
@@ -409,7 +406,7 @@ export default function SlideshowPage() {
 
                   <div className="text-right">
 
-                    <div className="text-white/50 text-sm uppercase tracking-[0.35em] mb-2">
+                    <div className="text-white/60 text-sm uppercase tracking-[0.35em] mb-2">
                       Shared by
                     </div>
 
@@ -417,7 +414,7 @@ export default function SlideshowPage() {
                       style={{
                         fontFamily: "'Caveat', cursive",
                       }}
-                      className="text-[#D9F3FF] text-[2.7rem] font-bold"
+                      className="text-white text-[2.7rem] font-bold"
                     >
                       {messages[messageIndex].name}
                     </div>
@@ -444,6 +441,7 @@ export default function SlideshowPage() {
 
         ) : (
 
+          /* Photos */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out ${
@@ -490,21 +488,11 @@ export default function SlideshowPage() {
 
                 <div className="text-center leading-tight">
 
-                  <div
-                    style={{
-                      fontFamily: "'Playfair Display', serif",
-                    }}
-                    className="text-[#1A1A1A] text-[2rem] font-bold tracking-wide"
-                  >
+                  <div className="text-[#1A1A1A] text-[2rem] font-bold tracking-wide">
                     Chatteris Town Football Club
                   </div>
 
-                  <div
-                    style={{
-                      fontFamily: "'Cormorant Garamond', serif",
-                    }}
-                    className="text-[#444] text-[2.1rem] italic mt-1"
-                  >
+                  <div className="text-[#444] text-[2.1rem] italic mt-1">
                     Memories
                   </div>
 
@@ -527,14 +515,6 @@ export default function SlideshowPage() {
       </div>
 
       <style jsx>{`
-        .fabric-layer {
-          position: absolute;
-          inset: -4%;
-          background-size: cover;
-          background-position: center;
-          filter: saturate(1.05);
-        }
-
         .sparkle {
           position: absolute;
           width: 12px;
@@ -543,7 +523,7 @@ export default function SlideshowPage() {
           background: rgba(255,255,255,0.9);
           box-shadow:
             0 0 20px rgba(255,255,255,0.9),
-            0 0 40px rgba(125,211,252,0.8),
+            0 0 40px rgba(255,255,255,0.8),
             0 0 60px rgba(255,255,255,0.6);
           animation: floatSparkle 6s infinite ease-in-out;
         }
@@ -551,7 +531,6 @@ export default function SlideshowPage() {
         .sparkle-1 {
           top: 18%;
           left: 22%;
-          animation-delay: 0s;
         }
 
         .sparkle-2 {
@@ -578,6 +557,43 @@ export default function SlideshowPage() {
           animation-delay: 1.5s;
         }
 
+        .spotlight {
+          position: absolute;
+          width: 700px;
+          height: 1400px;
+          background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.22),
+            rgba(255,255,255,0)
+          );
+          filter: blur(40px);
+          opacity: 0.35;
+        }
+
+        .spotlight-left {
+          left: 18%;
+          top: -25%;
+          transform: rotate(-18deg);
+          animation: moveLeft 8s ease-in-out infinite;
+        }
+
+        .spotlight-right {
+          right: 18%;
+          top: -25%;
+          transform: rotate(18deg);
+          animation: moveRight 8s ease-in-out infinite;
+        }
+
+        .particles {
+          position: absolute;
+          inset: 0;
+          background-image:
+            radial-gradient(white 1px, transparent 1px);
+          background-size: 80px 80px;
+          opacity: 0.15;
+          animation: drift 25s linear infinite;
+        }
+
         @keyframes floatSparkle {
           0% {
             transform: translateY(0px) scale(1);
@@ -592,6 +608,68 @@ export default function SlideshowPage() {
           100% {
             transform: translateY(0px) scale(1);
             opacity: 0.2;
+          }
+        }
+
+        @keyframes moveLeft {
+          0% {
+            transform: rotate(-18deg) translateX(0);
+          }
+
+          50% {
+            transform: rotate(-10deg) translateX(40px);
+          }
+
+          100% {
+            transform: rotate(-18deg) translateX(0);
+          }
+        }
+
+        @keyframes moveRight {
+          0% {
+            transform: rotate(18deg) translateX(0);
+          }
+
+          50% {
+            transform: rotate(10deg) translateX(-40px);
+          }
+
+          100% {
+            transform: rotate(18deg) translateX(0);
+          }
+        }
+
+        @keyframes drift {
+          from {
+            transform: translateY(0);
+          }
+
+          to {
+            transform: translateY(-120px);
+          }
+        }
+
+        @keyframes slowZoom {
+          0% {
+            transform: scale(1);
+          }
+
+          100% {
+            transform: scale(1.03);
+          }
+        }
+
+        @keyframes silverShine {
+          0% {
+            filter: brightness(1);
+          }
+
+          50% {
+            filter: brightness(1.3);
+          }
+
+          100% {
+            filter: brightness(1);
           }
         }
       `}</style>
