@@ -668,28 +668,50 @@ export default function SlideshowPage() {
         }
 
         .glitter-left,
-        .glitter-right {
-          position: absolute;
-          top: 0;
-          width: 140px;
-          height: 100%;
-          opacity: 0.7;
+.glitter-right {
+  position: absolute;
+  top: 0;
+  width: 220px;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
 
-          background-image:
-            radial-gradient(white 1px, transparent 1px);
+.glitter-left {
+  left: 0;
+}
 
-          background-size: 12px 12px;
+.glitter-right {
+  right: 0;
+}
 
-          animation: glitterFall 10s linear infinite;
-        }
+.glitter-left::before,
+.glitter-right::before {
+  content: "";
 
-        .glitter-left {
-          left: 0;
-        }
+  position: absolute;
+  inset: 0;
 
-        .glitter-right {
-          right: 0;
-        }
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.95) 0px,
+      rgba(255,255,255,0.95) 2px,
+      transparent 2px,
+      transparent 24px
+    );
+
+  background-size: 100% 120px;
+
+  opacity: 0.16;
+
+  filter:
+    blur(0.3px)
+    drop-shadow(0 0 6px rgba(255,255,255,0.8))
+    drop-shadow(0 0 16px rgba(255,255,255,0.55));
+
+  animation: shimmerCurtain 4s linear infinite;
+}
 
         .spark {
           position: absolute;
@@ -859,15 +881,23 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes glitterFall {
-          from {
-            background-position-y: 0;
-          }
+        @keyframes shimmerCurtain {
 
-          to {
-            background-position-y: 300px;
-          }
-        }
+  0% {
+    opacity: 0.08;
+    transform: translateY(0px);
+  }
+
+  50% {
+    opacity: 0.22;
+  }
+
+  100% {
+    opacity: 0.08;
+    transform: translateY(40px);
+  }
+
+}
 
         @keyframes moveLeft {
           0% {
