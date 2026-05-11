@@ -32,7 +32,35 @@ export default function SlideshowPage() {
 
   const [fade, setFade] = useState(true);
   const [showMessages, setShowMessages] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+const [showIntro, setShowIntro] = useState(true);
+
+const [isFullscreen, setIsFullscreen] = useState(false);
+
+const toggleFullscreen = async () => {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen();
+  } else {
+    await document.exitFullscreen();
+  }
+};
+
+useEffect(() => {
+  const handleFullscreenChange = () => {
+    setIsFullscreen(!!document.fullscreenElement);
+  };
+
+  document.addEventListener(
+    "fullscreenchange",
+    handleFullscreenChange
+  );
+
+  return () => {
+    document.removeEventListener(
+      "fullscreenchange",
+      handleFullscreenChange
+    );
+  };
+}, []);
 
   useEffect(() => {
     const q = query(
@@ -149,7 +177,7 @@ export default function SlideshowPage() {
         }}
       />
 
-      <div className="absolute inset-0 bg-[#020817]/45" />
+      <div className="absolute inset-0 bg-[#020817]/20" />
 
       <div className="ambient-orbs">
         <span />
@@ -360,10 +388,14 @@ export default function SlideshowPage() {
           object-fit: contain;
 
           filter:
-            brightness(1.45)
+            brightness(2)
             grayscale(1)
-            contrast(1.2)
-            drop-shadow(0 0 25px rgba(220,235,255,0.55));
+            saturate(0)
+            contrast(1.35)
+            drop-shadow(0 0 22px rgba(255,255,255,0.65))
+            drop-shadow(0 0 55px rgba(180,210,255,0.35));
+          
+          opacity: 0.98;
 
           animation: logoFloat 6s ease-in-out infinite;
         }
@@ -378,10 +410,12 @@ export default function SlideshowPage() {
             linear-gradient(
               to bottom,
               #ffffff 0%,
-              #eef4ff 16%,
-              #bfcfff 32%,
-              #ffffff 48%,
-              #94aee8 66%,
+              #f8fbff 12%,
+              #d9e5ff 26%,
+              #ffffff 40%,
+              #b7c9f5 55%,
+              #ffffff 72%
+              #d9e5ff 88%,
               #ffffff 100%
             );
 
@@ -389,9 +423,12 @@ export default function SlideshowPage() {
           -webkit-text-fill-color: transparent;
 
           text-shadow:
-            0 0 14px rgba(255,255,255,0.55),
-            0 0 34px rgba(200,220,255,0.4),
-            0 0 70px rgba(120,160,255,0.22);
+            0 0 12px rgba(255,255,255,0.7),
+            0 0 32px rgba(200,220,255,0.5),
+            0 0 70px rgba(120,160,255,0.35);
+
+          animation:
+            silverPulse 5s ease-in-out infinite;
         }
 
         .hero-script {
@@ -447,6 +484,8 @@ export default function SlideshowPage() {
           inset: 0;
           overflow: hidden;
           pointer-events: none;
+
+          z-index: 25;
         }
 
         .ambient-orbs span {
@@ -456,14 +495,14 @@ export default function SlideshowPage() {
           background:
             radial-gradient(
               circle,
-              rgba(255,255,255,0.32) 0%,
-              rgba(255,255,255,0.06) 48%,
+              rgba(255,255,255,0.55) 0%,
+              rgba(255,255,255,0.18) 38%,
               rgba(255,255,255,0) 72%
             );
 
           filter:
-            blur(24px)
-            drop-shadow(0 0 40px rgba(255,255,255,0.35));
+            blur(36px)
+            drop-shadow(0 0 80px rgba(255,255,255,0.5));
 
           animation: floatOrb linear infinite;
         }
@@ -649,6 +688,17 @@ export default function SlideshowPage() {
             transform:
               translate3d(0px,0px,0)
               scale(1);
+          }
+        }
+        @keyframes silverPulse {
+          0% {
+            filter: brightness(1);
+          }
+          50% {
+            filter: brightness(1.3);
+          }
+          100% {
+            filter: brightness(1);
           }
         }
       `}</style>
