@@ -234,7 +234,7 @@ export default function SlideshowPage() {
       {/* Dynamic Background */}
       {showIntro ? (
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#87CEFA_0%,#2F7FD8_45%,#0A3F91_100%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#5FAEEB_0%,#1E5FB8_40%,#071D4D_100%)]"></div>
 
       ) : (
 
@@ -298,7 +298,7 @@ export default function SlideshowPage() {
             <div className="cinema-haze"></div>
 
             {/* Stage Glow */}
-            <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[1400px] h-[500px] rounded-full bg-white/20 blur-[120px]"></div>
+            <div className="absolute bottom-[-18%] left-1/2 -translate-x-1/2 w-[1100px] h-[320px] rounded-full bg-white/10 blur-[90px]"></div>
 
             {/* Floor Light Beams */}
             <div className="floor-beams"></div>
@@ -666,7 +666,7 @@ export default function SlideshowPage() {
               rgba(255,255,255,0.16) 0px,
               rgba(255,255,255,0.16) 3px,
               transparent 3px,
-              transparent 85px
+              transparent 42px
             );
 
           clip-path: polygon(
@@ -676,7 +676,7 @@ export default function SlideshowPage() {
             40% 0%
           );
 
-          opacity: 0.22;
+          opacity: 0.5;
 
           filter:
             blur(1px)
@@ -728,7 +728,7 @@ export default function SlideshowPage() {
 
           filter: blur(35px);
 
-          opacity: 0.42;
+          opacity: 0.75;
         }
 
         .spotlight-1 {
