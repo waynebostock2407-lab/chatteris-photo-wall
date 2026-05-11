@@ -292,27 +292,7 @@ export default function SlideshowPage() {
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
-          className="
-            fixed
-            top-6
-            right-6
-            z-[9999]
-            bg-black/35
-            hover:bg-black/55
-            backdrop-blur-xl
-            border
-            border-white/20
-            text-white
-            px-6
-            py-3
-            rounded-2xl
-            text-lg
-            font-bold
-            tracking-wide
-            transition-all
-            duration-300
-            shadow-[0_0_30px_rgba(255,255,255,0.15)]
-          "
+          className="fixed top-6 right-6 z-[9999] bg-black/35 hover:bg-black/55 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl text-lg font-bold tracking-wide transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.15)]"
         >
           ⛶ FULL SCREEN
         </button>
