@@ -249,7 +249,6 @@ export default function SlideshowPage() {
 
             <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
-            {/* Watermark */}
             <div className="absolute inset-0 flex items-center justify-center">
 
               <img
@@ -295,15 +294,18 @@ export default function SlideshowPage() {
 
           <div className="absolute inset-0 overflow-hidden flex flex-col items-center justify-center">
 
+            {/* Cinematic Haze */}
+            <div className="cinema-haze"></div>
+
             {/* Stage Glow */}
             <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[1400px] h-[500px] rounded-full bg-white/20 blur-[120px]"></div>
 
-            {/* Perspective Floor */}
-            <div className="floor-lines"></div>
+            {/* Floor Light Beams */}
+            <div className="floor-beams"></div>
 
-            {/* Side Light Columns */}
-            <div className="light-columns left-columns"></div>
-            <div className="light-columns right-columns"></div>
+            {/* Side Glow */}
+            <div className="side-glow left-glow"></div>
+            <div className="side-glow right-glow"></div>
 
             {/* Main Spotlights */}
             <div className="main-spotlight spotlight-1"></div>
@@ -365,7 +367,6 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
-          /* Messages */
           <div className="w-full flex justify-center items-center px-20">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
@@ -452,7 +453,6 @@ export default function SlideshowPage() {
 
         ) : (
 
-          /* Photos */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out ${
@@ -489,7 +489,6 @@ export default function SlideshowPage() {
                 className="max-w-[74vw] max-h-[58vh] object-contain"
               />
 
-              {/* Footer */}
               <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
@@ -636,68 +635,82 @@ export default function SlideshowPage() {
             logoPulse 5s ease-in-out infinite;
         }
 
-        .floor-lines {
+        .cinema-haze {
           position: absolute;
-          bottom: -10%;
+          inset: 0;
+
+          background:
+            radial-gradient(
+              circle at center,
+              rgba(255,255,255,0.16) 0%,
+              rgba(255,255,255,0.08) 25%,
+              rgba(0,0,0,0.18) 72%,
+              rgba(0,0,0,0.45) 100%
+            );
+
+          mix-blend-mode: screen;
+        }
+
+        .floor-beams {
+          position: absolute;
+          bottom: -18%;
           left: 50%;
           transform: translateX(-50%);
-          width: 1600px;
-          height: 700px;
+
+          width: 1800px;
+          height: 900px;
 
           background:
             repeating-linear-gradient(
               to right,
-              rgba(255,255,255,0.14),
-              rgba(255,255,255,0.14) 2px,
-              transparent 2px,
-              transparent 60px
+              rgba(255,255,255,0.16) 0px,
+              rgba(255,255,255,0.16) 3px,
+              transparent 3px,
+              transparent 85px
             );
 
           clip-path: polygon(
             0% 100%,
             100% 100%,
-            70% 0%,
-            30% 0%
+            60% 0%,
+            40% 0%
           );
 
-          opacity: 0.35;
+          opacity: 0.22;
 
           filter:
-            blur(0.5px)
-            drop-shadow(0 0 12px rgba(255,255,255,0.45));
+            blur(1px)
+            drop-shadow(0 0 12px rgba(255,255,255,0.35));
 
-          animation: floorMove 12s linear infinite;
+          animation: floorSweep 16s linear infinite;
         }
 
-        .light-columns {
+        .side-glow {
           position: absolute;
-          top: 0;
-          width: 260px;
-          height: 100%;
-          opacity: 0.6;
+          top: -10%;
+          width: 700px;
+          height: 1400px;
 
           background:
-            repeating-linear-gradient(
-              to right,
-              rgba(255,255,255,0.9),
-              rgba(255,255,255,0.9) 2px,
-              transparent 2px,
-              transparent 22px
+            radial-gradient(
+              ellipse at center,
+              rgba(255,255,255,0.14),
+              rgba(255,255,255,0)
             );
 
-          filter:
-            blur(0.4px)
-            drop-shadow(0 0 8px rgba(255,255,255,0.7));
+          filter: blur(80px);
+
+          opacity: 0.6;
         }
 
-        .left-columns {
-          left: 0;
-          transform: perspective(800px) rotateY(25deg);
+        .left-glow {
+          left: -20%;
+          transform: rotate(-18deg);
         }
 
-        .right-columns {
-          right: 0;
-          transform: perspective(800px) rotateY(-25deg);
+        .right-glow {
+          right: -20%;
+          transform: rotate(18deg);
         }
 
         .main-spotlight {
@@ -784,13 +797,17 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes floorMove {
-          from {
+        @keyframes floorSweep {
+          0% {
             transform: translateX(-50%) translateY(0);
           }
 
-          to {
-            transform: translateX(-50%) translateY(40px);
+          50% {
+            transform: translateX(-50%) translateY(35px);
+          }
+
+          100% {
+            transform: translateX(-50%) translateY(0);
           }
         }
 
