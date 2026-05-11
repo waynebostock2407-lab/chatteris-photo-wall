@@ -409,12 +409,26 @@ export default function SlideshowPage() {
               `}
             >
 
-              <div className="w-[74vw] h-[58vh] flex items-center justify-center overflow-hidden bg-[#f4f4f4]">
+              <div className="
+                flex
+                items-center
+                justify-center
+                overflow-hidden
+                bg-[#f4f4f4]
+                max-w-[74vw]
+                max-h-[58vh]
+              ">
 
                 <img
                   src={photos[currentIndex].imageUrl}
                   alt="Slideshow"
-                  className="w-full h-full object-contain rounded-[0.25rem]"
+                  className="
+                    block
+                    max-w-[74vw]
+                    max-h-[58vh]
+                    object-contain
+                    rounded-[0.25rem]
+                  "
                 />
 
               </div>
@@ -487,7 +501,6 @@ export default function SlideshowPage() {
         </div>
       )}
 
-      {!showIntro && (
         <div className="absolute bottom-8 right-8 z-30">
 
           <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
@@ -507,7 +520,6 @@ export default function SlideshowPage() {
           </div>
 
         </div>
-      )}
 
       <style jsx>{`
 
