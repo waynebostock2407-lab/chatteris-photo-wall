@@ -778,19 +778,27 @@ export default function SlideshowPage() {
           position: absolute;
           inset: 0;
 
-          background-image:
-            radial-gradient(
-              rgba(255,255,255,0.8) 1px,
-              transparent 1px
-            );
-
-          background-size: 140px 140px;
-
-          opacity: 0.08;
-
-          animation: slideshowParticles 40s linear infinite;
+          overflow: hidden;
 
           pointer-events: none;
+
+          opacity: 0.18;
+
+          background:
+            radial-gradient(circle at 12% 22%, rgba(255,255,255,0.95) 1px, transparent 2px),
+            radial-gradient(circle at 78% 14%, rgba(255,255,255,0.7) 1.5px, transparent 3px),
+            radial-gradient(circle at 46% 72%, rgba(255,255,255,0.9) 1px, transparent 2px),
+            radial-gradient(circle at 88% 64%, rgba(255,255,255,0.6) 2px, transparent 4px),
+            radial-gradient(circle at 22% 84%, rgba(255,255,255,0.75) 1px, transparent 2px),
+            radial-gradient(circle at 64% 42%, rgba(255,255,255,0.85) 1.5px, transparent 3px),
+            radial-gradient(circle at 36% 18%, rgba(255,255,255,0.6) 2px, transparent 4px),
+            radial-gradient(circle at 58% 90%, rgba(255,255,255,0.95) 1px, transparent 2px),
+            radial-gradient(circle at 92% 38%, rgba(255,255,255,0.7) 1.5px, transparent 3px),
+            radial-gradient(circle at 8% 58%, rgba(255,255,255,0.9) 1px, transparent 2px);
+
+          animation: slideshowParticlesFloat 28s linear infinite;
+
+          mix-blend-mode: screen;
         }
 
         @keyframes silverShimmer {
@@ -873,13 +881,17 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes slideshowParticles {
-          from {
-            transform: translateY(0);
+        @keyframes slideshowParticlesFloat {
+          0% {
+            transform: translateY(0px);
           }
 
-          to {
-            transform: translateY(-120px);
+          50% {
+            transform: translateY(-35px);
+          }
+
+          100% {
+            transform: translateY(-70px);
           }
         }
       `}</style>
