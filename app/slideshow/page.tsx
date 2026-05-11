@@ -423,13 +423,7 @@ export default function SlideshowPage() {
                 <img
                   src={photos[currentIndex].imageUrl}
                   alt="Slideshow"
-                  className="
-                    block
-                    max-w-[74vw]
-                    max-h-[58vh]
-                    object-contain
-                    rounded-[0.25rem]
-                  "
+                  className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem]"
                 />
 
               </div>
