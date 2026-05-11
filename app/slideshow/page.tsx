@@ -859,12 +859,15 @@ export default function SlideshowPage() {
               circle,
               rgba(255,255,255,0.34) 0%,
               rgba(255,255,255,0.16) 38%,
-              rgba(255,255,255,0.04) 62%
+              rgba(255,255,255,0.04) 62%,
               rgba(255,255,255,0) 78%
             );
 
-          filter: blur(22px);
-          drop-shadow(0 0 40px rgba(255,255,255,0,25));
+          filter: 
+            blur(22px)
+            drop-shadow(0 0 40px rgba(255,255,255,0.25));
+
+          opacity: 0.9;
         }
 
         @keyframes silverShimmer {
