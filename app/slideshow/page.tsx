@@ -638,94 +638,93 @@ export default function SlideshowPage() {
 
         .moving-beam {
           position: absolute;
-          top: -15%;
+          top: -55%;
           width: 900px;
-          height: 1800px;
+          height: 2200px;
 
           opacity: 1;
 
           pointer-events: none;
 
           mix-blend-mode: screen;
+
+          transorm-origin: top center;
         }
 
+        /*LEFT */
         .beam-left {
-          left: -8%;
+          left: -12%;
 
           background:
             linear-gradient(
               to bottom,
               rgba(255,255,255,0.95) 0%,
-              rgba(255,255,255,0.55) 18%,
-              rgba(255,255,255,0.12) 45%,
+              rgba(255,255,255,0.55) 12%,
+              rgba(255,255,255,0.12) 38%,
               rgba(255,255,255,0) 100%
             );
 
           clip-path: polygon(
             48% 0%,
-            58% 0%,
+            54% 0%,
             100% 100%,
             0% 100%
           );
 
           filter:
-            blur(10px)
-            drop-shadow(0 0 35px rgba(255,255,255,0.95));
+            blur(8px)
+            drop-shadow(0 0 45px rgba(255,255,255,0.95));
 
-          transform: rotate(-18deg);
-
-          animation: sweepLeft 5s ease-in-out infinite;
+          animation: sweepLeft 6s ease-in-out infinite;
         }
-
+        /* RIGHT */
         .beam-right {
-          right: -8%;
+          right: -12%;
 
           background:
             linear-gradient(
               to bottom,
               rgba(255,255,255,0.95) 0%,
-              rgba(255,255,255,0.55) 18%,
-              rgba(255,255,255,0.12) 45%,
+              rgba(255,255,255,0.55) 12%,
+              rgba(255,255,255,0.12) 38%,
               rgba(255,255,255,0) 100%
             );
 
           clip-path: polygon(
-            42% 0%,
+            46% 0%,
             52% 0%,
             100% 100%,
             0% 100%
           );
 
           filter:
-            blur(10px)
-            drop-shadow(0 0 35px rgba(255,255,255,0.95));
-
-          transform: rotate(18deg);
+            blur(8px)
+            drop-shadow(0 0 45px rgba(255,255,255,0.95));
 
           animation: sweepRight 5s ease-in-out infinite;
         }
 
+        /* CENTER */
         .beam-center {
           left: 50%;
-          transform: translateX(-50%);
 
           background:
             linear-gradient(
               to bottom,
-              rgba(255,255,255,0.95),
+              rgba(255,255,255,1),
               rgba(255,255,255,0)
             );
 
           clip-path: polygon(
-            47% 0%,
-            53% 0%,
-            75% 100%,
-            25% 100%
+            48% 0%,
+            52% 0%,
+            72% 100%,
+            28% 100%
           );
 
           filter:
-            blur(8px)
-            drop-shadow(0 0 45px rgba(255,255,255,1));
+            blur(7px)
+            drop-shadow(0 0 55px rgba(255,255,255,1));
 
           animation: pulseCenter 3.5s ease-in-out infinite;
         }
@@ -774,29 +773,29 @@ export default function SlideshowPage() {
 
         @keyframes sweepLeft {
           0% {
-            transform: rotate(-22deg);
+            transform: rotate(-30deg);
           }
 
           50% {
-            transform: rotate(-8deg);
+            transform: rotate(-10deg);
           }
 
           100% {
-            transform: rotate(-22deg);
+            transform: rotate(-30deg);
           }
         }
 
         @keyframes sweepRight {
           0% {
-            transform: rotate(22deg);
+            transform: rotate(30deg);
           }
 
           50% {
-            transform: rotate(8deg);
+            transform: rotate(10deg);
           }
 
           100% {
-            transform: rotate(22deg);
+            transform: rotate(30deg);
           }
         }
 
