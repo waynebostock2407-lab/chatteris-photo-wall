@@ -63,7 +63,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* Intro First Load */
+  /* Initial Intro */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -234,7 +234,7 @@ export default function SlideshowPage() {
       {/* Dynamic Background */}
       {showIntro ? (
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#7CC7FF_0%,#2F7FD8_45%,#0A3F91_100%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#87CEFA_0%,#2F7FD8_45%,#0A3F91_100%)]"></div>
 
       ) : (
 
@@ -249,6 +249,7 @@ export default function SlideshowPage() {
 
             <div className="absolute inset-0 bg-[#06142B]/45"></div>
 
+            {/* Watermark */}
             <div className="absolute inset-0 flex items-center justify-center">
 
               <img
@@ -294,51 +295,27 @@ export default function SlideshowPage() {
 
           <div className="absolute inset-0 overflow-hidden flex flex-col items-center justify-center">
 
-            {/* Glitter Curtains */}
-            <div className="glitter-left">
-              {Array.from({ length: 18 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="light-strand"
-                  style={{
-                    left: `${i * 12}px`,
-                    animationDelay: `${i * 0.15}s`,
-                  }}
-                />
-              ))}
-            </div>
-
-            <div className="glitter-right">
-              {Array.from({ length: 18 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="light-strand"
-                  style={{
-                    left: `${i * 12}px`,
-                    animationDelay: `${i * 0.15}s`,
-                  }}
-                />
-              ))}
-            </div>
-
             {/* Stage Glow */}
-            <div className="absolute bottom-[-15%] left-1/2 -translate-x-1/2 w-[1200px] h-[400px] rounded-full bg-white/35 blur-[120px]"></div>
+            <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[1400px] h-[500px] rounded-full bg-white/20 blur-[120px]"></div>
 
-            {/* Floor Ring */}
-            <div className="absolute bottom-[-12%] left-1/2 -translate-x-1/2 w-[1200px] h-[300px] rounded-full border border-white/30 opacity-70"></div>
+            {/* Perspective Floor */}
+            <div className="floor-lines"></div>
 
-            {/* Spotlights */}
-            <div className="spotlight spotlight-left"></div>
-            <div className="spotlight spotlight-right"></div>
+            {/* Side Light Columns */}
+            <div className="light-columns left-columns"></div>
+            <div className="light-columns right-columns"></div>
 
-            <div className="spotlight spotlight-center-left"></div>
-            <div className="spotlight spotlight-center-right"></div>
+            {/* Main Spotlights */}
+            <div className="main-spotlight spotlight-1"></div>
+            <div className="main-spotlight spotlight-2"></div>
+            <div className="main-spotlight spotlight-3"></div>
+            <div className="main-spotlight spotlight-4"></div>
 
-            {/* Particles */}
+            {/* Floating Particles */}
             <div className="particles"></div>
 
             {/* Logos */}
-            <div className="relative z-20 flex items-center gap-20 mb-14 animate-[floatLogos_8s_ease-in-out_infinite]">
+            <div className="relative z-20 flex items-center gap-20 mb-14">
 
               <img
                 src="/logo 4.png"
@@ -370,8 +347,7 @@ export default function SlideshowPage() {
                 Presentation Day
               </div>
 
-              {/* Decorative Line */}
-              <div className="flex items-center justify-center mt-8">
+              <div className="flex items-center justify-center mt-10">
 
                 <div className="w-44 h-[1px] bg-white/50"></div>
 
@@ -389,6 +365,7 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
+          /* Messages */
           <div className="w-full flex justify-center items-center px-20">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
@@ -475,6 +452,7 @@ export default function SlideshowPage() {
 
         ) : (
 
+          /* Photos */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out ${
@@ -630,12 +608,11 @@ export default function SlideshowPage() {
           -webkit-text-fill-color: transparent;
 
           text-shadow:
-            0 0 12px rgba(255,255,255,0.45),
-            0 0 30px rgba(255,255,255,0.35);
+            0 0 14px rgba(255,255,255,0.5),
+            0 0 40px rgba(255,255,255,0.35);
 
           animation:
-            silverShimmer 5s linear infinite,
-            titleFloat 8s ease-in-out infinite;
+            silverShimmer 5s linear infinite;
         }
 
         .silver-script {
@@ -659,83 +636,80 @@ export default function SlideshowPage() {
             logoPulse 5s ease-in-out infinite;
         }
 
-        .glitter-left,
-        .glitter-right {
+        .floor-lines {
           position: absolute;
-          top: 0;
-          width: 220px;
-          height: 100%;
-          overflow: hidden;
-          pointer-events: none;
-        }
-
-        .glitter-left {
-          left: 0;
-        }
-
-        .glitter-right {
-          right: 0;
-        }
-
-        .light-strand {
-          position: absolute;
-          top: -10%;
-          width: 2px;
-          height: 120%;
+          bottom: -10%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 1600px;
+          height: 700px;
 
           background:
-            linear-gradient(
-              to bottom,
-              rgba(255,255,255,0),
-              rgba(255,255,255,0.85),
-              rgba(255,255,255,0)
+            repeating-linear-gradient(
+              to right,
+              rgba(255,255,255,0.14),
+              rgba(255,255,255,0.14) 2px,
+              transparent 2px,
+              transparent 60px
             );
+
+          clip-path: polygon(
+            0% 100%,
+            100% 100%,
+            70% 0%,
+            30% 0%
+          );
 
           opacity: 0.35;
 
           filter:
-            drop-shadow(0 0 6px rgba(255,255,255,0.95))
-            drop-shadow(0 0 18px rgba(255,255,255,0.65));
+            blur(0.5px)
+            drop-shadow(0 0 12px rgba(255,255,255,0.45));
 
-          animation: strandTwinkle 3.5s ease-in-out infinite;
+          animation: floorMove 12s linear infinite;
         }
 
-        .light-strand::before,
-        .light-strand::after {
-          content: "";
-
+        .light-columns {
           position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
+          top: 0;
+          width: 260px;
+          height: 100%;
+          opacity: 0.6;
 
-          width: 8px;
-          height: 8px;
-          border-radius: 999px;
+          background:
+            repeating-linear-gradient(
+              to right,
+              rgba(255,255,255,0.9),
+              rgba(255,255,255,0.9) 2px,
+              transparent 2px,
+              transparent 22px
+            );
 
-          background: rgba(255,255,255,0.95);
-
-          box-shadow:
-            0 0 12px rgba(255,255,255,1),
-            0 0 24px rgba(255,255,255,0.8);
+          filter:
+            blur(0.4px)
+            drop-shadow(0 0 8px rgba(255,255,255,0.7));
         }
 
-        .light-strand::before {
-          top: 18%;
+        .left-columns {
+          left: 0;
+          transform: perspective(800px) rotateY(25deg);
         }
 
-        .light-strand::after {
-          top: 72%;
+        .right-columns {
+          right: 0;
+          transform: perspective(800px) rotateY(-25deg);
         }
 
-        .spotlight {
+        .main-spotlight {
           position: absolute;
-          width: 550px;
+          top: -40%;
+          width: 500px;
           height: 1600px;
 
           background:
             linear-gradient(
               to bottom,
-              rgba(255,255,255,0.30),
+              rgba(255,255,255,0.32),
               rgba(255,255,255,0)
             );
 
@@ -744,32 +718,28 @@ export default function SlideshowPage() {
           opacity: 0.42;
         }
 
-        .spotlight-left {
+        .spotlight-1 {
           left: 8%;
-          top: -35%;
-          transform: rotate(-22deg);
-          animation: moveLeft 9s ease-in-out infinite;
+          transform: rotate(-25deg);
+          animation: moveLight1 8s ease-in-out infinite;
         }
 
-        .spotlight-right {
-          right: 8%;
-          top: -35%;
-          transform: rotate(22deg);
-          animation: moveRight 9s ease-in-out infinite;
-        }
-
-        .spotlight-center-left {
-          left: 32%;
-          top: -35%;
+        .spotlight-2 {
+          left: 28%;
           transform: rotate(-10deg);
-          animation: moveCenterLeft 7s ease-in-out infinite;
+          animation: moveLight2 7s ease-in-out infinite;
         }
 
-        .spotlight-center-right {
-          right: 32%;
-          top: -35%;
+        .spotlight-3 {
+          right: 28%;
           transform: rotate(10deg);
-          animation: moveCenterRight 7s ease-in-out infinite;
+          animation: moveLight3 7s ease-in-out infinite;
+        }
+
+        .spotlight-4 {
+          right: 8%;
+          transform: rotate(25deg);
+          animation: moveLight4 8s ease-in-out infinite;
         }
 
         .particles {
@@ -814,52 +784,31 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes strandTwinkle {
-          0% {
-            opacity: 0.12;
-            transform: translateY(0px);
+        @keyframes floorMove {
+          from {
+            transform: translateX(-50%) translateY(0);
           }
 
-          50% {
-            opacity: 0.55;
-            transform: translateY(12px);
-          }
-
-          100% {
-            opacity: 0.12;
-            transform: translateY(0px);
+          to {
+            transform: translateX(-50%) translateY(40px);
           }
         }
 
-        @keyframes moveLeft {
+        @keyframes moveLight1 {
           0% {
-            transform: rotate(-22deg) translateX(0);
+            transform: rotate(-25deg);
           }
 
           50% {
-            transform: rotate(-12deg) translateX(70px);
+            transform: rotate(-14deg);
           }
 
           100% {
-            transform: rotate(-22deg) translateX(0);
+            transform: rotate(-25deg);
           }
         }
 
-        @keyframes moveRight {
-          0% {
-            transform: rotate(22deg) translateX(0);
-          }
-
-          50% {
-            transform: rotate(12deg) translateX(-70px);
-          }
-
-          100% {
-            transform: rotate(22deg) translateX(0);
-          }
-        }
-
-        @keyframes moveCenterLeft {
+        @keyframes moveLight2 {
           0% {
             transform: rotate(-10deg);
           }
@@ -873,7 +822,7 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes moveCenterRight {
+        @keyframes moveLight3 {
           0% {
             transform: rotate(10deg);
           }
@@ -884,6 +833,20 @@ export default function SlideshowPage() {
 
           100% {
             transform: rotate(10deg);
+          }
+        }
+
+        @keyframes moveLight4 {
+          0% {
+            transform: rotate(25deg);
+          }
+
+          50% {
+            transform: rotate(14deg);
+          }
+
+          100% {
+            transform: rotate(25deg);
           }
         }
 
