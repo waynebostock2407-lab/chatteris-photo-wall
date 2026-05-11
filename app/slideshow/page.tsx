@@ -409,7 +409,7 @@ export default function SlideshowPage() {
               `}
             >
 
-              <div className="
+              <div className={`
                 flex
                 items-center
                 justify-center
@@ -417,7 +417,8 @@ export default function SlideshowPage() {
                 bg-[#f4f4f4]
                 max-w-[74vw]
                 max-h-[58vh]
-              ">
+              `}
+              >
 
                 <img
                   src={photos[currentIndex].imageUrl}
