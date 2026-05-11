@@ -237,9 +237,19 @@ export default function SlideshowPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/presentation-stage.jpg')",
+            backgroundImage: "url('/presentation-stage.png')",
           }}
-        />
+        >
+
+          {/* Moving Spotlights */}
+          <div className="moving-beam beam-left"></div>
+          <div className="moving-beam beam-right"></div>
+          <div className="moving-beam beam-center"></div>
+
+          {/* Floating Particles */}
+          <div className="intro-particles"></div>
+
+        </div>
 
       ) : (
 
@@ -655,6 +665,58 @@ export default function SlideshowPage() {
             logoPulse 5s ease-in-out infinite;
         }
 
+        .moving-beam {
+          position: absolute;
+          top: -30%;
+          width: 450px;
+          height: 1600px;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.26),
+              rgba(255,255,255,0)
+            );
+
+          filter: blur(28px);
+
+          opacity: 0.5;
+
+          mix-blend-mode: screen;
+        }
+
+        .beam-left {
+          left: 10%;
+          transform: rotate(-22deg);
+          animation: sweepLeft 8s ease-in-out infinite;
+        }
+
+        .beam-right {
+          right: 10%;
+          transform: rotate(22deg);
+          animation: sweepRight 8s ease-in-out infinite;
+        }
+
+        .beam-center {
+          left: 50%;
+          transform: translateX(-50%);
+          animation: pulseCenter 6s ease-in-out infinite;
+        }
+
+        .intro-particles {
+          position: absolute;
+          inset: 0;
+
+          background-image:
+            radial-gradient(white 1px, transparent 1px);
+
+          background-size: 100px 100px;
+
+          opacity: 0.12;
+
+          animation: particlesDrift 25s linear infinite;
+        }
+
         @keyframes silverShimmer {
           0% {
             filter: brightness(1);
@@ -680,6 +742,58 @@ export default function SlideshowPage() {
 
           100% {
             transform: scale(1);
+          }
+        }
+
+        @keyframes sweepLeft {
+          0% {
+            transform: rotate(-22deg);
+          }
+
+          50% {
+            transform: rotate(-10deg);
+          }
+
+          100% {
+            transform: rotate(-22deg);
+          }
+        }
+
+        @keyframes sweepRight {
+          0% {
+            transform: rotate(22deg);
+          }
+
+          50% {
+            transform: rotate(10deg);
+          }
+
+          100% {
+            transform: rotate(22deg);
+          }
+        }
+
+        @keyframes pulseCenter {
+          0% {
+            opacity: 0.2;
+          }
+
+          50% {
+            opacity: 0.65;
+          }
+
+          100% {
+            opacity: 0.2;
+          }
+        }
+
+        @keyframes particlesDrift {
+          from {
+            transform: translateY(0);
+          }
+
+          to {
+            transform: translateY(-120px);
           }
         }
       `}</style>
