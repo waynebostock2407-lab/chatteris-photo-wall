@@ -74,7 +74,7 @@ export default function SlideshowPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  /* Intro Every 10 Minutes - 20 Seconds */
+  /* Intro Every 10 Minutes */
   useEffect(() => {
     const introCycle = setInterval(() => {
 
@@ -234,10 +234,10 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* SKY BLUE BACKGROUND */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#63B8FF] via-[#2F7FD8] to-[#0A3F91]"></div>
 
-      {/* Animated Glow */}
+      {/* Glow */}
       <div className="absolute inset-0 overflow-hidden">
 
         <div className="absolute top-[-300px] left-1/2 -translate-x-1/2 w-[1400px] h-[900px] bg-white/20 rounded-full blur-[180px] animate-pulse"></div>
@@ -246,10 +246,10 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Floating Particles */}
+      {/* Particles */}
       <div className="particles"></div>
 
-      {/* Camera Flash */}
+      {/* Flash */}
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-200 ${
           flash ? "opacity-100" : "opacity-0"
@@ -260,7 +260,7 @@ export default function SlideshowPage() {
         }}
       ></div>
 
-      {/* Fullscreen Button */}
+      {/* Fullscreen */}
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
@@ -270,24 +270,21 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* MAIN CONTENT */}
+      {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
-        {/* INTRO SCREEN */}
+        {/* Intro */}
         {showIntro ? (
 
           <div className="absolute inset-0 flex flex-col items-center justify-center animate-[slowZoom_20s_ease-in-out_infinite]">
 
-            {/* Spotlight Beams */}
             <div className="spotlight spotlight-left"></div>
             <div className="spotlight spotlight-right"></div>
 
-            {/* Silver Rings */}
             <div className="absolute w-[900px] h-[900px] border border-white/10 rounded-full animate-ping opacity-20"></div>
 
             <div className="absolute w-[700px] h-[700px] border border-sky-100/20 rounded-full animate-pulse"></div>
 
-            {/* Sparkles */}
             <div className="sparkle sparkle-1"></div>
             <div className="sparkle sparkle-2"></div>
             <div className="sparkle sparkle-3"></div>
@@ -311,26 +308,10 @@ export default function SlideshowPage() {
 
             </div>
 
-            {/* Main Title */}
+            {/* Title */}
             <div className="relative z-10 text-center">
 
-              <h1
-                className="
-                  text-[7rem]
-                  font-black
-                  uppercase
-                  tracking-[0.08em]
-                  leading-none
-                  bg-gradient-to-b
-                  from-white
-                  via-[#E5E7EB]
-                  to-[#AEB7C2]
-                  bg-clip-text
-                  text-transparent
-                  drop-shadow-[0_0_35px_rgba(255,255,255,0.35)]
-                  animate-[silverShine_6s_linear_infinite]
-                "
-              >
+              <h1 className="text-[7rem] font-black uppercase tracking-[0.08em] leading-none bg-gradient-to-b from-white via-[#E5E7EB] to-[#AEB7C2] bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(255,255,255,0.35)] animate-[silverShine_6s_linear_infinite]">
                 Chatteris Town FC
               </h1>
 
@@ -338,12 +319,7 @@ export default function SlideshowPage() {
                 style={{
                   fontFamily: "var(--font-great-vibes)",
                 }}
-                className="
-                  mt-8
-                  text-[5rem]
-                  text-white
-                  drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]
-                "
+                className="mt-8 text-[5rem] text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]"
               >
                 Presentation Day
               </div>
@@ -354,7 +330,7 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
-          /* Guestbook */
+          /* Messages */
           <div className="w-full flex justify-center items-center px-20">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
@@ -511,6 +487,61 @@ export default function SlideshowPage() {
           </div>
 
         )}
+
+      </div>
+
+      {/* Bottom Branding */}
+      <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
+
+        <img
+          src="/logo.png"
+          alt="Club Logo"
+          className="w-40 h-40 object-contain drop-shadow-2xl"
+        />
+
+        <div className="flex flex-col justify-end">
+
+          <h1 className="leading-none">
+
+            <span className="text-white text-5xl font-extrabold tracking-wide">
+              Chatteris Town Football Club
+            </span>
+
+            <br />
+
+            <span
+              style={{
+                fontFamily: "var(--font-great-vibes)",
+              }}
+              className="text-sky-100 text-[4rem] drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            >
+              Presentation Day
+            </span>
+
+            <span className="block mt-3 uppercase tracking-[0.22em] text-sky-100 text-[1.55rem] font-semibold">
+              ONE CLUB | ONE FAMILY | THE LILIES
+            </span>
+
+          </h1>
+
+        </div>
+
+      </div>
+
+      {/* QR */}
+      <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
+
+        <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
+          UPLOAD PHOTOS
+          <br />
+          & MESSAGES
+        </div>
+
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
+          alt="QR"
+          className="rounded-xl"
+        />
 
       </div>
 
