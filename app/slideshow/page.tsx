@@ -65,7 +65,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* Initial Intro - 60 Seconds */
+  /* Initial Intro */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -74,7 +74,7 @@ export default function SlideshowPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  /* Intro Every 10 Minutes */
+  /* Intro every 10 mins */
   useEffect(() => {
     const introCycle = setInterval(() => {
 
@@ -89,7 +89,7 @@ export default function SlideshowPage() {
     return () => clearInterval(introCycle);
   }, []);
 
-  /* Polaroid Styles */
+  /* Polaroid styles */
   const polaroidStyles = [
     "rotate-[-2deg] translate-y-1",
     "rotate-[1.8deg] -translate-y-1",
@@ -141,7 +141,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* Photo Loop */
+  /* Photo loop */
   useEffect(() => {
     if (photos.length === 0) return;
 
@@ -177,7 +177,7 @@ export default function SlideshowPage() {
 
   }, [photos, showMessages, showIntro]);
 
-  /* Trigger Messages Every 5 Minutes */
+  /* Messages every 5 mins */
   useEffect(() => {
 
     if (messages.length === 0) return;
@@ -193,7 +193,7 @@ export default function SlideshowPage() {
 
   }, [messages]);
 
-  /* Message Loop */
+  /* Message loop */
   useEffect(() => {
 
     if (!showMessages) return;
@@ -234,8 +234,40 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#63B8FF] via-[#2F7FD8] to-[#0A3F91]"></div>
+      {/* Dynamic Background */}
+      {showIntro ? (
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#7CC7FF_0%,#2F7FD8_45%,#0A3F91_100%)]"></div>
+
+      ) : (
+
+        <div className="absolute inset-0 overflow-hidden">
+
+          <div
+            className="fabric-layer opacity-[0.45]"
+            style={{
+              backgroundImage: "url('/stripe-bg.jpg')",
+            }}
+          >
+
+            <div className="absolute inset-0 bg-[#06142B]/45"></div>
+
+            {/* Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center">
+
+              <img
+                src="/logo.png"
+                alt="Background Logo"
+                className="w-[780px] opacity-[0.16]"
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
       {/* Glow */}
       <div className="absolute inset-0 overflow-hidden">
@@ -245,9 +277,6 @@ export default function SlideshowPage() {
         <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-sky-300/20 rounded-full blur-[160px] animate-pulse"></div>
 
       </div>
-
-      {/* Particles */}
-      <div className="particles"></div>
 
       {/* Flash */}
       <div
@@ -276,52 +305,80 @@ export default function SlideshowPage() {
         {/* Intro */}
         {showIntro ? (
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center animate-[slowZoom_20s_ease-in-out_infinite]">
+          <div className="absolute inset-0 overflow-hidden flex flex-col items-center justify-center">
 
+            {/* Glitter Curtains */}
+            <div className="glitter-left"></div>
+            <div className="glitter-right"></div>
+
+            {/* Stage Glow */}
+            <div className="absolute bottom-[-15%] left-1/2 -translate-x-1/2 w-[1200px] h-[400px] rounded-full bg-white/35 blur-[120px]"></div>
+
+            {/* Floor Ring */}
+            <div className="absolute bottom-[-12%] left-1/2 -translate-x-1/2 w-[1200px] h-[300px] rounded-full border border-white/30 opacity-70"></div>
+
+            {/* Spotlights */}
             <div className="spotlight spotlight-left"></div>
             <div className="spotlight spotlight-right"></div>
 
-            <div className="absolute w-[900px] h-[900px] border border-white/10 rounded-full animate-ping opacity-20"></div>
+            <div className="spotlight spotlight-center-left"></div>
+            <div className="spotlight spotlight-center-right"></div>
 
-            <div className="absolute w-[700px] h-[700px] border border-sky-100/20 rounded-full animate-pulse"></div>
+            {/* Particles */}
+            <div className="particles"></div>
 
-            <div className="sparkle sparkle-1"></div>
-            <div className="sparkle sparkle-2"></div>
-            <div className="sparkle sparkle-3"></div>
-            <div className="sparkle sparkle-4"></div>
-            <div className="sparkle sparkle-5"></div>
+            {/* Sparkles */}
+            <div className="spark sparkle-1"></div>
+            <div className="spark sparkle-2"></div>
+            <div className="spark sparkle-3"></div>
+            <div className="spark sparkle-4"></div>
+            <div className="spark sparkle-5"></div>
+            <div className="spark sparkle-6"></div>
 
             {/* Logos */}
-            <div className="flex items-center gap-20 mb-16 z-10">
+            <div className="relative z-20 flex items-center gap-20 mb-14 animate-[floatLogos_8s_ease-in-out_infinite]">
 
               <img
                 src="/logo 4.png"
                 alt="Young Lilies"
-                className="w-56 h-56 object-contain animate-pulse drop-shadow-[0_0_60px_rgba(255,255,255,0.35)]"
+                className="silver-logo w-56 h-56 object-contain"
               />
 
               <img
                 src="/logo.png"
                 alt="The Lilies"
-                className="w-56 h-56 object-contain animate-pulse drop-shadow-[0_0_60px_rgba(255,255,255,0.35)]"
+                className="silver-logo w-56 h-56 object-contain"
               />
 
             </div>
 
             {/* Title */}
-            <div className="relative z-10 text-center">
+            <div className="relative z-20 text-center px-10">
 
-              <h1 className="text-[7rem] font-black uppercase tracking-[0.08em] leading-none bg-gradient-to-b from-white via-[#E5E7EB] to-[#AEB7C2] bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(255,255,255,0.35)] animate-[silverShine_6s_linear_infinite]">
-                Chatteris Town FC
+              <h1 className="silver-title">
+                CHATTERIS TOWN FC
               </h1>
 
               <div
                 style={{
                   fontFamily: "var(--font-great-vibes)",
                 }}
-                className="mt-8 text-[5rem] text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.35)]"
+                className="silver-script"
               >
                 Presentation Day
+              </div>
+
+              {/* Decorative Line */}
+              <div className="flex items-center justify-center mt-8">
+
+                <div className="w-44 h-[1px] bg-white/50"></div>
+
+                <div className="mx-4 text-white text-3xl">
+                  ✧
+                </div>
+
+                <div className="w-44 h-[1px] bg-white/50"></div>
+
               </div>
 
             </div>
@@ -454,30 +511,28 @@ export default function SlideshowPage() {
                 className="max-w-[74vw] max-h-[58vh] object-contain"
               />
 
-              <div className="mt-6 flex items-center justify-center gap-6">
+              {/* Polaroid Footer */}
+              <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
                   src="/logo 4.png"
-                  alt="Logo Left"
-                  className="w-14 h-14 object-contain"
+                  alt="Young Lilies"
+                  className="w-14 h-14 object-contain opacity-90"
                 />
 
-                <div className="text-center leading-tight">
-
-                  <div className="text-[#1A1A1A] text-[2rem] font-bold tracking-wide">
-                    Chatteris Town Football Club
-                  </div>
-
-                  <div className="text-[#444] text-[2.1rem] italic mt-1">
-                    Memories
-                  </div>
-
+                <div
+                  style={{
+                    fontFamily: "var(--font-great-vibes)",
+                  }}
+                  className="text-[#222] text-[3.2rem] leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.12)]"
+                >
+                  Memories
                 </div>
 
                 <img
                   src="/logo.png"
-                  alt="Logo Right"
-                  className="w-14 h-14 object-contain"
+                  alt="The Lilies"
+                  className="w-14 h-14 object-contain opacity-90"
                 />
 
               </div>
@@ -491,182 +546,382 @@ export default function SlideshowPage() {
       </div>
 
       {/* Bottom Branding */}
-      <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
+      {!showIntro && (
+        <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
 
-        <img
-          src="/logo.png"
-          alt="Club Logo"
-          className="w-40 h-40 object-contain drop-shadow-2xl"
-        />
+          <img
+            src="/logo.png"
+            alt="Club Logo"
+            className="w-40 h-40 object-contain drop-shadow-2xl"
+          />
 
-        <div className="flex flex-col justify-end">
+          <div className="flex flex-col justify-end">
 
-          <h1 className="leading-none">
+            <h1 className="leading-none">
 
-            <span className="text-white text-5xl font-extrabold tracking-wide">
-              Chatteris Town Football Club
-            </span>
+              <span className="text-white text-5xl font-extrabold tracking-wide">
+                Chatteris Town Football Club
+              </span>
 
-            <br />
+              <br />
 
-            <span
-              style={{
-                fontFamily: "var(--font-great-vibes)",
-              }}
-              className="text-sky-100 text-[4rem] drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-            >
-              Presentation Day
-            </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-great-vibes)",
+                }}
+                className="text-sky-100 text-[4rem] drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+              >
+                Presentation Day
+              </span>
 
-            <span className="block mt-3 uppercase tracking-[0.22em] text-sky-100 text-[1.55rem] font-semibold">
-              ONE CLUB | ONE FAMILY | THE LILIES
-            </span>
+              <span className="block mt-3 uppercase tracking-[0.22em] text-sky-100 text-[1.55rem] font-semibold">
+                ONE CLUB | ONE FAMILY | THE LILIES
+              </span>
 
-          </h1>
+            </h1>
+
+          </div>
 
         </div>
-
-      </div>
+      )}
 
       {/* QR */}
-      <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
+      {!showIntro && (
+        <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
 
-        <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
-          UPLOAD PHOTOS
-          <br />
-          & MESSAGES
+          <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
+            UPLOAD PHOTOS
+            <br />
+            & MESSAGES
+          </div>
+
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
+            alt="QR"
+            className="rounded-xl"
+          />
+
         </div>
-
-        <img
-          src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-          alt="QR"
-          className="rounded-xl"
-        />
-
-      </div>
+      )}
 
       <style jsx>{`
-        .sparkle {
+        .fabric-layer {
           position: absolute;
-          width: 12px;
-          height: 12px;
+          inset: -4%;
+          background-size: cover;
+          background-position: center;
+          filter: saturate(1.05);
+        }
+
+        .silver-title {
+          font-size: 7rem;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          line-height: 1;
+          text-transform: uppercase;
+
+          background:
+            linear-gradient(
+              to bottom,
+              #ffffff 0%,
+              #f1f5f9 18%,
+              #d1d5db 38%,
+              #ffffff 52%,
+              #9ca3af 72%,
+              #f8fafc 100%
+            );
+
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+
+          text-shadow:
+            0 0 12px rgba(255,255,255,0.45),
+            0 0 30px rgba(255,255,255,0.35);
+
+          animation:
+            silverShimmer 5s linear infinite,
+            titleFloat 8s ease-in-out infinite;
+        }
+
+        .silver-script {
+          margin-top: 2rem;
+          font-size: 5.2rem;
+          color: white;
+
+          text-shadow:
+            0 0 15px rgba(255,255,255,0.6),
+            0 0 35px rgba(255,255,255,0.3);
+
+          animation:
+            titleFloat 8s ease-in-out infinite;
+        }
+
+        .silver-logo {
+          filter:
+            brightness(1.35)
+            grayscale(1)
+            contrast(1.15)
+            drop-shadow(0 0 25px rgba(255,255,255,0.45));
+
+          animation:
+            logoPulse 5s ease-in-out infinite;
+        }
+
+        .glitter-left,
+        .glitter-right {
+          position: absolute;
+          top: 0;
+          width: 140px;
+          height: 100%;
+          opacity: 0.7;
+
+          background-image:
+            radial-gradient(white 1px, transparent 1px);
+
+          background-size: 12px 12px;
+
+          animation: glitterFall 10s linear infinite;
+        }
+
+        .glitter-left {
+          left: 0;
+        }
+
+        .glitter-right {
+          right: 0;
+        }
+
+        .spark {
+          position: absolute;
+          width: 10px;
+          height: 10px;
           border-radius: 999px;
-          background: rgba(255,255,255,0.9);
+
+          background: rgba(255,255,255,0.95);
+
           box-shadow:
-            0 0 20px rgba(255,255,255,0.9),
-            0 0 40px rgba(255,255,255,0.8),
-            0 0 60px rgba(255,255,255,0.6);
-          animation: floatSparkle 6s infinite ease-in-out;
+            0 0 12px rgba(255,255,255,1),
+            0 0 28px rgba(255,255,255,0.7);
+
+          animation: sparkleFloat 5s infinite ease-in-out;
         }
 
         .sparkle-1 {
-          top: 18%;
-          left: 22%;
+          top: 16%;
+          left: 18%;
         }
 
         .sparkle-2 {
-          top: 28%;
-          right: 18%;
+          top: 24%;
+          right: 22%;
           animation-delay: 1s;
         }
 
         .sparkle-3 {
-          bottom: 22%;
-          left: 28%;
+          bottom: 24%;
+          left: 26%;
           animation-delay: 2s;
         }
 
         .sparkle-4 {
           bottom: 18%;
-          right: 24%;
+          right: 18%;
           animation-delay: 3s;
         }
 
         .sparkle-5 {
-          top: 50%;
+          top: 55%;
           left: 50%;
           animation-delay: 1.5s;
         }
 
+        .sparkle-6 {
+          top: 36%;
+          left: 72%;
+          animation-delay: 2.5s;
+        }
+
         .spotlight {
           position: absolute;
-          width: 700px;
-          height: 1400px;
-          background: linear-gradient(
-            to bottom,
-            rgba(255,255,255,0.22),
-            rgba(255,255,255,0)
-          );
-          filter: blur(40px);
-          opacity: 0.35;
+          width: 550px;
+          height: 1600px;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.30),
+              rgba(255,255,255,0)
+            );
+
+          filter: blur(35px);
+
+          opacity: 0.42;
         }
 
         .spotlight-left {
-          left: 18%;
-          top: -25%;
-          transform: rotate(-18deg);
-          animation: moveLeft 8s ease-in-out infinite;
+          left: 8%;
+          top: -35%;
+          transform: rotate(-22deg);
+          animation: moveLeft 9s ease-in-out infinite;
         }
 
         .spotlight-right {
-          right: 18%;
-          top: -25%;
-          transform: rotate(18deg);
-          animation: moveRight 8s ease-in-out infinite;
+          right: 8%;
+          top: -35%;
+          transform: rotate(22deg);
+          animation: moveRight 9s ease-in-out infinite;
+        }
+
+        .spotlight-center-left {
+          left: 32%;
+          top: -35%;
+          transform: rotate(-10deg);
+          animation: moveCenterLeft 7s ease-in-out infinite;
+        }
+
+        .spotlight-center-right {
+          right: 32%;
+          top: -35%;
+          transform: rotate(10deg);
+          animation: moveCenterRight 7s ease-in-out infinite;
         }
 
         .particles {
           position: absolute;
           inset: 0;
+
           background-image:
             radial-gradient(white 1px, transparent 1px);
-          background-size: 80px 80px;
-          opacity: 0.15;
-          animation: drift 25s linear infinite;
+
+          background-size: 90px 90px;
+
+          opacity: 0.18;
+
+          animation: drift 30s linear infinite;
         }
 
-        @keyframes floatSparkle {
+        @keyframes silverShimmer {
           0% {
-            transform: translateY(0px) scale(1);
-            opacity: 0.2;
+            filter: brightness(1);
           }
 
           50% {
-            transform: translateY(-25px) scale(1.6);
+            filter: brightness(1.45);
+          }
+
+          100% {
+            filter: brightness(1);
+          }
+        }
+
+        @keyframes titleFloat {
+          0% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(-6px);
+          }
+
+          100% {
+            transform: translateY(0px);
+          }
+        }
+
+        @keyframes logoPulse {
+          0% {
+            transform: scale(1);
+          }
+
+          50% {
+            transform: scale(1.04);
+          }
+
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        @keyframes sparkleFloat {
+          0% {
+            transform: translateY(0px) scale(1);
+            opacity: 0.3;
+          }
+
+          50% {
+            transform: translateY(-20px) scale(1.5);
             opacity: 1;
           }
 
           100% {
             transform: translateY(0px) scale(1);
-            opacity: 0.2;
+            opacity: 0.3;
+          }
+        }
+
+        @keyframes glitterFall {
+          from {
+            background-position-y: 0;
+          }
+
+          to {
+            background-position-y: 300px;
           }
         }
 
         @keyframes moveLeft {
           0% {
-            transform: rotate(-18deg) translateX(0);
+            transform: rotate(-22deg) translateX(0);
           }
 
           50% {
-            transform: rotate(-10deg) translateX(40px);
+            transform: rotate(-12deg) translateX(70px);
           }
 
           100% {
-            transform: rotate(-18deg) translateX(0);
+            transform: rotate(-22deg) translateX(0);
           }
         }
 
         @keyframes moveRight {
           0% {
-            transform: rotate(18deg) translateX(0);
+            transform: rotate(22deg) translateX(0);
           }
 
           50% {
-            transform: rotate(10deg) translateX(-40px);
+            transform: rotate(12deg) translateX(-70px);
           }
 
           100% {
-            transform: rotate(18deg) translateX(0);
+            transform: rotate(22deg) translateX(0);
+          }
+        }
+
+        @keyframes moveCenterLeft {
+          0% {
+            transform: rotate(-10deg);
+          }
+
+          50% {
+            transform: rotate(-2deg);
+          }
+
+          100% {
+            transform: rotate(-10deg);
+          }
+        }
+
+        @keyframes moveCenterRight {
+          0% {
+            transform: rotate(10deg);
+          }
+
+          50% {
+            transform: rotate(2deg);
+          }
+
+          100% {
+            transform: rotate(10deg);
           }
         }
 
@@ -676,31 +931,7 @@ export default function SlideshowPage() {
           }
 
           to {
-            transform: translateY(-120px);
-          }
-        }
-
-        @keyframes slowZoom {
-          0% {
-            transform: scale(1);
-          }
-
-          100% {
-            transform: scale(1.03);
-          }
-        }
-
-        @keyframes silverShine {
-          0% {
-            filter: brightness(1);
-          }
-
-          50% {
-            filter: brightness(1.3);
-          }
-
-          100% {
-            filter: brightness(1);
+            transform: translateY(-160px);
           }
         }
       `}</style>
