@@ -293,7 +293,7 @@ export default function SlideshowPage() {
           </div>
 
           {/* SLIDESHOW ORBS */}
-          <div className="ambient-orbs slideshow-orbs">
+          <div className="ambient-orbs slideshow-orbs z-10">
             <span />
             <span />
             <span />
@@ -806,50 +806,50 @@ export default function SlideshowPage() {
         }
 
         .ambient-orbs span:nth-child(1) {
-          width: 260px;
-          height: 260px;
-          left: -4%;
-          top: 12%;
+          width: 420px;
+          height: 420px;
+          left: -8%;
+          top: 8%;
           animation-duration: 28s;
         }
 
         .ambient-orbs span:nth-child(2) {
-          width: 180px;
-          height: 180px;
-          left: 18%;
+          width: 260px;
+          height: 260px;
+          left: 16%;
           top: 72%;
           animation-duration: 34s;
         }
 
         .ambient-orbs span:nth-child(3) {
-          width: 320px;
-          height: 320px;
-          right: 12%;
-          top: 18%;
+          width: 520px;
+          height: 520px;
+          right: 4%;
+          top: 10%;
           animation-duration: 40s;
         }
 
         .ambient-orbs span:nth-child(4) {
-          width: 220px;
-          height: 220px;
-          right: -4%;
-          top: 62%;
+          width: 320px;
+          height: 320px;
+          right: -6%;
+          top: 60%;
           animation-duration: 30s;
         }
 
         .ambient-orbs span:nth-child(5) {
-          width: 140px;
-          height: 140px;
+          width: 220px;
+          height: 220px;
           left: 42%;
-          top: 8%;
+          top: 2%;
           animation-duration: 24s;
         }
 
         .ambient-orbs span:nth-child(6) {
-          width: 260px;
-          height: 260px;
-          left: 52%;
-          bottom: -6%;
+          width: 420px;
+          height: 420px;
+          left: 46%;
+          bottom: -10%;
           animation-duration: 38s;
         }
 
@@ -857,12 +857,14 @@ export default function SlideshowPage() {
           background:
             radial-gradient(
               circle,
-              rgba(255,255,255,0.16) 0%,
-              rgba(255,255,255,0.06) 45%,
-              rgba(255,255,255,0) 75%
+              rgba(255,255,255,0.34) 0%,
+              rgba(255,255,255,0.16) 38%,
+              rgba(255,255,255,0.04) 62%
+              rgba(255,255,255,0) 78%
             );
 
-          filter: blur(18px);
+          filter: blur(22px);
+          drop-shadow(0 0 40px rgba(255,255,255,0,25));
         }
 
         @keyframes silverShimmer {
