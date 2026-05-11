@@ -252,7 +252,7 @@ export default function SlideshowPage() {
           <div className="moving-beam beam-right" />
           <div className="moving-beam beam-center" />
 
-          {/* PARTICLES */}
+          {/* INTRO PARTICLES */}
           <div className="intro-particles" />
 
         </div>
@@ -261,6 +261,7 @@ export default function SlideshowPage() {
 
         <div className="absolute inset-0 overflow-hidden">
 
+          {/* FABRIC BACKGROUND */}
           <div
             className="fabric-layer opacity-[0.45]"
             style={{
@@ -268,10 +269,8 @@ export default function SlideshowPage() {
             }}
           >
 
-            <div className="absolute inset-0 bg-[#06142B]/45" />
-
-            {/* PARTICLES */}
-            <div className="slideshow-particles" />
+            {/* DARK OVERLAY */}
+            <div className="absolute inset-0 bg-[#06142B]/55" />
 
             {/* BACKGROUND LOGO */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -279,11 +278,33 @@ export default function SlideshowPage() {
               <img
                 src="/logo.png"
                 alt="Background Logo"
-                className="w-[780px] opacity-[0.16]"
+                className="w-[780px] opacity-[0.12]"
               />
 
             </div>
 
+          </div>
+
+          {/* PARTICLES */}
+          <div className="slideshow-particles">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
           </div>
 
         </div>
@@ -782,23 +803,138 @@ export default function SlideshowPage() {
 
           pointer-events: none;
 
-          opacity: 0.18;
+          z-index: 2;
+        }
 
-          background:
-            radial-gradient(circle at 12% 22%, rgba(255,255,255,0.95) 1px, transparent 2px),
-            radial-gradient(circle at 78% 14%, rgba(255,255,255,0.7) 1.5px, transparent 3px),
-            radial-gradient(circle at 46% 72%, rgba(255,255,255,0.9) 1px, transparent 2px),
-            radial-gradient(circle at 88% 64%, rgba(255,255,255,0.6) 2px, transparent 4px),
-            radial-gradient(circle at 22% 84%, rgba(255,255,255,0.75) 1px, transparent 2px),
-            radial-gradient(circle at 64% 42%, rgba(255,255,255,0.85) 1.5px, transparent 3px),
-            radial-gradient(circle at 36% 18%, rgba(255,255,255,0.6) 2px, transparent 4px),
-            radial-gradient(circle at 58% 90%, rgba(255,255,255,0.95) 1px, transparent 2px),
-            radial-gradient(circle at 92% 38%, rgba(255,255,255,0.7) 1.5px, transparent 3px),
-            radial-gradient(circle at 8% 58%, rgba(255,255,255,0.9) 1px, transparent 2px);
+        .slideshow-particles span {
+          position: absolute;
 
-          animation: slideshowParticlesFloat 28s linear infinite;
+          width: 4px;
+          height: 4px;
 
-          mix-blend-mode: screen;
+          border-radius: 999px;
+
+          background: rgba(255,255,255,0.95);
+
+          box-shadow:
+            0 0 10px rgba(255,255,255,0.95),
+            0 0 20px rgba(255,255,255,0.7);
+
+          animation: floatParticle linear infinite;
+        }
+
+        .slideshow-particles span:nth-child(1) {
+          left: 8%;
+          top: 82%;
+          animation-duration: 24s;
+        }
+
+        .slideshow-particles span:nth-child(2) {
+          left: 16%;
+          top: 68%;
+          animation-duration: 28s;
+          width: 2px;
+          height: 2px;
+        }
+
+        .slideshow-particles span:nth-child(3) {
+          left: 26%;
+          top: 90%;
+          animation-duration: 20s;
+        }
+
+        .slideshow-particles span:nth-child(4) {
+          left: 34%;
+          top: 72%;
+          animation-duration: 26s;
+        }
+
+        .slideshow-particles span:nth-child(5) {
+          left: 44%;
+          top: 86%;
+          animation-duration: 22s;
+          width: 5px;
+          height: 5px;
+        }
+
+        .slideshow-particles span:nth-child(6) {
+          left: 52%;
+          top: 76%;
+          animation-duration: 30s;
+        }
+
+        .slideshow-particles span:nth-child(7) {
+          left: 62%;
+          top: 92%;
+          animation-duration: 25s;
+        }
+
+        .slideshow-particles span:nth-child(8) {
+          left: 70%;
+          top: 70%;
+          animation-duration: 21s;
+        }
+
+        .slideshow-particles span:nth-child(9) {
+          left: 78%;
+          top: 88%;
+          animation-duration: 29s;
+          width: 2px;
+          height: 2px;
+        }
+
+        .slideshow-particles span:nth-child(10) {
+          left: 86%;
+          top: 74%;
+          animation-duration: 23s;
+        }
+
+        .slideshow-particles span:nth-child(11) {
+          left: 12%;
+          top: 58%;
+          animation-duration: 31s;
+        }
+
+        .slideshow-particles span:nth-child(12) {
+          left: 22%;
+          top: 64%;
+          animation-duration: 19s;
+        }
+
+        .slideshow-particles span:nth-child(13) {
+          left: 38%;
+          top: 60%;
+          animation-duration: 27s;
+        }
+
+        .slideshow-particles span:nth-child(14) {
+          left: 48%;
+          top: 54%;
+          animation-duration: 24s;
+        }
+
+        .slideshow-particles span:nth-child(15) {
+          left: 58%;
+          top: 62%;
+          animation-duration: 20s;
+        }
+
+        .slideshow-particles span:nth-child(16) {
+          left: 68%;
+          top: 52%;
+          animation-duration: 26s;
+        }
+
+        .slideshow-particles span:nth-child(17) {
+          left: 82%;
+          top: 60%;
+          animation-duration: 29s;
+        }
+
+        .slideshow-particles span:nth-child(18) {
+          left: 92%;
+          top: 56%;
+          animation-duration: 22s;
         }
 
         @keyframes silverShimmer {
@@ -881,17 +1017,33 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes slideshowParticlesFloat {
+        @keyframes floatParticle {
           0% {
-            transform: translateY(0px);
+            transform:
+              translateY(0px)
+              scale(1);
+
+            opacity: 0;
+          }
+
+          10% {
+            opacity: 1;
           }
 
           50% {
-            transform: translateY(-35px);
+            transform:
+              translateY(-40px)
+              scale(1.15);
+
+            opacity: 1;
           }
 
           100% {
-            transform: translateY(-70px);
+            transform:
+              translateY(-120px)
+              scale(0.9);
+
+            opacity: 0;
           }
         }
       `}</style>
