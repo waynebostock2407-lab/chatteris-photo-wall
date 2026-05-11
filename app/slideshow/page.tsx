@@ -439,12 +439,12 @@ export default function SlideshowPage() {
                       style={{
                         fontFamily: "'Caveat', cursive",
                       }}
-                      className="
+                      className={`
                         text-white
                         font-bold
                         leading-none
                         text-[2.2rem]
-                      "
+                      `}
                     >
                       {messages[messageIndex].name}
                     </div>
