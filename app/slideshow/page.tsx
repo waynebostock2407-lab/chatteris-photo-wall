@@ -231,10 +231,15 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* Dynamic Background */}
+      {/* Background */}
       {showIntro ? (
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#5FAEEB_0%,#1E5FB8_40%,#071D4D_100%)]"></div>
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/presentation-stage.jpg')",
+          }}
+        />
 
       ) : (
 
@@ -274,7 +279,7 @@ export default function SlideshowPage() {
           background:
             "radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.75) 35%, rgba(255,255,255,0) 100%)",
         }}
-      ></div>
+      />
 
       {/* Fullscreen */}
       {!isFullscreen && (
@@ -286,38 +291,16 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* Main Content */}
+      {/* Main */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
         {/* Intro */}
         {showIntro ? (
 
-          <div className="absolute inset-0 overflow-hidden flex flex-col items-center justify-center">
-
-            {/* Cinematic Haze */}
-            <div className="cinema-haze"></div>
-
-            {/* Stage Glow */}
-            <div className="absolute bottom-[-18%] left-1/2 -translate-x-1/2 w-[1100px] h-[320px] rounded-full bg-white/10 blur-[90px]"></div>
-
-            {/* Floor Light Beams */}
-            <div className="floor-beams"></div>
-
-            {/* Side Glow */}
-            <div className="side-glow left-glow"></div>
-            <div className="side-glow right-glow"></div>
-
-            {/* Main Spotlights */}
-            <div className="main-spotlight spotlight-1"></div>
-            <div className="main-spotlight spotlight-2"></div>
-            <div className="main-spotlight spotlight-3"></div>
-            <div className="main-spotlight spotlight-4"></div>
-
-            {/* Floating Particles */}
-            <div className="particles"></div>
+          <div className="text-center">
 
             {/* Logos */}
-            <div className="relative z-20 flex items-center gap-20 mb-14">
+            <div className="flex items-center justify-center gap-20 mb-14">
 
               <img
                 src="/logo 4.png"
@@ -334,32 +317,28 @@ export default function SlideshowPage() {
             </div>
 
             {/* Title */}
-            <div className="relative z-20 text-center px-10">
+            <h1 className="silver-title">
+              CHATTERIS TOWN FC
+            </h1>
 
-              <h1 className="silver-title">
-                CHATTERIS TOWN FC
-              </h1>
+            <div
+              style={{
+                fontFamily: "var(--font-great-vibes)",
+              }}
+              className="silver-script"
+            >
+              Presentation Day
+            </div>
 
-              <div
-                style={{
-                  fontFamily: "var(--font-great-vibes)",
-                }}
-                className="silver-script"
-              >
-                Presentation Day
+            <div className="flex items-center justify-center mt-8">
+
+              <div className="w-44 h-[1px] bg-white/50"></div>
+
+              <div className="mx-4 text-white text-3xl">
+                ✧
               </div>
 
-              <div className="flex items-center justify-center mt-10">
-
-                <div className="w-44 h-[1px] bg-white/50"></div>
-
-                <div className="mx-4 text-white text-3xl">
-                  ✧
-                </div>
-
-                <div className="w-44 h-[1px] bg-white/50"></div>
-
-              </div>
+              <div className="w-44 h-[1px] bg-white/50"></div>
 
             </div>
 
@@ -367,58 +346,92 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
-          <div className="w-full flex justify-center items-center px-20">
+          /* Messages */
+          <div className="w-full flex justify-center items-center px-12">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
 
-              <div className="mb-8 flex-shrink-0">
+              {/* Title */}
+              <div className="mb-6 flex-shrink-0">
 
-                <div className="text-7xl font-extrabold text-white tracking-wide">
+                <div className="text-6xl font-extrabold text-white tracking-wide">
                   Messages for Vicky
                 </div>
 
               </div>
 
-              <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.35)] h-[58vh] flex flex-col justify-between">
+              {/* Card */}
+              <div
+                className="
+                  relative
+                  overflow-hidden
+                  bg-white/10
+                  border
+                  border-white/10
+                  backdrop-blur-xl
+                  rounded-[3rem]
+                  px-16
+                  py-12
+                  shadow-[0_0_80px_rgba(0,0,0,0.35)]
 
+                  w-full
+                  max-w-5xl
+
+                  min-h-[42vh]
+                  max-h-[70vh]
+
+                  flex
+                  flex-col
+                  justify-between
+                "
+              >
+
+                {/* Message */}
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
                   }}
                   className={`
-                    relative z-10
+                    relative
+                    z-10
                     text-white
                     font-semibold
                     tracking-[0.01em]
                     text-left
                     whitespace-pre-wrap
                     break-words
-                    leading-[1.4]
+                    leading-[1.25]
+
                     flex-1
                     flex
                     items-center
 
                     ${
-                      messages[messageIndex].message.length < 180
-                        ? "text-[3.2rem]"
-                        : messages[messageIndex].message.length < 320
-                        ? "text-[2.5rem]"
+                      messages[messageIndex].message.length < 120
+                        ? "text-[3.3rem]"
+                        : messages[messageIndex].message.length < 220
+                        ? "text-[2.7rem]"
+                        : messages[messageIndex].message.length < 350
+                        ? "text-[2.15rem]"
                         : messages[messageIndex].message.length < 500
-                        ? "text-[2rem]"
+                        ? "text-[1.75rem]"
                         : messages[messageIndex].message.length < 700
-                        ? "text-[1.6rem]"
-                        : "text-[1.35rem]"
+                        ? "text-[1.45rem]"
+                        : messages[messageIndex].message.length < 900
+                        ? "text-[1.2rem]"
+                        : "text-[1rem]"
                     }
                   `}
                 >
                   {messages[messageIndex].message}
                 </div>
 
-                <div className="relative z-10 mt-10 flex items-center justify-end flex-shrink-0">
+                {/* Signature */}
+                <div className="relative z-10 mt-8 flex justify-end">
 
                   <div className="text-right">
 
-                    <div className="text-white/60 text-sm uppercase tracking-[0.35em] mb-2">
+                    <div className="text-white/60 text-sm uppercase tracking-[0.35em] mb-1">
                       Shared by
                     </div>
 
@@ -426,7 +439,12 @@ export default function SlideshowPage() {
                       style={{
                         fontFamily: "'Caveat', cursive",
                       }}
-                      className="text-white text-[2.7rem] font-bold"
+                      className="
+                        text-white
+                        font-bold
+                        leading-none
+                        text-[2.2rem]
+                      "
                     >
                       {messages[messageIndex].name}
                     </div>
@@ -453,6 +471,7 @@ export default function SlideshowPage() {
 
         ) : (
 
+          /* Photos */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out ${
@@ -489,6 +508,7 @@ export default function SlideshowPage() {
                 className="max-w-[74vw] max-h-[58vh] object-contain"
               />
 
+              {/* Footer */}
               <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
@@ -635,140 +655,6 @@ export default function SlideshowPage() {
             logoPulse 5s ease-in-out infinite;
         }
 
-        .cinema-haze {
-          position: absolute;
-          inset: 0;
-
-          background:
-            radial-gradient(
-              circle at center,
-              rgba(255,255,255,0.16) 0%,
-              rgba(255,255,255,0.08) 25%,
-              rgba(0,0,0,0.18) 72%,
-              rgba(0,0,0,0.45) 100%
-            );
-
-          mix-blend-mode: screen;
-        }
-
-        .floor-beams {
-          position: absolute;
-          bottom: -18%;
-          left: 50%;
-          transform: translateX(-50%);
-
-          width: 1800px;
-          height: 900px;
-
-          background:
-            repeating-linear-gradient(
-              to right,
-              rgba(255,255,255,0.16) 0px,
-              rgba(255,255,255,0.16) 3px,
-              transparent 3px,
-              transparent 42px
-            );
-
-          clip-path: polygon(
-            0% 100%,
-            100% 100%,
-            60% 0%,
-            40% 0%
-          );
-
-          opacity: 0.5;
-
-          filter:
-            blur(1px)
-            drop-shadow(0 0 12px rgba(255,255,255,0.35));
-
-          animation: floorSweep 16s linear infinite;
-        }
-
-        .side-glow {
-          position: absolute;
-          top: -10%;
-          width: 700px;
-          height: 1400px;
-
-          background:
-            radial-gradient(
-              ellipse at center,
-              rgba(255,255,255,0.14),
-              rgba(255,255,255,0)
-            );
-
-          filter: blur(80px);
-
-          opacity: 0.6;
-        }
-
-        .left-glow {
-          left: -20%;
-          transform: rotate(-18deg);
-        }
-
-        .right-glow {
-          right: -20%;
-          transform: rotate(18deg);
-        }
-
-        .main-spotlight {
-          position: absolute;
-          top: -40%;
-          width: 500px;
-          height: 1600px;
-
-          background:
-            linear-gradient(
-              to bottom,
-              rgba(255,255,255,0.32),
-              rgba(255,255,255,0)
-            );
-
-          filter: blur(35px);
-
-          opacity: 0.75;
-        }
-
-        .spotlight-1 {
-          left: 8%;
-          transform: rotate(-25deg);
-          animation: moveLight1 8s ease-in-out infinite;
-        }
-
-        .spotlight-2 {
-          left: 28%;
-          transform: rotate(-10deg);
-          animation: moveLight2 7s ease-in-out infinite;
-        }
-
-        .spotlight-3 {
-          right: 28%;
-          transform: rotate(10deg);
-          animation: moveLight3 7s ease-in-out infinite;
-        }
-
-        .spotlight-4 {
-          right: 8%;
-          transform: rotate(25deg);
-          animation: moveLight4 8s ease-in-out infinite;
-        }
-
-        .particles {
-          position: absolute;
-          inset: 0;
-
-          background-image:
-            radial-gradient(white 1px, transparent 1px);
-
-          background-size: 90px 90px;
-
-          opacity: 0.18;
-
-          animation: drift 30s linear infinite;
-        }
-
         @keyframes silverShimmer {
           0% {
             filter: brightness(1);
@@ -794,86 +680,6 @@ export default function SlideshowPage() {
 
           100% {
             transform: scale(1);
-          }
-        }
-
-        @keyframes floorSweep {
-          0% {
-            transform: translateX(-50%) translateY(0);
-          }
-
-          50% {
-            transform: translateX(-50%) translateY(35px);
-          }
-
-          100% {
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-
-        @keyframes moveLight1 {
-          0% {
-            transform: rotate(-25deg);
-          }
-
-          50% {
-            transform: rotate(-14deg);
-          }
-
-          100% {
-            transform: rotate(-25deg);
-          }
-        }
-
-        @keyframes moveLight2 {
-          0% {
-            transform: rotate(-10deg);
-          }
-
-          50% {
-            transform: rotate(-2deg);
-          }
-
-          100% {
-            transform: rotate(-10deg);
-          }
-        }
-
-        @keyframes moveLight3 {
-          0% {
-            transform: rotate(10deg);
-          }
-
-          50% {
-            transform: rotate(2deg);
-          }
-
-          100% {
-            transform: rotate(10deg);
-          }
-        }
-
-        @keyframes moveLight4 {
-          0% {
-            transform: rotate(25deg);
-          }
-
-          50% {
-            transform: rotate(14deg);
-          }
-
-          100% {
-            transform: rotate(25deg);
-          }
-        }
-
-        @keyframes drift {
-          from {
-            transform: translateY(0);
-          }
-
-          to {
-            transform: translateY(-160px);
           }
         }
       `}</style>
