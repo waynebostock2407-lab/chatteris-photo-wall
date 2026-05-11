@@ -252,8 +252,15 @@ export default function SlideshowPage() {
           <div className="moving-beam beam-right" />
           <div className="moving-beam beam-center" />
 
-          {/* INTRO PARTICLES */}
-          <div className="intro-particles" />
+          {/* AMBIENT ORBS */}
+          <div className="ambient-orbs">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
 
         </div>
 
@@ -285,20 +292,8 @@ export default function SlideshowPage() {
 
           </div>
 
-          {/* PARTICLES */}
-          <div className="slideshow-particles">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
+          {/* SLIDESHOW ORBS */}
+          <div className="ambient-orbs slideshow-orbs">
             <span />
             <span />
             <span />
@@ -781,21 +776,7 @@ export default function SlideshowPage() {
           animation: pulseCenter 4s ease-in-out infinite;
         }
 
-        .intro-particles {
-          position: absolute;
-          inset: 0;
-
-          background-image:
-            radial-gradient(white 2px, transparent 2px);
-
-          background-size: 80px 80px;
-
-          opacity: 0.35;
-
-          animation: particlesDrift 12s linear infinite;
-        }
-
-        .slideshow-particles {
+        .ambient-orbs {
           position: absolute;
           inset: 0;
 
@@ -806,135 +787,82 @@ export default function SlideshowPage() {
           z-index: 2;
         }
 
-        .slideshow-particles span {
+        .ambient-orbs span {
           position: absolute;
-
-          width: 4px;
-          height: 4px;
 
           border-radius: 999px;
 
-          background: rgba(255,255,255,0.95);
+          background:
+            radial-gradient(
+              circle,
+              rgba(255,255,255,0.22) 0%,
+              rgba(255,255,255,0.08) 45%,
+              rgba(255,255,255,0) 75%
+            );
 
-          box-shadow:
-            0 0 10px rgba(255,255,255,0.95),
-            0 0 20px rgba(255,255,255,0.7);
+          filter: blur(10px);
 
-          animation: floatParticle linear infinite;
+          animation: floatOrb linear infinite;
         }
 
-        .slideshow-particles span:nth-child(1) {
-          left: 8%;
-          top: 82%;
-          animation-duration: 24s;
-        }
-
-        .slideshow-particles span:nth-child(2) {
-          left: 16%;
-          top: 68%;
+        .ambient-orbs span:nth-child(1) {
+          width: 260px;
+          height: 260px;
+          left: -4%;
+          top: 12%;
           animation-duration: 28s;
-          width: 2px;
-          height: 2px;
         }
 
-        .slideshow-particles span:nth-child(3) {
-          left: 26%;
-          top: 90%;
-          animation-duration: 20s;
-        }
-
-        .slideshow-particles span:nth-child(4) {
-          left: 34%;
+        .ambient-orbs span:nth-child(2) {
+          width: 180px;
+          height: 180px;
+          left: 18%;
           top: 72%;
-          animation-duration: 26s;
+          animation-duration: 34s;
         }
 
-        .slideshow-particles span:nth-child(5) {
-          left: 44%;
-          top: 86%;
-          animation-duration: 22s;
-          width: 5px;
-          height: 5px;
+        .ambient-orbs span:nth-child(3) {
+          width: 320px;
+          height: 320px;
+          right: 12%;
+          top: 18%;
+          animation-duration: 40s;
         }
 
-        .slideshow-particles span:nth-child(6) {
-          left: 52%;
-          top: 76%;
+        .ambient-orbs span:nth-child(4) {
+          width: 220px;
+          height: 220px;
+          right: -4%;
+          top: 62%;
           animation-duration: 30s;
         }
 
-        .slideshow-particles span:nth-child(7) {
-          left: 62%;
-          top: 92%;
-          animation-duration: 25s;
-        }
-
-        .slideshow-particles span:nth-child(8) {
-          left: 70%;
-          top: 70%;
-          animation-duration: 21s;
-        }
-
-        .slideshow-particles span:nth-child(9) {
-          left: 78%;
-          top: 88%;
-          animation-duration: 29s;
-          width: 2px;
-          height: 2px;
-        }
-
-        .slideshow-particles span:nth-child(10) {
-          left: 86%;
-          top: 74%;
-          animation-duration: 23s;
-        }
-
-        .slideshow-particles span:nth-child(11) {
-          left: 12%;
-          top: 58%;
-          animation-duration: 31s;
-        }
-
-        .slideshow-particles span:nth-child(12) {
-          left: 22%;
-          top: 64%;
-          animation-duration: 19s;
-        }
-
-        .slideshow-particles span:nth-child(13) {
-          left: 38%;
-          top: 60%;
-          animation-duration: 27s;
-        }
-
-        .slideshow-particles span:nth-child(14) {
-          left: 48%;
-          top: 54%;
+        .ambient-orbs span:nth-child(5) {
+          width: 140px;
+          height: 140px;
+          left: 42%;
+          top: 8%;
           animation-duration: 24s;
         }
 
-        .slideshow-particles span:nth-child(15) {
-          left: 58%;
-          top: 62%;
-          animation-duration: 20s;
+        .ambient-orbs span:nth-child(6) {
+          width: 260px;
+          height: 260px;
+          left: 52%;
+          bottom: -6%;
+          animation-duration: 38s;
         }
 
-        .slideshow-particles span:nth-child(16) {
-          left: 68%;
-          top: 52%;
-          animation-duration: 26s;
-        }
+        .slideshow-orbs span {
+          background:
+            radial-gradient(
+              circle,
+              rgba(255,255,255,0.16) 0%,
+              rgba(255,255,255,0.06) 45%,
+              rgba(255,255,255,0) 75%
+            );
 
-        .slideshow-particles span:nth-child(17) {
-          left: 82%;
-          top: 60%;
-          animation-duration: 29s;
-        }
-
-        .slideshow-particles span:nth-child(18) {
-          left: 92%;
-          top: 56%;
-          animation-duration: 22s;
+          filter: blur(18px);
         }
 
         @keyframes silverShimmer {
@@ -1007,43 +935,35 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes particlesDrift {
-          from {
-            transform: translateY(0);
-          }
-
-          to {
-            transform: translateY(-180px);
-          }
-        }
-
-        @keyframes floatParticle {
+        @keyframes floatOrb {
           0% {
             transform:
-              translateY(0px)
+              translate3d(0px, 0px, 0)
               scale(1);
-
-            opacity: 0;
           }
 
-          10% {
-            opacity: 1;
+          25% {
+            transform:
+              translate3d(30px, -40px, 0)
+              scale(1.08);
           }
 
           50% {
             transform:
-              translateY(-40px)
-              scale(1.15);
+              translate3d(-20px, -70px, 0)
+              scale(0.96);
+          }
 
-            opacity: 1;
+          75% {
+            transform:
+              translate3d(40px, -30px, 0)
+              scale(1.04);
           }
 
           100% {
             transform:
-              translateY(-120px)
-              scale(0.9);
-
-            opacity: 0;
+              translate3d(0px, 0px, 0)
+              scale(1);
           }
         }
       `}</style>
