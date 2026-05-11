@@ -34,6 +34,7 @@ export default function SlideshowPage() {
   const [flash, setFlash] = useState(false);
 
   const [showMessages, setShowMessages] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   /* Fullscreen */
@@ -62,6 +63,30 @@ export default function SlideshowPage() {
         handleFullscreenChange
       );
     };
+  }, []);
+
+  /* Initial intro */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, 12000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* Intro every 10 mins */
+  useEffect(() => {
+    const introCycle = setInterval(() => {
+
+      setShowIntro(true);
+
+      setTimeout(() => {
+        setShowIntro(false);
+      }, 12000);
+
+    }, 600000);
+
+    return () => clearInterval(introCycle);
   }, []);
 
   /* Polaroid styles */
@@ -122,7 +147,7 @@ export default function SlideshowPage() {
 
     let interval: NodeJS.Timeout;
 
-    if (!showMessages) {
+    if (!showMessages && !showIntro) {
 
       interval = setInterval(() => {
 
@@ -150,7 +175,7 @@ export default function SlideshowPage() {
 
     return () => clearInterval(interval);
 
-  }, [photos, showMessages]);
+  }, [photos, showMessages, showIntro]);
 
   /* Trigger messages every 5 mins */
   useEffect(() => {
@@ -206,23 +231,8 @@ export default function SlideshowPage() {
 
   }, [showMessages, messageIndex, messages]);
 
-  /* Preload next image */
-  useEffect(() => {
-    if (photos.length === 0) return;
-
-    const nextIndex =
-      currentIndex === photos.length - 1
-        ? 0
-        : currentIndex + 1;
-
-    const nextImage = new Image();
-
-    nextImage.src = photos[nextIndex]?.imageUrl;
-
-  }, [currentIndex, photos]);
-
   return (
-    <main className="relative w-screen h-screen overflow-hidden text-white">
+    <main className="relative w-screen h-screen overflow-hidden text-white bg-sky-900">
 
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -258,17 +268,10 @@ export default function SlideshowPage() {
 
         <div className="absolute bottom-[-350px] left-1/2 -translate-x-1/2 w-[1200px] h-[700px] bg-[#0A56C5]/30 rounded-full blur-[160px]"></div>
 
-        <div className="absolute left-[-250px] top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#5EA8FF]/18 rounded-full blur-[150px]"></div>
-
-        <div className="absolute right-[-250px] top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#5EA8FF]/18 rounded-full blur-[150px]"></div>
-
       </div>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-[#06142B]/45"></div>
-
-      {/* Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.45)_100%)]"></div>
 
       {/* Camera Flash */}
       <div
@@ -294,40 +297,81 @@ export default function SlideshowPage() {
       {/* Main Content */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-52 z-20">
 
-        {/* Guestbook Slides */}
-        {showMessages && messages[messageIndex] ? (
+        {/* Intro Screen */}
+        {showIntro ? (
 
-          <div
-            className={`w-full flex justify-center items-center px-20 transition-all duration-700 ${
-              fade
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-[0.98]"
-            }`}
-          >
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+
+            {/* Animated Rings */}
+            <div className="absolute w-[900px] h-[900px] border border-white/10 rounded-full animate-ping opacity-20"></div>
+
+            <div className="absolute w-[700px] h-[700px] border border-sky-200/20 rounded-full animate-pulse"></div>
+
+            {/* Sparkles */}
+            <div className="sparkle sparkle-1"></div>
+            <div className="sparkle sparkle-2"></div>
+            <div className="sparkle sparkle-3"></div>
+            <div className="sparkle sparkle-4"></div>
+            <div className="sparkle sparkle-5"></div>
+
+            {/* Logos */}
+            <div className="flex items-center gap-16 mb-12 z-10">
+
+              <img
+                src="/logo 4.png"
+                alt="Young Lilies Logo"
+                className="w-48 h-48 object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+              />
+
+              <img
+                src="/logo.png"
+                alt="The Lilies Logo"
+                className="w-48 h-48 object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.25)]"
+              />
+
+            </div>
+
+            {/* Title */}
+            <div className="relative z-10 text-center px-10">
+
+              <h1
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                }}
+                className="text-white text-[6rem] leading-none font-bold tracking-wide drop-shadow-[0_0_35px_rgba(255,255,255,0.3)]"
+              >
+                Chatteris Town FC
+              </h1>
+
+              <div
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                }}
+                className="mt-6 text-sky-100 text-[4rem] italic tracking-[0.08em] drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+              >
+                Presentation Day
+              </div>
+
+            </div>
+
+          </div>
+
+        ) : showMessages && messages[messageIndex] ? (
+
+          <div className="w-full flex justify-center items-center px-20">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
 
-              {/* Heading */}
               <div className="mb-8 flex-shrink-0">
 
-                <div className="text-7xl font-extrabold text-white tracking-wide drop-shadow-[0_4px_20px_rgba(0,0,0,0.75)]">
+                <div className="text-7xl font-extrabold text-white tracking-wide">
                   Messages for Vicky
                 </div>
 
               </div>
 
-              {/* Message Card */}
               <div className="relative overflow-hidden bg-gradient-to-br from-[#0A1936]/88 to-[#10254D]/88 border border-white/10 backdrop-blur-xl rounded-[3rem] px-20 py-16 shadow-[0_0_80px_rgba(0,0,0,0.45)] h-[58vh] flex flex-col justify-between">
 
-                {/* Glow */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_45%)] pointer-events-none"></div>
-
-                {/* Quote */}
-                <div className="absolute top-6 left-10 text-white/10 text-[9rem] leading-none font-serif">
-                  “
-                </div>
-
-                {/* Message */}
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
@@ -340,7 +384,6 @@ export default function SlideshowPage() {
                     text-left
                     whitespace-pre-wrap
                     break-words
-                    drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]
                     leading-[1.4]
                     flex-1
                     flex
@@ -362,7 +405,6 @@ export default function SlideshowPage() {
                   {messages[messageIndex].message}
                 </div>
 
-                {/* Signature */}
                 <div className="relative z-10 mt-10 flex items-center justify-end flex-shrink-0">
 
                   <div className="text-right">
@@ -398,24 +440,19 @@ export default function SlideshowPage() {
               Awaiting Photos
             </div>
 
-            <div className="text-2xl text-white/70">
-              Upload photos or messages using the QR code
-            </div>
-
           </div>
 
         ) : (
 
           <div
             key={photos[currentIndex]?.id}
-            className={`transition-all duration-700 ease-out will-change-transform will-change-opacity ${
+            className={`transition-all duration-700 ease-out ${
               fade
                 ? "opacity-100 scale-100 translate-y-0"
                 : "opacity-0 scale-[0.97] translate-y-2"
             }`}
           >
 
-            {/* Polaroid */}
             <div
               className={`
                 inline-flex
@@ -441,16 +478,12 @@ export default function SlideshowPage() {
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
                 className="max-w-[74vw] max-h-[58vh] object-contain"
-                style={{
-                  imageRendering: "auto",
-                }}
               />
 
-              {/* Caption */}
               <div className="mt-6 flex items-center justify-center gap-6">
 
                 <img
-                  src="/logo 2.png"
+                  src="/logo 4.png"
                   alt="Logo Left"
                   className="w-14 h-14 object-contain"
                 />
@@ -478,7 +511,7 @@ export default function SlideshowPage() {
                 </div>
 
                 <img
-                  src="/logo 3.png"
+                  src="/logo.png"
                   alt="Logo Right"
                   className="w-14 h-14 object-contain"
                 />
@@ -493,61 +526,6 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Branding */}
-      <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
-
-        <img
-          src="/logo.png"
-          alt="Club Logo"
-          className="w-40 h-40 object-contain drop-shadow-2xl"
-        />
-
-        <div className="flex flex-col justify-end">
-
-          <h1 className="leading-none">
-
-            <span className="text-white text-5xl font-extrabold tracking-wide">
-              Chatteris Town Football Club
-            </span>
-
-            <br />
-
-            <span
-              style={{
-                fontFamily: "'Playfair Display', serif",
-              }}
-              className="text-[#EAF8FF] text-[4rem] italic font-semibold tracking-[0.04em]"
-            >
-              Presentation Day
-            </span>
-
-            <span className="block mt-3 uppercase tracking-[0.22em] text-[#EAF8FF] text-[1.55rem] font-semibold">
-              ONE CLUB | ONE FAMILY | THE LILIES
-            </span>
-
-          </h1>
-
-        </div>
-
-      </div>
-
-      {/* QR */}
-      <div className="absolute bottom-8 right-8 z-20 bg-white/95 rounded-3xl p-5 shadow-2xl">
-
-        <div className="text-center text-[#0A1E3D] font-bold text-lg leading-tight mb-3">
-          UPLOAD PHOTOS
-          <br />
-          & MESSAGES
-        </div>
-
-        <img
-          src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-          alt="QR"
-          className="rounded-xl"
-        />
-
-      </div>
-
       <style jsx>{`
         .fabric-layer {
           position: absolute;
@@ -555,6 +533,66 @@ export default function SlideshowPage() {
           background-size: cover;
           background-position: center;
           filter: saturate(1.05);
+        }
+
+        .sparkle {
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.9);
+          box-shadow:
+            0 0 20px rgba(255,255,255,0.9),
+            0 0 40px rgba(125,211,252,0.8),
+            0 0 60px rgba(255,255,255,0.6);
+          animation: floatSparkle 6s infinite ease-in-out;
+        }
+
+        .sparkle-1 {
+          top: 18%;
+          left: 22%;
+          animation-delay: 0s;
+        }
+
+        .sparkle-2 {
+          top: 28%;
+          right: 18%;
+          animation-delay: 1s;
+        }
+
+        .sparkle-3 {
+          bottom: 22%;
+          left: 28%;
+          animation-delay: 2s;
+        }
+
+        .sparkle-4 {
+          bottom: 18%;
+          right: 24%;
+          animation-delay: 3s;
+        }
+
+        .sparkle-5 {
+          top: 50%;
+          left: 50%;
+          animation-delay: 1.5s;
+        }
+
+        @keyframes floatSparkle {
+          0% {
+            transform: translateY(0px) scale(1);
+            opacity: 0.2;
+          }
+
+          50% {
+            transform: translateY(-25px) scale(1.6);
+            opacity: 1;
+          }
+
+          100% {
+            transform: translateY(0px) scale(1);
+            opacity: 0.2;
+          }
         }
       `}</style>
 
