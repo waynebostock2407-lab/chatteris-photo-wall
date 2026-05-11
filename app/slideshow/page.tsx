@@ -638,6 +638,7 @@ export default function SlideshowPage() {
 
         .moving-beam {
           position: absolute;
+
           top: -55%;
           width: 900px;
           height: 2200px;
@@ -648,10 +649,9 @@ export default function SlideshowPage() {
 
           mix-blend-mode: screen;
 
-          transorm-origin: top center;
+          transform-origin: top center;
         }
 
-        /*LEFT */
         .beam-left {
           left: -12%;
 
@@ -659,8 +659,8 @@ export default function SlideshowPage() {
             linear-gradient(
               to bottom,
               rgba(255,255,255,0.95) 0%,
-              rgba(255,255,255,0.55) 12%,
-              rgba(255,255,255,0.12) 38%,
+              rgba(255,255,255,0.6) 12%,
+              rgba(255,255,255,0.18) 38%,
               rgba(255,255,255,0) 100%
             );
 
@@ -677,7 +677,7 @@ export default function SlideshowPage() {
 
           animation: sweepLeft 6s ease-in-out infinite;
         }
-        /* RIGHT */
+
         .beam-right {
           right: -12%;
 
@@ -685,8 +685,8 @@ export default function SlideshowPage() {
             linear-gradient(
               to bottom,
               rgba(255,255,255,0.95) 0%,
-              rgba(255,255,255,0.55) 12%,
-              rgba(255,255,255,0.12) 38%,
+              rgba(255,255,255,0.6) 12%,
+              rgba(255,255,255,0.18) 38%,
               rgba(255,255,255,0) 100%
             );
 
@@ -701,10 +701,9 @@ export default function SlideshowPage() {
             blur(8px)
             drop-shadow(0 0 45px rgba(255,255,255,0.95));
 
-          animation: sweepRight 5s ease-in-out infinite;
+          animation: sweepRight 6s ease-in-out infinite;
         }
 
-        /* CENTER */
         .beam-center {
           left: 50%;
 
@@ -725,6 +724,8 @@ export default function SlideshowPage() {
           filter:
             blur(7px)
             drop-shadow(0 0 55px rgba(255,255,255,1));
+
+          transform: translateX(-50%);
 
           animation: pulseCenter 3.5s ease-in-out infinite;
         }
