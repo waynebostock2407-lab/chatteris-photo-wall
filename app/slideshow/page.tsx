@@ -348,7 +348,7 @@ export default function SlideshowPage() {
               </div>
 
               <div
-                className="
+                className={`
                   relative
                   overflow-hidden
                   bg-white/10
@@ -366,7 +366,7 @@ export default function SlideshowPage() {
                   flex
                   flex-col
                   justify-between
-                "
+                `}
               >
 
                 {/* MESSAGE */}
