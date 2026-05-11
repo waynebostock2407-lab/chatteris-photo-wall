@@ -270,7 +270,7 @@ export default function SlideshowPage() {
 
           {/* FABRIC BACKGROUND */}
           <div
-            className="fabric-layer opacity-[0.45]"
+            className="fabric-layer opacity-[0.8]"
             style={{
               backgroundImage: "url('/stripe-bg.jpg')",
             }}
