@@ -35,6 +35,7 @@ export default function SlideshowPage() {
 
   const [showMessages, setShowMessages] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const toggleFullscreen = async () => {
@@ -75,13 +76,11 @@ export default function SlideshowPage() {
   /* Intro Every 10 Minutes */
   useEffect(() => {
     const introCycle = setInterval(() => {
-
       setShowIntro(true);
 
       setTimeout(() => {
         setShowIntro(false);
       }, 20000);
-
     }, 600000);
 
     return () => clearInterval(introCycle);
@@ -145,9 +144,7 @@ export default function SlideshowPage() {
     let interval: NodeJS.Timeout;
 
     if (!showMessages && !showIntro) {
-
       interval = setInterval(() => {
-
         setFlash(true);
 
         setTimeout(() => {
@@ -157,65 +154,47 @@ export default function SlideshowPage() {
         setFade(false);
 
         setTimeout(() => {
-
           setCurrentIndex((prev) =>
             prev === photos.length - 1 ? 0 : prev + 1
           );
 
           setFade(true);
-
         }, 450);
-
       }, 6500);
-
     }
 
     return () => clearInterval(interval);
-
   }, [photos, showMessages, showIntro]);
 
   /* Messages Every 5 Minutes */
   useEffect(() => {
-
     if (messages.length === 0) return;
 
     const cycle = setInterval(() => {
-
       setShowMessages(true);
       setMessageIndex(0);
-
     }, 300000);
 
     return () => clearInterval(cycle);
-
   }, [messages]);
 
   /* Message Loop */
   useEffect(() => {
-
     if (!showMessages) return;
 
     const interval = setInterval(() => {
-
       setFade(false);
 
       setTimeout(() => {
-
         if (messageIndex >= messages.length - 1) {
-
           setShowMessages(false);
           setMessageIndex(0);
-
         } else {
-
           setMessageIndex((prev) => prev + 1);
-
         }
 
         setFade(true);
-
       }, 350);
-
     }, Math.min(
       Math.max(
         9000,
@@ -225,29 +204,34 @@ export default function SlideshowPage() {
     ));
 
     return () => clearInterval(interval);
-
   }, [showMessages, messageIndex, messages]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      {/* Background */}
+      {/* BACKGROUND */}
       {showIntro ? (
 
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/presentation-stage.jpg')",
-          }}
-        >
+        <div className="absolute inset-0 overflow-hidden">
 
-          {/* Moving Spotlights */}
-          <div className="moving-beam beam-left"></div>
-          <div className="moving-beam beam-right"></div>
-          <div className="moving-beam beam-center"></div>
+          {/* STAGE IMAGE */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/presentation-stage.jpg')",
+            }}
+          />
 
-          {/* Floating Particles */}
-          <div className="intro-particles"></div>
+          {/* DARK OVERLAY */}
+          <div className="absolute inset-0 bg-black/10" />
+
+          {/* LIGHT BEAMS */}
+          <div className="moving-beam beam-left" />
+          <div className="moving-beam beam-right" />
+          <div className="moving-beam beam-center" />
+
+          {/* PARTICLES */}
+          <div className="intro-particles" />
 
         </div>
 
@@ -262,7 +246,7 @@ export default function SlideshowPage() {
             }}
           >
 
-            <div className="absolute inset-0 bg-[#06142B]/45"></div>
+            <div className="absolute inset-0 bg-[#06142B]/45" />
 
             <div className="absolute inset-0 flex items-center justify-center">
 
@@ -280,7 +264,7 @@ export default function SlideshowPage() {
 
       )}
 
-      {/* Flash */}
+      {/* FLASH */}
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-200 ${
           flash ? "opacity-100" : "opacity-0"
@@ -291,7 +275,7 @@ export default function SlideshowPage() {
         }}
       />
 
-      {/* Fullscreen */}
+      {/* FULLSCREEN */}
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
@@ -301,15 +285,15 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* Main */}
+      {/* MAIN CONTENT */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
-        {/* Intro */}
+        {/* INTRO */}
         {showIntro ? (
 
           <div className="text-center">
 
-            {/* Logos */}
+            {/* LOGOS */}
             <div className="flex items-center justify-center gap-20 mb-14">
 
               <img
@@ -326,7 +310,7 @@ export default function SlideshowPage() {
 
             </div>
 
-            {/* Title */}
+            {/* TITLE */}
             <h1 className="silver-title">
               CHATTERIS TOWN FC
             </h1>
@@ -342,13 +326,13 @@ export default function SlideshowPage() {
 
             <div className="flex items-center justify-center mt-8">
 
-              <div className="w-44 h-[1px] bg-white/50"></div>
+              <div className="w-44 h-[1px] bg-white/50" />
 
               <div className="mx-4 text-white text-3xl">
                 ✧
               </div>
 
-              <div className="w-44 h-[1px] bg-white/50"></div>
+              <div className="w-44 h-[1px] bg-white/50" />
 
             </div>
 
@@ -356,12 +340,11 @@ export default function SlideshowPage() {
 
         ) : showMessages && messages[messageIndex] ? (
 
-          /* Messages */
+          /* MESSAGES */
           <div className="w-full flex justify-center items-center px-12">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
 
-              {/* Title */}
               <div className="mb-6 flex-shrink-0">
 
                 <div className="text-6xl font-extrabold text-white tracking-wide">
@@ -370,7 +353,6 @@ export default function SlideshowPage() {
 
               </div>
 
-              {/* Card */}
               <div
                 className={`
                   relative
@@ -383,20 +365,17 @@ export default function SlideshowPage() {
                   px-16
                   py-12
                   shadow-[0_0_80px_rgba(0,0,0,0.35)]
-
                   w-full
                   max-w-5xl
-
                   min-h-[42vh]
                   max-h-[70vh]
-
                   flex
                   flex-col
                   justify-between
                 `}
               >
 
-                {/* Message */}
+                {/* MESSAGE */}
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
@@ -411,7 +390,6 @@ export default function SlideshowPage() {
                     whitespace-pre-wrap
                     break-words
                     leading-[1.25]
-
                     flex-1
                     flex
                     items-center
@@ -436,7 +414,7 @@ export default function SlideshowPage() {
                   {messages[messageIndex].message}
                 </div>
 
-                {/* Signature */}
+                {/* SIGNATURE */}
                 <div className="relative z-10 mt-8 flex justify-end">
 
                   <div className="text-right">
@@ -449,12 +427,7 @@ export default function SlideshowPage() {
                       style={{
                         fontFamily: "'Caveat', cursive",
                       }}
-                      className={`
-                        text-white
-                        font-bold
-                        leading-none
-                        text-[2.2rem]
-                      `}
+                      className="text-white font-bold leading-none text-[2.2rem]"
                     >
                       {messages[messageIndex].name}
                     </div>
@@ -481,7 +454,7 @@ export default function SlideshowPage() {
 
         ) : (
 
-          /* Photos */
+          /* PHOTOS */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-700 ease-out ${
@@ -518,7 +491,7 @@ export default function SlideshowPage() {
                 className="max-w-[74vw] max-h-[58vh] object-contain"
               />
 
-              {/* Footer */}
+              {/* POLAROID FOOTER */}
               <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
@@ -552,7 +525,7 @@ export default function SlideshowPage() {
 
       </div>
 
-      {/* Branding */}
+      {/* BRANDING */}
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-20 flex items-end gap-8">
 
@@ -640,8 +613,7 @@ export default function SlideshowPage() {
             0 0 14px rgba(255,255,255,0.5),
             0 0 40px rgba(255,255,255,0.35);
 
-          animation:
-            silverShimmer 5s linear infinite;
+          animation: silverShimmer 5s linear infinite;
         }
 
         .silver-script {
@@ -661,46 +633,101 @@ export default function SlideshowPage() {
             contrast(1.15)
             drop-shadow(0 0 25px rgba(255,255,255,0.45));
 
-          animation:
-            logoPulse 5s ease-in-out infinite;
+          animation: logoPulse 5s ease-in-out infinite;
         }
 
         .moving-beam {
           position: absolute;
-          top: -30%;
-          width: 450px;
-          height: 1600px;
+          top: -15%;
+          width: 900px;
+          height: 1800px;
 
-          background:
-            linear-gradient(
-              to bottom,
-              rgba(255,255,255,0.26),
-              rgba(255,255,255,0)
-            );
+          opacity: 1;
 
-          filter: blur(28px);
-
-          opacity: 0.5;
+          pointer-events: none;
 
           mix-blend-mode: screen;
         }
 
         .beam-left {
-          left: 10%;
-          transform: rotate(-22deg);
-          animation: sweepLeft 8s ease-in-out infinite;
+          left: -8%;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.95) 0%,
+              rgba(255,255,255,0.55) 18%,
+              rgba(255,255,255,0.12) 45%,
+              rgba(255,255,255,0) 100%
+            );
+
+          clip-path: polygon(
+            48% 0%,
+            58% 0%,
+            100% 100%,
+            0% 100%
+          );
+
+          filter:
+            blur(10px)
+            drop-shadow(0 0 35px rgba(255,255,255,0.95));
+
+          transform: rotate(-18deg);
+
+          animation: sweepLeft 5s ease-in-out infinite;
         }
 
         .beam-right {
-          right: 10%;
-          transform: rotate(22deg);
-          animation: sweepRight 8s ease-in-out infinite;
+          right: -8%;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.95) 0%,
+              rgba(255,255,255,0.55) 18%,
+              rgba(255,255,255,0.12) 45%,
+              rgba(255,255,255,0) 100%
+            );
+
+          clip-path: polygon(
+            42% 0%,
+            52% 0%,
+            100% 100%,
+            0% 100%
+          );
+
+          filter:
+            blur(10px)
+            drop-shadow(0 0 35px rgba(255,255,255,0.95));
+
+          transform: rotate(18deg);
+
+          animation: sweepRight 5s ease-in-out infinite;
         }
 
         .beam-center {
           left: 50%;
           transform: translateX(-50%);
-          animation: pulseCenter 6s ease-in-out infinite;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.95),
+              rgba(255,255,255,0)
+            );
+
+          clip-path: polygon(
+            47% 0%,
+            53% 0%,
+            75% 100%,
+            25% 100%
+          );
+
+          filter:
+            blur(8px)
+            drop-shadow(0 0 45px rgba(255,255,255,1));
+
+          animation: pulseCenter 3.5s ease-in-out infinite;
         }
 
         .intro-particles {
@@ -708,13 +735,13 @@ export default function SlideshowPage() {
           inset: 0;
 
           background-image:
-            radial-gradient(white 1px, transparent 1px);
+            radial-gradient(white 2px, transparent 2px);
 
-          background-size: 100px 100px;
+          background-size: 80px 80px;
 
-          opacity: 0.12;
+          opacity: 0.35;
 
-          animation: particlesDrift 25s linear infinite;
+          animation: particlesDrift 12s linear infinite;
         }
 
         @keyframes silverShimmer {
@@ -751,7 +778,7 @@ export default function SlideshowPage() {
           }
 
           50% {
-            transform: rotate(-10deg);
+            transform: rotate(-8deg);
           }
 
           100% {
@@ -765,7 +792,7 @@ export default function SlideshowPage() {
           }
 
           50% {
-            transform: rotate(10deg);
+            transform: rotate(8deg);
           }
 
           100% {
@@ -775,15 +802,15 @@ export default function SlideshowPage() {
 
         @keyframes pulseCenter {
           0% {
-            opacity: 0.2;
+            opacity: 0.35;
           }
 
           50% {
-            opacity: 0.65;
+            opacity: 1;
           }
 
           100% {
-            opacity: 0.2;
+            opacity: 0.35;
           }
         }
 
@@ -793,7 +820,7 @@ export default function SlideshowPage() {
           }
 
           to {
-            transform: translateY(-120px);
+            transform: translateY(-180px);
           }
         }
       `}</style>
