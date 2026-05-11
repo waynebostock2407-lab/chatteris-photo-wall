@@ -31,37 +31,73 @@ export default function SlideshowPage() {
   const [messageIndex, setMessageIndex] = useState(0);
 
   const [fade, setFade] = useState(true);
+  const [flash, setFlash] = useState(false);
+  const [loaded, setLoaded] = useState(true);
+
   const [showMessages, setShowMessages] = useState(false);
-const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
 
-const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-const toggleFullscreen = async () => {
-  if (!document.fullscreenElement) {
-    await document.documentElement.requestFullscreen();
-  } else {
-    await document.exitFullscreen();
-  }
-};
-
-useEffect(() => {
-  const handleFullscreenChange = () => {
-    setIsFullscreen(!!document.fullscreenElement);
+  const toggleFullscreen = async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
   };
 
-  document.addEventListener(
-    "fullscreenchange",
-    handleFullscreenChange
-  );
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
 
-  return () => {
-    document.removeEventListener(
+    document.addEventListener(
       "fullscreenchange",
       handleFullscreenChange
     );
-  };
-}, []);
 
+    return () => {
+      document.removeEventListener(
+        "fullscreenchange",
+        handleFullscreenChange
+      );
+    };
+  }, []);
+
+  /* INTRO */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, 60000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* INTRO EVERY 10 MINS */
+  useEffect(() => {
+    const introCycle = setInterval(() => {
+      setShowIntro(true);
+
+      setTimeout(() => {
+        setShowIntro(false);
+      }, 20000);
+
+    }, 600000);
+
+    return () => clearInterval(introCycle);
+  }, []);
+
+  const polaroidStyles = [
+    "rotate-[-2deg] translate-y-1",
+    "rotate-[1.8deg] -translate-y-1",
+    "rotate-[-1deg] translate-y-2",
+    "rotate-[2.4deg]",
+    "rotate-[-2.5deg]",
+    "rotate-[1deg] translate-y-1",
+  ];
+
+  /* PHOTOS */
   useEffect(() => {
     const q = query(
       collection(db, "photos"),
@@ -82,6 +118,7 @@ useEffect(() => {
     return () => unsubscribe();
   }, []);
 
+  /* MESSAGES */
   useEffect(() => {
     const q = query(
       collection(db, "guestbook"),
@@ -102,110 +139,203 @@ useEffect(() => {
     return () => unsubscribe();
   }, []);
 
+  /* PHOTO LOOP */
   useEffect(() => {
-    const introTimer = setTimeout(() => {
-      setShowIntro(false);
-    }, 25000);
+    if (photos.length === 0) return;
 
-    return () => clearTimeout(introTimer);
-  }, []);
+    let interval: NodeJS.Timeout;
 
-  useEffect(() => {
-    if (photos.length === 0 || showMessages || showIntro) return;
+    if (!showMessages && !showIntro) {
 
-    const interval = setInterval(() => {
-      setFade(false);
+      interval = setInterval(() => {
 
-      setTimeout(() => {
-        setCurrentIndex((prev) =>
-          prev === photos.length - 1 ? 0 : prev + 1
-        );
+        setFlash(true);
 
-        setFade(true);
-      }, 500);
-    }, 6500);
+        setTimeout(() => {
+          setFlash(false);
+        }, 90);
+
+        setLoaded(false);
+        setFade(false);
+
+        setTimeout(() => {
+
+          const nextIndex =
+            currentIndex === photos.length - 1
+              ? 0
+              : currentIndex + 1;
+
+          const img = new Image();
+
+          img.src = photos[nextIndex].imageUrl;
+
+          img.onload = () => {
+
+            setCurrentIndex(nextIndex);
+
+            setTimeout(() => {
+              setLoaded(true);
+              setFade(true);
+            }, 50);
+
+          };
+
+        }, 650);
+
+      }, 6500);
+
+    }
 
     return () => clearInterval(interval);
-  }, [photos, showMessages, showIntro]);
 
+  }, [
+    photos,
+    showMessages,
+    showIntro,
+    currentIndex,
+  ]);
+
+  /* MESSAGE CYCLE */
   useEffect(() => {
+
     if (messages.length === 0) return;
 
     const cycle = setInterval(() => {
+
       setShowMessages(true);
       setMessageIndex(0);
-    }, 240000);
+
+    }, 300000);
 
     return () => clearInterval(cycle);
+
   }, [messages]);
 
+  /* MESSAGE LOOP */
   useEffect(() => {
+
     if (!showMessages) return;
 
     const interval = setInterval(() => {
+
       setFade(false);
 
       setTimeout(() => {
+
         if (messageIndex >= messages.length - 1) {
+
           setShowMessages(false);
           setMessageIndex(0);
+
         } else {
+
           setMessageIndex((prev) => prev + 1);
+
         }
 
         setFade(true);
-      }, 400);
-    }, 12000);
+
+      }, 350);
+
+    }, Math.min(
+      Math.max(
+        9000,
+        messages[messageIndex]?.message.length * 60
+      ),
+      30000
+    ));
 
     return () => clearInterval(interval);
+
   }, [showMessages, messageIndex, messages]);
 
-  const polaroidStyles = [
-    "rotate-[-2deg]",
-    "rotate-[1deg]",
-    "rotate-[-1deg]",
-    "rotate-[2deg]",
-  ];
-
   return (
-    <main className="relative w-screen h-screen overflow-hidden text-white bg-black">
+    <main className="relative w-screen h-screen overflow-hidden text-white">
 
+      {/* BACKGROUND */}
+      <div className="absolute inset-0 overflow-hidden">
+
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('/blank-presentation-stage.jpg')",
+          }}
+        />
+
+        <div className="absolute inset-0 bg-[#02112B]/25" />
+
+        {/* ORBS */}
+        <div className="ambient-orbs slideshow-orbs z-10">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+
+      </div>
+
+      {/* FLASH */}
       <div
-        className="absolute inset-0 bg-cover bg-center scale-[1.02]"
+        className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
+          flash ? "opacity-100" : "opacity-0"
+        }`}
         style={{
-          backgroundImage: "url('/presentation-stage.jpg')",
+          background:
+            "radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.55) 35%, rgba(255,255,255,0) 100%)",
         }}
       />
 
-      <div className="absolute inset-0 bg-[#020817]/20" />
+      {/* FULLSCREEN */}
+      {!isFullscreen && (
+        <button
+          onClick={toggleFullscreen}
+          className="
+            fixed
+            top-6
+            right-6
+            z-[9999]
+            bg-black/35
+            hover:bg-black/55
+            backdrop-blur-xl
+            border
+            border-white/20
+            text-white
+            px-6
+            py-3
+            rounded-2xl
+            text-lg
+            font-bold
+            tracking-wide
+            transition-all
+            duration-300
+            shadow-[0_0_30px_rgba(255,255,255,0.15)]
+          "
+        >
+          ⛶ FULL SCREEN
+        </button>
+      )}
 
-      <div className="ambient-orbs">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
+      {/* CONTENT */}
+      <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
-      <div className="absolute inset-0 z-20 flex items-center justify-center px-10 pb-28">
-
+        {/* INTRO */}
         {showIntro ? (
 
-          <div className="intro-wrapper">
+          <div className="text-center">
 
-            <div className="intro-atmosphere" />
-
-            <div className="intro-logos">
+            <div className="flex items-center justify-center gap-20 mb-14">
 
               <img
-                src="/logo 4.png"
+                src="/logo 5.png"
                 alt="Young Lilies"
                 className="hero-logo"
               />
 
               <img
-                src="/logo.png"
+                src="/logo 6.png"
                 alt="The Lilies"
                 className="hero-logo"
               />
@@ -220,78 +350,194 @@ useEffect(() => {
               Presentation Day
             </div>
 
-            <div className="hero-divider">
-              <div className="hero-line" />
-              <div className="hero-star">✧</div>
-              <div className="hero-line" />
-            </div>
-
           </div>
 
         ) : showMessages && messages[messageIndex] ? (
 
-          <div
-            className={`message-card transition-all duration-700 ${
-              fade
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-95"
-            }`}
-          >
+          /* MESSAGES */
+          <div className="w-full flex justify-center items-center px-12">
 
-            <div className="message-heading">
-              Messages for Vicky
-            </div>
+            <div className="w-full max-w-5xl text-center flex flex-col items-center">
 
-            <div className="message-body">
-              {messages[messageIndex].message}
-            </div>
+              <div className="mb-6 flex-shrink-0">
 
-            <div className="message-name">
-              — {messages[messageIndex].name}
+                <div className="text-6xl font-extrabold text-white tracking-wide">
+                  Messages for Vicky
+                </div>
+
+              </div>
+
+              <div
+                className="
+                  relative
+                  overflow-hidden
+                  bg-white/10
+                  border
+                  border-white/10
+                  backdrop-blur-xl
+                  rounded-[3rem]
+                  px-16
+                  py-12
+                  shadow-[0_0_80px_rgba(0,0,0,0.35)]
+                  w-full
+                  max-w-5xl
+                  min-h-[42vh]
+                  max-h-[70vh]
+                  flex
+                  flex-col
+                  justify-between
+                "
+              >
+
+                {/* MESSAGE */}
+                <div
+                  style={{
+                    fontFamily: "'Caveat', cursive",
+                  }}
+                  className={`
+                    relative
+                    z-10
+                    text-white
+                    font-semibold
+                    tracking-[0.01em]
+                    text-left
+                    whitespace-pre-wrap
+                    break-words
+                    leading-[1.28]
+                    flex-1
+                    flex
+                    items-center
+
+                    ${
+                      messages[messageIndex].message.length < 120
+                        ? "text-[3rem]"
+                        : messages[messageIndex].message.length < 220
+                        ? "text-[2.45rem]"
+                        : messages[messageIndex].message.length < 350
+                        ? "text-[2rem]"
+                        : messages[messageIndex].message.length < 500
+                        ? "text-[1.65rem]"
+                        : messages[messageIndex].message.length < 700
+                        ? "text-[1.35rem]"
+                        : "text-[1.1rem]"
+                    }
+                  `}
+                >
+                  {messages[messageIndex].message}
+                </div>
+
+                {/* SIGNATURE */}
+                <div className="relative z-10 mt-8 flex justify-end">
+
+                  <div className="text-right">
+
+                    <div className="text-white/60 text-sm uppercase tracking-[0.35em] mb-1">
+                      Shared by
+                    </div>
+
+                    <div
+                      style={{
+                        fontFamily: "'Caveat', cursive",
+                      }}
+                      className="text-white font-bold leading-none text-[2.2rem]"
+                    >
+                      {messages[messageIndex].name}
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
 
           </div>
 
-        ) : photos.length > 0 ? (
+        ) : photos.length === 0 ? (
 
+          <div className="text-center">
+
+            <div className="text-6xl font-bold text-white mb-6">
+              Awaiting Photos
+            </div>
+
+          </div>
+
+        ) : (
+
+          /* PHOTOS */
           <div
-            className={`transition-all duration-[1200ms] ease-out ${
+            key={photos[currentIndex]?.id}
+            className={`transition-all duration-[1400ms] ease-out ${
               fade
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-[1.03]"
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-[1.03] translate-y-4 blur-[2px]"
             }`}
           >
 
             <div
-              className={`photo-card ${
-                polaroidStyles[
-                  currentIndex % polaroidStyles.length
-                ]
-              }`}
+              className={`
+                inline-flex
+                flex-col
+                items-center
+                justify-center
+                bg-white
+                p-5
+                pb-16
+                rounded-[0.6rem]
+                shadow-[0_18px_50px_rgba(0,0,0,0.38)]
+                max-w-[82vw]
+                transition-transform
+                duration-700
+                ${
+                  polaroidStyles[
+                    currentIndex % polaroidStyles.length
+                  ]
+                }
+              `}
             >
 
               <img
                 src={photos[currentIndex].imageUrl}
                 alt="Slideshow"
-                className="photo-image"
+                onLoad={() => setLoaded(true)}
+                className={`
+                  max-w-[74vw]
+                  max-h-[58vh]
+                  object-contain
+                  transition-all
+                  duration-700
+                  ease-out
+                  ${
+                    loaded
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-[1.02]"
+                  }
+                `}
               />
 
-              <div className="photo-footer">
+              <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
-                  src="/logo 4.png"
+                  src="/logo 5.png"
                   alt="Young Lilies"
-                  className="footer-logo"
+                  className="w-14 h-14 object-contain opacity-90"
                 />
 
-                <div className="memories-text">
+                <div
+                  style={{
+                    fontFamily: "var(--font-great-vibes)",
+                  }}
+                  className="text-[#222] text-[3.2rem] leading-none"
+                >
                   Memories
                 </div>
 
                 <img
-                  src="/logo.png"
+                  src="/logo 6.png"
                   alt="The Lilies"
-                  className="footer-logo"
+                  className="w-14 h-14 object-contain opacity-90"
                 />
 
               </div>
@@ -300,106 +546,11 @@ useEffect(() => {
 
           </div>
 
-        ) : (
-
-          <div className="text-5xl font-bold">
-            Awaiting Photos
-          </div>
-
         )}
 
       </div>
 
-      {!showIntro && (
-        <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
-
-          <img
-            src="/logo.png"
-            alt="Club Logo"
-            className="w-28 h-28 object-contain"
-          />
-
-          <div>
-            <div className="text-4xl font-extrabold tracking-wide">
-              Chatteris Town FC
-            </div>
-
-            <div className="bottom-script">
-              Presentation Day
-            </div>
-          </div>
-
-        </div>
-      )}
-
-      {!showIntro && (
-        <div className="absolute bottom-8 right-8 z-30 bg-white rounded-[2rem] p-4 shadow-2xl">
-
-          <div className="text-[#0A1E3D] text-center font-bold text-sm mb-3">
-            UPLOAD PHOTOS
-            <br />
-            & MESSAGES
-          </div>
-
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-            alt="QR"
-            className="rounded-xl w-[150px]"
-          />
-
-        </div>
-      )}
-
       <style jsx>{`
-        .intro-wrapper {
-          position: relative;
-          text-align: center;
-        }
-
-        .intro-atmosphere {
-          position: absolute;
-          inset: -120px;
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(190,220,255,0.24) 0%,
-              rgba(190,220,255,0.08) 38%,
-              rgba(0,0,0,0) 72%
-            );
-
-          filter: blur(40px);
-
-          animation: atmospherePulse 7s ease-in-out infinite;
-        }
-
-        .intro-logos {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 5rem;
-
-          margin-bottom: 3rem;
-        }
-
-        .hero-logo {
-          width: 220px;
-          height: 220px;
-          object-fit: contain;
-
-          filter:
-            brightness(2)
-            grayscale(1)
-            saturate(0)
-            contrast(1.35)
-            drop-shadow(0 0 22px rgba(255,255,255,0.65))
-            drop-shadow(0 0 55px rgba(180,210,255,0.35));
-          
-          opacity: 0.98;
-
-          animation: logoFloat 6s ease-in-out infinite;
-        }
-
         .hero-title {
           font-size: 7rem;
           font-weight: 900;
@@ -410,12 +561,10 @@ useEffect(() => {
             linear-gradient(
               to bottom,
               #ffffff 0%,
-              #f8fbff 12%,
-              #d9e5ff 26%,
-              #ffffff 40%,
-              #b7c9f5 55%,
-              #ffffff 72%
-              #d9e5ff 88%,
+              #f3f7ff 18%,
+              #c7d7ff 36%,
+              #ffffff 52%,
+              #9fb8f2 70%,
               #ffffff 100%
             );
 
@@ -423,12 +572,11 @@ useEffect(() => {
           -webkit-text-fill-color: transparent;
 
           text-shadow:
-            0 0 12px rgba(255,255,255,0.7),
-            0 0 32px rgba(200,220,255,0.5),
-            0 0 70px rgba(120,160,255,0.35);
+            0 0 4px rgba(255,255,255,0.55),
+            0 0 12px rgba(210,225,255,0.35),
+            0 0 28px rgba(120,160,255,0.18);
 
-          animation:
-            silverPulse 5s ease-in-out infinite;
+          animation: silverPulse 5s ease-in-out infinite;
         }
 
         .hero-script {
@@ -449,34 +597,24 @@ useEffect(() => {
           -webkit-text-fill-color: transparent;
 
           text-shadow:
-            0 0 18px rgba(255,255,255,0.5);
+            0 0 4px rgba(255,255,255,0.45),
+            0 0 10px rgba(200,220,255,0.18);
         }
 
-        .hero-divider {
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .hero-logo {
+          width: 220px;
+          height: 220px;
+          object-fit: contain;
 
-          margin-top: 2rem;
-        }
+          filter:
+            brightness(1.75)
+            grayscale(1)
+            saturate(0)
+            contrast(1.25)
+            drop-shadow(0 0 12px rgba(255,255,255,0.4))
+            drop-shadow(0 0 24px rgba(180,210,255,0.18));
 
-        .hero-line {
-          width: 180px;
-          height: 1px;
-
-          background:
-            linear-gradient(
-              to right,
-              rgba(255,255,255,0),
-              rgba(255,255,255,0.8),
-              rgba(255,255,255,0)
-            );
-        }
-
-        .hero-star {
-          margin: 0 1.5rem;
-          font-size: 2rem;
-          color: #eef4ff;
+          animation: logoFloat 6s ease-in-out infinite;
         }
 
         .ambient-orbs {
@@ -484,8 +622,6 @@ useEffect(() => {
           inset: 0;
           overflow: hidden;
           pointer-events: none;
-
-          z-index: 25;
         }
 
         .ambient-orbs span {
@@ -495,140 +631,64 @@ useEffect(() => {
           background:
             radial-gradient(
               circle,
-              rgba(255,255,255,0.55) 0%,
-              rgba(255,255,255,0.18) 38%,
-              rgba(255,255,255,0) 72%
+              rgba(255,255,255,0.3) 0%,
+              rgba(255,255,255,0.14) 45%,
+              rgba(255,255,255,0) 78%
             );
 
           filter:
-            blur(36px)
-            drop-shadow(0 0 80px rgba(255,255,255,0.5));
+            blur(24px)
+            drop-shadow(0 0 40px rgba(255,255,255,0.2));
 
           animation: floatOrb linear infinite;
         }
 
         .ambient-orbs span:nth-child(1) {
-          width: 420px;
-          height: 420px;
-          left: -8%;
-          top: 8%;
-          animation-duration: 28s;
+          width: 500px;
+          height: 500px;
+          left: -10%;
+          top: 5%;
+          animation-duration: 32s;
         }
 
         .ambient-orbs span:nth-child(2) {
-          width: 260px;
-          height: 260px;
-          left: 16%;
-          top: 72%;
-          animation-duration: 34s;
+          width: 320px;
+          height: 320px;
+          left: 12%;
+          top: 68%;
+          animation-duration: 26s;
         }
 
         .ambient-orbs span:nth-child(3) {
-          width: 520px;
-          height: 520px;
-          right: 4%;
-          top: 10%;
-          animation-duration: 40s;
+          width: 620px;
+          height: 620px;
+          right: -8%;
+          top: 8%;
+          animation-duration: 38s;
         }
 
         .ambient-orbs span:nth-child(4) {
-          width: 320px;
-          height: 320px;
-          right: -6%;
-          top: 60%;
-          animation-duration: 30s;
+          width: 260px;
+          height: 260px;
+          right: 12%;
+          bottom: 10%;
+          animation-duration: 24s;
         }
 
         .ambient-orbs span:nth-child(5) {
           width: 220px;
           height: 220px;
-          left: 42%;
-          top: 2%;
-          animation-duration: 24s;
+          left: 40%;
+          top: -4%;
+          animation-duration: 20s;
         }
 
         .ambient-orbs span:nth-child(6) {
           width: 420px;
           height: 420px;
-          left: 46%;
-          bottom: -10%;
-          animation-duration: 38s;
-        }
-
-        .photo-card {
-          background: white;
-          padding: 1.3rem;
-          padding-bottom: 3.5rem;
-          border-radius: 10px;
-
-          box-shadow:
-            0 25px 70px rgba(0,0,0,0.5);
-        }
-
-        .photo-image {
-          max-width: 74vw;
-          max-height: 58vh;
-          object-fit: contain;
-        }
-
-        .photo-footer {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 1.5rem;
-
-          margin-top: 1.5rem;
-        }
-
-        .footer-logo {
-          width: 60px;
-          height: 60px;
-          object-fit: contain;
-        }
-
-        .memories-text {
-          font-family: var(--font-great-vibes);
-          font-size: 3rem;
-          color: #222;
-        }
-
-        .message-card {
-          width: 100%;
-          max-width: 1100px;
-
-          background: rgba(255,255,255,0.08);
-
-          border: 1px solid rgba(255,255,255,0.1);
-
-          backdrop-filter: blur(20px);
-
-          border-radius: 48px;
-
-          padding: 4rem;
-        }
-
-        .message-heading {
-          font-size: 4rem;
-          font-weight: 800;
-          margin-bottom: 2rem;
-        }
-
-        .message-body {
-          font-size: 2.1rem;
-          line-height: 1.4;
-          white-space: pre-wrap;
-        }
-
-        .message-name {
-          margin-top: 2rem;
-          font-size: 2rem;
-          opacity: 0.8;
-        }
-
-        .bottom-script {
-          font-family: var(--font-great-vibes);
-          font-size: 3rem;
-          color: #dce7ff;
+          left: 45%;
+          bottom: -14%;
+          animation-duration: 34s;
         }
 
         @keyframes logoFloat {
@@ -645,60 +705,49 @@ useEffect(() => {
           }
         }
 
-        @keyframes atmospherePulse {
+        @keyframes silverPulse {
           0% {
-            opacity: 0.5;
+            filter: brightness(1);
           }
 
           50% {
-            opacity: 1;
+            filter: brightness(1.18);
           }
 
           100% {
-            opacity: 0.5;
+            filter: brightness(1);
           }
         }
 
         @keyframes floatOrb {
           0% {
             transform:
-              translate3d(0px,0px,0)
+              translate3d(0px, 0px, 0)
               scale(1);
           }
 
           25% {
             transform:
-              translate3d(40px,-30px,0)
-              scale(1.08);
+              translate3d(40px, -50px, 0)
+              scale(1.1);
           }
 
           50% {
             transform:
-              translate3d(-20px,-70px,0)
+              translate3d(-30px, -80px, 0)
               scale(0.96);
           }
 
           75% {
             transform:
-              translate3d(30px,-20px,0)
+              translate3d(50px, -20px, 0)
               scale(1.04);
           }
 
           100% {
             transform:
-              translate3d(0px,0px,0)
+              translate3d(0px, 0px, 0)
               scale(1);
-          }
-        }
-        @keyframes silverPulse {
-          0% {
-            filter: brightness(1);
-          }
-          50% {
-            filter: brightness(1.3);
-          }
-          100% {
-            filter: brightness(1);
           }
         }
       `}</style>
