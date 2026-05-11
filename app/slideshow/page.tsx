@@ -80,7 +80,7 @@ export default function SlideshowPage() {
 
       setTimeout(() => {
         setShowIntro(false);
-      }, 20000);
+      }, 60000);
 
     }, 600000);
 
@@ -238,22 +238,29 @@ export default function SlideshowPage() {
 
           {/* STAGE */}
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center scale-[1.02]"
             style={{
               backgroundImage: "url('/presentation-stage.jpg')",
             }}
           />
 
           {/* OVERLAY */}
-          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-[#020817]/35" />
 
-          {/* LIGHT BEAMS */}
-          <div className="moving-beam beam-left" />
-          <div className="moving-beam beam-right" />
-          <div className="moving-beam beam-center" />
+          {/* MOVING LIGHTS */}
+          <div className="stadium-beam beam-a" />
+          <div className="stadium-beam beam-b" />
 
-          {/* AMBIENT ORBS */}
-          <div className="ambient-orbs">
+          {/* CENTRE GLOW */}
+          <div className="flood-glow" />
+
+          {/* HAZE */}
+          <div className="absolute inset-0 haze-layer" />
+
+          {/* PARTICLES */}
+          <div className="cinema-particles">
+            <span />
+            <span />
             <span />
             <span />
             <span />
@@ -270,16 +277,14 @@ export default function SlideshowPage() {
 
           {/* FABRIC BACKGROUND */}
           <div
-            className="fabric-layer opacity-[0.8]"
+            className="fabric-layer opacity-[0.75]"
             style={{
               backgroundImage: "url('/stripe-bg.jpg')",
             }}
           >
 
-            {/* DARK OVERLAY */}
             <div className="absolute inset-0 bg-[#06142B]/55" />
 
-            {/* BACKGROUND LOGO */}
             <div className="absolute inset-0 flex items-center justify-center">
 
               <img
@@ -293,7 +298,7 @@ export default function SlideshowPage() {
           </div>
 
           {/* SLIDESHOW ORBS */}
-          <div className="ambient-orbs slideshow-orbs z-10">
+          <div className="ambient-orbs slideshow-orbs">
             <span />
             <span />
             <span />
@@ -367,24 +372,10 @@ export default function SlideshowPage() {
               Presentation Day
             </div>
 
-            {/* DIVIDER */}
-            <div className="flex items-center justify-center mt-8">
-
-              <div className="w-44 h-[1px] bg-white/50" />
-
-              <div className="mx-4 text-white text-3xl">
-                ✧
-              </div>
-
-              <div className="w-44 h-[1px] bg-white/50" />
-
-            </div>
-
           </div>
 
         ) : showMessages && messages[messageIndex] ? (
 
-          /* MESSAGES */
           <div className="w-full flex justify-center items-center px-12">
 
             <div className="w-full max-w-5xl text-center flex flex-col items-center">
@@ -398,67 +389,18 @@ export default function SlideshowPage() {
               </div>
 
               <div
-                className={`
-                  relative
-                  overflow-hidden
-                  bg-white/10
-                  border
-                  border-white/10
-                  backdrop-blur-xl
-                  rounded-[3rem]
-                  px-16
-                  py-12
-                  shadow-[0_0_80px_rgba(0,0,0,0.35)]
-                  w-full
-                  max-w-5xl
-                  min-h-[42vh]
-                  max-h-[70vh]
-                  flex
-                  flex-col
-                  justify-between
-                `}
+                className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-xl rounded-[3rem] px-16 py-12 shadow-[0_0_80px_rgba(0,0,0,0.35)] w-full max-w-5xl min-h-[42vh] max-h-[70vh] flex flex-col justify-between"
               >
 
-                {/* MESSAGE */}
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
                   }}
-                  className={`
-                    relative
-                    z-10
-                    text-white
-                    font-semibold
-                    tracking-[0.01em]
-                    text-left
-                    whitespace-pre-wrap
-                    break-words
-                    leading-[1.25]
-                    flex-1
-                    flex
-                    items-center
-
-                    ${
-                      messages[messageIndex].message.length < 120
-                        ? "text-[3.3rem]"
-                        : messages[messageIndex].message.length < 220
-                        ? "text-[2.7rem]"
-                        : messages[messageIndex].message.length < 350
-                        ? "text-[2.15rem]"
-                        : messages[messageIndex].message.length < 500
-                        ? "text-[1.75rem]"
-                        : messages[messageIndex].message.length < 700
-                        ? "text-[1.45rem]"
-                        : messages[messageIndex].message.length < 900
-                        ? "text-[1.2rem]"
-                        : "text-[1rem]"
-                    }
-                  `}
+                  className="relative z-10 text-white font-semibold tracking-[0.01em] text-left whitespace-pre-wrap break-words leading-[1.25] flex-1 flex items-center text-[2rem]"
                 >
                   {messages[messageIndex].message}
                 </div>
 
-                {/* SIGNATURE */}
                 <div className="relative z-10 mt-8 flex justify-end">
 
                   <div className="text-right">
@@ -498,7 +440,6 @@ export default function SlideshowPage() {
 
         ) : (
 
-          /* PHOTOS */
           <div
             key={photos[currentIndex]?.id}
             className={`transition-all duration-[1400ms] ease-out ${
@@ -509,24 +450,11 @@ export default function SlideshowPage() {
           >
 
             <div
-              className={`
-                inline-flex
-                flex-col
-                items-center
-                bg-white
-                p-5
-                pb-16
-                rounded-[0.6rem]
-                shadow-[0_18px_50px_rgba(0,0,0,0.38)]
-                max-w-[82vw]
-                transition-transform
-                duration-700
-                ${
-                  polaroidStyles[
-                    currentIndex % polaroidStyles.length
-                  ]
-                }
-              `}
+              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.6rem] shadow-[0_18px_50px_rgba(0,0,0,0.38)] max-w-[82vw] transition-transform duration-700 ${
+                polaroidStyles[
+                  currentIndex % polaroidStyles.length
+                ]
+              }`}
             >
 
               <img
@@ -535,7 +463,6 @@ export default function SlideshowPage() {
                 className="max-w-[74vw] max-h-[58vh] object-contain"
               />
 
-              {/* POLAROID FOOTER */}
               <div className="mt-7 flex items-center justify-center gap-5">
 
                 <img
@@ -680,127 +607,104 @@ export default function SlideshowPage() {
           animation: logoPulse 5s ease-in-out infinite;
         }
 
-        .moving-beam {
+        .stadium-beam {
           position: absolute;
-
-          top: -58%;
-          width: 520px;
-          height: 2100px;
-
-          opacity: 0.8;
-
+          top: -35%;
+          width: 420px;
+          height: 1900px;
           pointer-events: none;
+          opacity: 0.95;
+          mix-blend-mode: screen;
+          transform-origin: top center;
+
+          filter:
+            blur(10px)
+            drop-shadow(0 0 35px rgba(255,255,255,0.55));
+        }
+
+        .beam-a {
+          left: -8%;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.92) 0%,
+              rgba(255,255,255,0.45) 18%,
+              rgba(255,255,255,0.08) 50%,
+              rgba(255,255,255,0) 100%
+            );
+
+          clip-path: polygon(
+            49% 0%,
+            51% 0%,
+            100% 100%,
+            0% 100%
+          );
+
+          animation: sweepA 8s ease-in-out infinite;
+        }
+
+        .beam-b {
+          right: -8%;
+
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(255,255,255,0.92) 0%,
+              rgba(255,255,255,0.45) 18%,
+              rgba(255,255,255,0.08) 50%,
+              rgba(255,255,255,0) 100%
+            );
+
+          clip-path: polygon(
+            49% 0%,
+            51% 0%,
+            100% 100%,
+            0% 100%
+          );
+
+          animation: sweepB 8s ease-in-out infinite;
+        }
+
+        .flood-glow {
+          position: absolute;
+          inset: 0;
+
+          background:
+            radial-gradient(
+              circle at center,
+              rgba(255,255,255,0.22) 0%,
+              rgba(255,255,255,0.08) 28%,
+              rgba(255,255,255,0) 60%
+            );
 
           mix-blend-mode: screen;
 
-          transform-origin: top center;
+          animation: pulseGlow 6s ease-in-out infinite;
         }
 
-        .beam-left {
-          left: -16%;
-
+        .haze-layer {
           background:
-            linear-gradient(
-              to bottom,
-              rgba(255,255,255,0.9) 0%,
-              rgba(255,255,255,0.42) 16%,
-              rgba(255,255,255,0.08) 42%,
-              rgba(255,255,255,0) 100%
+            radial-gradient(
+              circle at 50% 60%,
+              rgba(255,255,255,0.08),
+              transparent 60%
             );
 
-          clip-path: polygon(
-            49% 0%,
-            53% 0%,
-            100% 100%,
-            0% 100%
-          );
-
-          filter:
-            blur(7px)
-            drop-shadow(0 0 28px rgba(255,255,255,0.7));
-
-          animation: sweepLeft 7s ease-in-out infinite;
-        }
-
-        .beam-right {
-          right: -16%;
-
-          background:
-            linear-gradient(
-              to bottom,
-              rgba(255,255,255,0.9) 0%,
-              rgba(255,255,255,0.42) 16%,
-              rgba(255,255,255,0.08) 42%,
-              rgba(255,255,255,0) 100%
-            );
-
-          clip-path: polygon(
-            47% 0%,
-            51% 0%,
-            100% 100%,
-            0% 100%
-          );
-
-          filter:
-            blur(7px)
-            drop-shadow(0 0 28px rgba(255,255,255,0.7));
-
-          animation: sweepRight 7s ease-in-out infinite;
-        }
-
-        .beam-center {
-          left: 50%;
-
-          width: 260px;
-
-          background:
-            linear-gradient(
-              to bottom,
-              rgba(255,255,255,0.38),
-              rgba(255,255,255,0)
-            );
-
-          clip-path: polygon(
-            49% 0%,
-            51% 0%,
-            70% 100%,
-            30% 100%
-          );
-
-          filter:
-            blur(12px)
-            drop-shadow(0 0 30px rgba(255,255,255,0.4));
-
-          transform: translateX(-50%);
-
-          animation: pulseCenter 4s ease-in-out infinite;
+          mix-blend-mode: screen;
         }
 
         .ambient-orbs {
           position: absolute;
           inset: 0;
-
           overflow: hidden;
-
           pointer-events: none;
-
-          z-index: 2;
+          z-index: 15;
         }
 
         .ambient-orbs span {
           position: absolute;
-
           border-radius: 999px;
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(255,255,255,0.22) 0%,
-              rgba(255,255,255,0.08) 45%,
-              rgba(255,255,255,0) 75%
-            );
-
-          filter: blur(10px);
 
           animation: floatOrb linear infinite;
         }
@@ -863,11 +767,37 @@ export default function SlideshowPage() {
               rgba(255,255,255,0) 78%
             );
 
-          filter: 
-            blur(22px)
-            drop-shadow(0 0 40px rgba(255,255,255,0.25));
+          filter:
+            blur(40px)
+            drop-shadow(0 0 90px rgba(255,255,255,0.55));
 
           opacity: 0.9;
+        }
+
+        .cinema-particles {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+        }
+
+        .cinema-particles span {
+          position: absolute;
+          border-radius: 999px;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(255,255,255,0.75) 0%,
+              rgba(255,255,255,0.15) 45%,
+              rgba(255,255,255,0) 75%
+            );
+
+          filter:
+            blur(8px)
+            drop-shadow(0 0 12px rgba(255,255,255,0.5));
+
+          animation: particleFloat linear infinite;
         }
 
         @keyframes silverShimmer {
@@ -898,37 +828,37 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes sweepLeft {
+        @keyframes sweepA {
           0% {
-            transform: rotate(-34deg);
+            transform: rotate(-26deg);
           }
 
           50% {
-            transform: rotate(-18deg);
+            transform: rotate(-10deg);
           }
 
           100% {
-            transform: rotate(-34deg);
+            transform: rotate(-26deg);
           }
         }
 
-        @keyframes sweepRight {
+        @keyframes sweepB {
           0% {
-            transform: rotate(34deg);
+            transform: rotate(26deg);
           }
 
           50% {
-            transform: rotate(18deg);
+            transform: rotate(10deg);
           }
 
           100% {
-            transform: rotate(34deg);
+            transform: rotate(26deg);
           }
         }
 
-        @keyframes pulseCenter {
+        @keyframes pulseGlow {
           0% {
-            opacity: 0.35;
+            opacity: 0.45;
           }
 
           50% {
@@ -936,7 +866,7 @@ export default function SlideshowPage() {
           }
 
           100% {
-            opacity: 0.35;
+            opacity: 0.45;
           }
         }
 
@@ -969,6 +899,34 @@ export default function SlideshowPage() {
             transform:
               translate3d(0px, 0px, 0)
               scale(1);
+          }
+        }
+
+        @keyframes particleFloat {
+          0% {
+            transform:
+              translate3d(0px, 0px, 0)
+              scale(1);
+
+            opacity: 0;
+          }
+
+          10% {
+            opacity: 1;
+          }
+
+          50% {
+            transform:
+              translate3d(35px, -120px, 0)
+              scale(1.4);
+          }
+
+          100% {
+            transform:
+              translate3d(-30px, -260px, 0)
+              scale(0.8);
+
+            opacity: 0;
           }
         }
       `}</style>
