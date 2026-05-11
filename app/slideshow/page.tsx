@@ -202,16 +202,27 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/blank-presentation-stage.jpg')",
-        }}
-      />
+      {/* BACKGROUND */}
+      {showIntro ? (
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/presentation-stage.jpg')",
+          }}
+        />
+      ) : (
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/blank-presentation-stage.jpg')",
+          }}
+        />
+      )}
 
       <div className="absolute inset-0 bg-[#02112B]/35" />
 
-      <div className="ambient-orbs slideshow-orbs z-10">
+      {/* ORBS */}
+      <div className="ambient-orbs z-10">
         <span />
         <span />
         <span />
@@ -220,6 +231,7 @@ export default function SlideshowPage() {
         <span />
       </div>
 
+      {/* FLASH */}
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
           flash ? "opacity-100" : "opacity-0"
@@ -230,6 +242,7 @@ export default function SlideshowPage() {
         }}
       />
 
+      {/* FULLSCREEN */}
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
@@ -239,43 +252,11 @@ export default function SlideshowPage() {
         </button>
       )}
 
+      {/* MAIN */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
         {showIntro ? (
-
-          <div className="text-center">
-
-            <div className="flex items-center justify-center gap-16 mb-12 flex-wrap">
-
-              <img
-                src="/logo 5.png"
-                alt="Young Lilies"
-                className="silver-logo w-[18vw] max-w-[220px] min-w-[120px] h-auto object-contain"
-              />
-
-              <img
-                src="/logo 6.png"
-                alt="The Lilies"
-                className="silver-logo w-[18vw] max-w-[220px] min-w-[120px] h-auto object-contain"
-              />
-
-            </div>
-
-            <h1 className="silver-title text-center">
-              CHATTERIS TOWN FC
-            </h1>
-
-            <div
-              style={{
-                fontFamily: "var(--font-great-vibes)",
-              }}
-              className="silver-script"
-            >
-              Presentation Day
-            </div>
-
-          </div>
-
+          <></>
         ) : showMessages && messages[messageIndex] ? (
 
           <div className="w-full flex justify-center items-center px-12">
@@ -288,60 +269,25 @@ export default function SlideshowPage() {
                 </div>
               </div>
 
-              <div
-                className={`
-                  relative
-                  overflow-hidden
-                  bg-white/10
-                  border
-                  border-white/10
-                  backdrop-blur-xl
-                  rounded-[3rem]
-                  px-16
-                  py-12
-                  shadow-[0_0_80px_rgba(0,0,0,0.35)]
-                  w-full
-                  max-w-5xl
-                  min-h-[42vh]
-                  max-h-[70vh]
-                  flex
-                  flex-col
-                  justify-between
-                `}
-              >
+              <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-xl rounded-[3rem] px-16 py-12 shadow-[0_0_80px_rgba(0,0,0,0.35)] w-full max-w-5xl min-h-[42vh] max-h-[70vh] flex flex-col justify-between">
 
                 <div
                   style={{
                     fontFamily: "'Caveat', cursive",
                   }}
-                  className={`
-                    relative
-                    z-10
-                    text-white
-                    font-semibold
-                    tracking-[0.01em]
-                    text-left
-                    whitespace-pre-wrap
-                    break-words
-                    leading-[1.28]
-                    flex-1
-                    flex
-                    items-center
-
-                    ${
-                      messages[messageIndex].message.length < 120
-                        ? "text-[3rem]"
-                        : messages[messageIndex].message.length < 220
-                        ? "text-[2.45rem]"
-                        : messages[messageIndex].message.length < 350
-                        ? "text-[2rem]"
-                        : messages[messageIndex].message.length < 500
-                        ? "text-[1.65rem]"
-                        : messages[messageIndex].message.length < 700
-                        ? "text-[1.35rem]"
-                        : "text-[1.1rem]"
-                    }
-                  `}
+                  className={`relative z-10 text-white font-semibold tracking-[0.01em] text-left whitespace-pre-wrap break-words leading-[1.28] flex-1 flex items-center ${
+                    messages[messageIndex].message.length < 120
+                      ? "text-[3rem]"
+                      : messages[messageIndex].message.length < 220
+                      ? "text-[2.45rem]"
+                      : messages[messageIndex].message.length < 350
+                      ? "text-[2rem]"
+                      : messages[messageIndex].message.length < 500
+                      ? "text-[1.65rem]"
+                      : messages[messageIndex].message.length < 700
+                      ? "text-[1.35rem]"
+                      : "text-[1.1rem]"
+                  }`}
                 >
                   {messages[messageIndex].message}
                 </div>
@@ -364,9 +310,7 @@ export default function SlideshowPage() {
                 </div>
 
               </div>
-
             </div>
-
           </div>
 
         ) : photos.length === 0 ? (
@@ -389,36 +333,14 @@ export default function SlideshowPage() {
           >
 
             <div
-              className={`
-                inline-flex
-                flex-col
-                items-center
-                bg-white
-                p-5
-                pb-16
-                rounded-[0.6rem]
-                shadow-[0_18px_50px_rgba(0,0,0,0.38)]
-                max-w-[82vw]
-                transition-transform
-                duration-700
-                ${
-                  polaroidStyles[
-                    currentIndex % polaroidStyles.length
-                  ]
-                }
-              `}
+              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.6rem] shadow-[0_18px_50px_rgba(0,0,0,0.38)] transition-transform duration-700 ${
+                polaroidStyles[
+                  currentIndex % polaroidStyles.length
+                ]
+              }`}
             >
 
-              <div className={`
-                flex
-                items-center
-                justify-center
-                overflow-hidden
-                bg-[#f4f4f4]
-                max-w-[74vw]
-                max-h-[58vh]
-              `}
-              >
+              <div className="flex items-center justify-center overflow-hidden bg-[#f4f4f4] max-w-[74vw] max-h-[58vh]">
 
                 <img
                   src={photos[currentIndex].imageUrl}
@@ -432,7 +354,7 @@ export default function SlideshowPage() {
 
                 <img
                   src="/logo.png"
-                  alt="Young Lilies"
+                  alt="Logo"
                   className="w-14 h-14 object-contain opacity-90"
                 />
 
@@ -447,33 +369,30 @@ export default function SlideshowPage() {
 
                 <img
                   src="/logo.png"
-                  alt="The Lilies"
+                  alt="Logo"
                   className="w-14 h-14 object-contain opacity-90"
                 />
 
               </div>
-
             </div>
-
           </div>
-
         )}
-
       </div>
 
+      {/* BRANDING */}
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
 
           <img
             src="/logo.png"
             alt="Club Logo"
-            className="w-32 h-32 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+            className="w-32 h-32 object-contain"
           />
 
           <div className="leading-none">
 
             <div
-              className="text-white font-black tracking-wide uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]"
+              className="text-white font-black tracking-wide uppercase"
               style={{
                 fontSize: "clamp(2rem, 3vw, 3.4rem)",
               }}
@@ -482,7 +401,7 @@ export default function SlideshowPage() {
             </div>
 
             <div
-              className="text-slate-100 mt-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]"
+              className="text-slate-100 mt-1"
               style={{
                 fontFamily: "var(--font-great-vibes)",
                 fontSize: "clamp(2.3rem, 3vw, 4rem)",
@@ -492,79 +411,30 @@ export default function SlideshowPage() {
             </div>
 
           </div>
-
         </div>
       )}
 
-        <div className="absolute bottom-8 right-8 z-30">
+      {/* QR */}
+      <div className="absolute bottom-8 right-8 z-30">
 
-          <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
+        <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
 
-            <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
-              ADD PHOTOS
-              <br />
-              & MESSAGES
-            </div>
-
-            <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-              alt="QR Code"
-              className="rounded-xl w-[180px] h-[180px]"
-            />
-
+          <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
+            ADD PHOTOS
+            <br />
+            & MESSAGES
           </div>
 
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
+            alt="QR Code"
+            className="rounded-xl w-[180px] h-[180px]"
+          />
+
         </div>
+      </div>
 
       <style jsx>{`
-
-        .silver-title {
-          font-size: clamp(3.5rem, 8vw, 7rem);
-          font-weight: 900;
-          letter-spacing: 0.08em;
-          line-height: 1;
-          text-transform: uppercase;
-
-          background:
-            linear-gradient(
-              to bottom,
-              #ffffff 0%,
-              #f8fafc 18%,
-              #d1d5db 38%,
-              #ffffff 52%,
-              #9ca3af 72%,
-              #f8fafc 100%
-            );
-
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-
-          text-shadow:
-            0 0 12px rgba(255,255,255,0.35),
-            0 0 28px rgba(255,255,255,0.18);
-        }
-
-        .silver-script {
-          margin-top: 2rem;
-          font-size: clamp(2.5rem, 6vw, 5.2rem);
-          color: white;
-
-          text-shadow:
-            0 0 10px rgba(255,255,255,0.35),
-            0 0 22px rgba(255,255,255,0.18);
-        }
-
-        .silver-logo {
-          filter:
-            brightness(1.05)
-            contrast(1.08)
-            saturate(0.9)
-            drop-shadow(0 0 8px rgba(255,255,255,0.22));
-
-          opacity: 0.96;
-
-          animation: logoPulse 6s ease-in-out infinite;
-        }
 
         .ambient-orbs {
           position: absolute;
@@ -636,54 +506,29 @@ export default function SlideshowPage() {
           animation-duration: 38s;
         }
 
-        @keyframes logoPulse {
-          0% {
-            transform: scale(1);
-          }
-
-          50% {
-            transform: scale(1.03);
-          }
-
-          100% {
-            transform: scale(1);
-          }
-        }
-
         @keyframes floatOrb {
           0% {
-            transform:
-              translate3d(0px, 0px, 0)
-              scale(1);
+            transform: translate3d(0px, 0px, 0) scale(1);
           }
 
           25% {
-            transform:
-              translate3d(30px, -40px, 0)
-              scale(1.08);
+            transform: translate3d(30px, -40px, 0) scale(1.08);
           }
 
           50% {
-            transform:
-              translate3d(-20px, -70px, 0)
-              scale(0.96);
+            transform: translate3d(-20px, -70px, 0) scale(0.96);
           }
 
           75% {
-            transform:
-              translate3d(40px, -30px, 0)
-              scale(1.04);
+            transform: translate3d(40px, -30px, 0) scale(1.04);
           }
 
           100% {
-            transform:
-              translate3d(0px, 0px, 0)
-              scale(1);
+            transform: translate3d(0px, 0px, 0) scale(1);
           }
         }
 
       `}</style>
-
     </main>
   );
 }
