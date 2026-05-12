@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-
 import {
   collection,
   onSnapshot,
@@ -32,46 +31,20 @@ const INTRO_REPEAT_INTERVAL = 600000;
 const PHOTO_DURATION = 8000;
 const PHOTO_FADE_DURATION = 650;
 
-const MESSAGE_MIN_DURATION = 9000;
-const MESSAGE_MAX_DURATION = 30000;
-
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [messages, setMessages] = useState<
-    GuestbookMessage[]
-  >([]);
+  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
 
-  const [currentPhotoIndex, setCurrentPhotoIndex] =
-    useState(0);
-
-  const [currentMessageIndex, setCurrentMessageIndex] =
-    useState(0);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
   const [showIntro, setShowIntro] = useState(true);
-
-  const [showMessages, setShowMessages] =
-    useState(false);
-
-  const [showPartyMode, setShowPartyMode] =
-    useState(false);
+  const [showMessages, setShowMessages] = useState(false);
+  const [showPartyMode, setShowPartyMode] = useState(false);
 
   const [fade, setFade] = useState(true);
-
   const [flash, setFlash] = useState(false);
-
-  const [isFullscreen, setIsFullscreen] =
-    useState(false);
-
-  const loadedImages = useRef(new Set<string>());
-
-  const photoIntervalRef =
-    useRef<NodeJS.Timeout | null>(null);
-
-  const flashTimeoutRef =
-    useRef<NodeJS.Timeout | null>(null);
-
-  const fadeTimeoutRef =
-    useRef<NodeJS.Timeout | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const audioLevelRef = useRef(1);
 
@@ -85,7 +58,7 @@ export default function SlideshowPage() {
         await document.exitFullscreen();
       }
     } catch (err) {
-      console.error("Fullscreen failed:", err);
+      console.error(err);
     }
   };
 
@@ -124,13 +97,10 @@ export default function SlideshowPage() {
         audioContext = new AudioContext();
 
         analyser = audioContext.createAnalyser();
-
         analyser.fftSize = 256;
 
         microphone =
-          audioContext.createMediaStreamSource(
-            stream
-          );
+          audioContext.createMediaStreamSource(stream);
 
         microphone.connect(analyser);
 
@@ -143,34 +113,26 @@ export default function SlideshowPage() {
         const updateAudio = () => {
           analyser.getByteFrequencyData(dataArray);
 
+          const bass = dataArray.slice(0, 18);
+
           let bassSum = 0;
 
-          for (let i = 0; i < 18; i++) {
-            bassSum += dataArray[i];
+          for (let i = 0; i < bass.length; i++) {
+            bassSum += bass[i];
           }
 
-          const bassAverage = bassSum / 18;
+          const bassAverage = bassSum / bass.length;
 
-          const kickStrength = Math.max(
-            0,
-            bassAverage - 110
+          const targetLevel = Math.min(
+            4,
+            1 + bassAverage / 28
           );
 
-          const targetLevel =
-            1 + kickStrength / 4.5;
+          smoothedLevel =
+            smoothedLevel * 0.76 +
+            targetLevel * 0.24;
 
-          smoothedLevel = Math.max(
-            targetLevel,
-            smoothedLevel * 0.88
-          );
-
-          smoothedLevel = Math.min(
-            smoothedLevel,
-            10
-          );
-
-          audioLevelRef.current =
-            smoothedLevel;
+          audioLevelRef.current = smoothedLevel;
 
           document.documentElement.style.setProperty(
             "--audio-reactivity",
@@ -182,10 +144,7 @@ export default function SlideshowPage() {
 
         updateAudio();
       } catch (err) {
-        console.error(
-          "Microphone access failed:",
-          err
-        );
+        console.error(err);
       }
     };
 
@@ -228,7 +187,7 @@ export default function SlideshowPage() {
     return () => clearInterval(partyInterval);
   }, []);
 
-  /* FIRESTORE PHOTOS */
+  /* FIRESTORE */
 
   useEffect(() => {
     const q = query(
@@ -249,8 +208,6 @@ export default function SlideshowPage() {
 
     return () => unsubscribe();
   }, []);
-
-  /* FIRESTORE MESSAGES */
 
   useEffect(() => {
     const q = query(
@@ -275,26 +232,6 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* PRELOAD */
-
-  useEffect(() => {
-    photos.forEach((photo) => {
-      if (
-        loadedImages.current.has(photo.imageUrl)
-      ) {
-        return;
-      }
-
-      const img = new window.Image();
-
-      img.src = photo.imageUrl;
-
-      img.onload = () => {
-        loadedImages.current.add(photo.imageUrl);
-      };
-    });
-  }, [photos]);
-
   /* PHOTO LOOP */
 
   useEffect(() => {
@@ -307,48 +244,35 @@ export default function SlideshowPage() {
       return;
     }
 
-    photoIntervalRef.current = setInterval(() => {
+    const interval = setInterval(() => {
       setFlash(true);
 
-      if (flashTimeoutRef.current) {
-        clearTimeout(flashTimeoutRef.current);
-      }
-
-      flashTimeoutRef.current = setTimeout(() => {
+      setTimeout(() => {
         setFlash(false);
-      }, 100);
+      }, 120);
 
       setFade(false);
 
-      if (fadeTimeoutRef.current) {
-        clearTimeout(fadeTimeoutRef.current);
-      }
-
-      fadeTimeoutRef.current = setTimeout(() => {
+      setTimeout(() => {
         setCurrentPhotoIndex((prev) => {
-          if (photos.length <= 1)
-            return prev;
+          if (photos.length <= 1) return prev;
 
-          let nextIndex = prev;
+          let next = prev;
 
-          while (nextIndex === prev) {
-            nextIndex = Math.floor(
+          while (next === prev) {
+            next = Math.floor(
               Math.random() * photos.length
             );
           }
 
-          return nextIndex;
+          return next;
         });
 
         setFade(true);
       }, PHOTO_FADE_DURATION);
     }, PHOTO_DURATION);
 
-    return () => {
-      if (photoIntervalRef.current) {
-        clearInterval(photoIntervalRef.current);
-      }
-    };
+    return () => clearInterval(interval);
   }, [
     photos,
     showIntro,
@@ -356,8 +280,8 @@ export default function SlideshowPage() {
     showPartyMode,
   ]);
 
-  const currentPhoto =
-    photos[currentPhotoIndex];
+  const currentPhoto = photos[currentPhotoIndex];
+  const currentMessage = messages[currentMessageIndex];
 
   const polaroidStyle = useMemo(() => {
     const styles = [
@@ -397,30 +321,15 @@ export default function SlideshowPage() {
         />
       )}
 
-      {/* ORBS */}
+      {/* TRAIL */}
 
-      <div className="ambient-orbs absolute inset-0 z-[2]">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-
-      {/* OVERLAY */}
-
-      <div className="absolute inset-0 bg-[#02112B]/10 z-[4]" />
-
-      {/* REACTIVE BORDER */}
-
-      <div className="edge-glow absolute inset-0 z-[999]" />
+      <div className="edge-trail" />
 
       {/* FLASH */}
 
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
-          flash
-            ? "opacity-100"
-            : "opacity-0"
+          flash ? "opacity-100" : "opacity-0"
         }`}
         style={{
           background:
@@ -443,7 +352,10 @@ export default function SlideshowPage() {
 
       <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
 
-        {showPartyMode ? (
+        {showIntro ? (
+          <></>
+        ) : showPartyMode ? (
+
           <div className="party-mode">
 
             <div className="equaliser">
@@ -466,7 +378,9 @@ export default function SlideshowPage() {
             </div>
 
           </div>
+
         ) : currentPhoto ? (
+
           <div
             key={currentPhoto.id}
             className={`transition-all duration-[900ms] ease-out ${
@@ -475,11 +389,11 @@ export default function SlideshowPage() {
                 : "opacity-0 scale-[1.03] translate-y-4 blur-[2px]"
             }`}
           >
-            <div className="photo-shadow" />
 
             <div
               className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem] shadow-[0_18px_70px_rgba(0,0,0,0.5)] transition-transform duration-700 animate-polaroidFloat ${polaroidStyle}`}
             >
+
               <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
 
                 <img
@@ -489,15 +403,54 @@ export default function SlideshowPage() {
                 />
 
               </div>
+
             </div>
           </div>
-        ) : null}
 
+        ) : null}
       </div>
+
+      {/* BRANDING */}
+
+      {!showIntro && (
+        <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
+
+          <img
+            src="/logo.png"
+            alt="Club logo"
+            className="w-32 h-32 object-contain"
+          />
+
+          <div className="leading-none">
+
+            <div
+              className="text-white font-black uppercase tracking-wide"
+              style={{
+                fontSize:
+                  "clamp(2rem, 3vw, 3.5rem)",
+              }}
+            >
+              Chatteris Town FC
+            </div>
+
+            <div
+              className="text-slate-100 mt-1"
+              style={{
+                fontSize:
+                  "clamp(2.3rem, 3vw, 4rem)",
+              }}
+            >
+              Presentation Day
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* QR */}
 
       <div className="absolute bottom-8 right-8 z-30">
+
         <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
 
           <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
@@ -517,169 +470,225 @@ export default function SlideshowPage() {
 
       <style jsx>{`
 
-        .edge-glow {
+        .edge-trail {
           position: absolute;
           inset: 0;
-
           pointer-events: none;
-
-          overflow: hidden;
+          z-index: 25;
         }
 
-        .edge-glow::after {
+        .edge-trail::before {
           content: "";
-
-          position: absolute;
-          inset: 0;
-
-          box-shadow:
-            inset 0 0
-              calc(
-                70px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,0.28),
-
-            inset 0 0
-              calc(
-                180px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(255,255,255,0.12);
-
-          transition:
-            box-shadow 0.06s linear;
-        }
-
-        .edge-glow::before {
-          content: "";
-
           position: absolute;
 
-          width: 30%;
-          height: 12px;
+          width: 240px;
+          height: 8px;
 
           top: 0;
-          left: -30%;
+          left: -240px;
 
           border-radius: 999px;
 
-          background:
-            linear-gradient(
-              90deg,
-              transparent 0%,
-              rgba(120,190,255,0.25) 15%,
-              rgba(120,190,255,1) 35%,
-              rgba(255,255,255,1) 50%,
-              rgba(120,190,255,1) 65%,
-              transparent 100%
-            );
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(120,190,255,0.2) 10%,
+            rgba(120,190,255,1) 35%,
+            rgba(255,255,255,1) 50%,
+            rgba(120,190,255,1) 65%,
+            transparent 100%
+          );
 
           box-shadow:
-            0 0 25px rgba(120,190,255,1),
-
-            0 0
-              calc(
-                120px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1),
-
-            0 0
-              calc(
-                260px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(255,255,255,1);
+            0 0 30px rgba(120,190,255,1),
+            0 0 calc(120px * var(--audio-reactivity, 1)) rgba(120,190,255,1),
+            0 0 calc(220px * var(--audio-reactivity, 1)) rgba(255,255,255,0.9);
 
           transform:
-            scaleY(
+            scale(
               calc(
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 2.5
+                ) * 0.5
               )
             );
 
-          transition:
-            transform 0.05s linear,
-            box-shadow 0.05s linear;
+          animation:
+            borderTrail 28s linear infinite;
+        }
+
+        .party-mode {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .equaliser {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          gap: 10px;
+          padding: 0 120px 120px;
+        }
+
+        .eq-bar {
+          width: 18px;
+          height: 110px;
+          border-radius: 999px;
+
+          background: linear-gradient(
+            to top,
+            rgba(120,190,255,0.2),
+            rgba(120,190,255,1),
+            rgba(255,255,255,1)
+          );
 
           animation:
-            borderTrail 34s linear infinite;
+            eqDance 0.45s ease-in-out infinite alternate;
+        }
+
+        .party-logo {
+          width: 240px;
+
+          transform:
+            scale(
+              calc(
+                1 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 0.2
+              )
+            );
+
+          filter:
+            drop-shadow(
+              0 0 calc(40px * var(--audio-reactivity, 1)) rgba(120,190,255,1)
+            )
+            hue-rotate(
+              calc(
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 180deg
+              )
+            );
         }
 
         @keyframes borderTrail {
-
           0% {
             top: 0;
-            left: -30%;
-            width: 30%;
-            height: 12px;
+            left: -240px;
+            width: 240px;
+            height: 8px;
           }
 
           24% {
             top: 0;
-            left: 100%;
-            width: 30%;
-            height: 12px;
+            left: calc(100% + 240px);
+            width: 240px;
+            height: 8px;
           }
 
           25% {
-            top: -30%;
-            left: calc(100% - 12px);
-            width: 12px;
-            height: 30%;
+            top: -240px;
+            left: calc(100% - 8px);
+            width: 8px;
+            height: 240px;
           }
 
           49% {
-            top: 100%;
-            left: calc(100% - 12px);
-            width: 12px;
-            height: 30%;
+            top: calc(100% + 240px);
+            left: calc(100% - 8px);
+            width: 8px;
+            height: 240px;
           }
 
           50% {
-            top: calc(100% - 12px);
-            left: 100%;
-            width: 30%;
-            height: 12px;
+            top: calc(100% - 8px);
+            left: calc(100% + 240px);
+            width: 240px;
+            height: 8px;
           }
 
           74% {
-            top: calc(100% - 12px);
-            left: -30%;
-            width: 30%;
-            height: 12px;
+            top: calc(100% - 8px);
+            left: -240px;
+            width: 240px;
+            height: 8px;
           }
 
           75% {
-            top: 100%;
+            top: calc(100% + 240px);
             left: 0;
-            width: 12px;
-            height: 30%;
+            width: 8px;
+            height: 240px;
           }
 
           99% {
-            top: -30%;
+            top: -240px;
             left: 0;
-            width: 12px;
-            height: 30%;
+            width: 8px;
+            height: 240px;
           }
 
           100% {
             top: 0;
-            left: -30%;
-            width: 30%;
-            height: 12px;
+            left: -240px;
+            width: 240px;
+            height: 8px;
           }
         }
 
-      `}</style>
+        @keyframes eqDance {
+          from {
+            transform: scaleY(0.35);
+          }
 
+          to {
+            transform: scaleY(1);
+          }
+        }
+
+        @keyframes kenburns {
+          0% {
+            transform: scale(1);
+          }
+
+          100% {
+            transform: scale(1.06);
+          }
+        }
+
+        @keyframes polaroidFloat {
+          0% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(-8px);
+          }
+
+          100% {
+            transform: translateY(0px);
+          }
+        }
+
+        .animate-kenburns {
+          animation: kenburns 12s ease-in-out forwards;
+        }
+
+        .animate-polaroidFloat {
+          animation: polaroidFloat 7s ease-in-out infinite;
+        }
+
+      `}</style>
     </main>
   );
 }
+
 
 
