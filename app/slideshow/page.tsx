@@ -749,11 +749,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 34%;
-          height: 14px;
+          width: 22%;
+          height: 6px;
 
           top: 0;
-          left: -34%;
+          left: -22%;
 
           border-radius: 999px;
 
@@ -771,54 +771,43 @@ export default function SlideshowPage() {
           opacity: 1;
 
           transform:
-            perspective(1200px)
-
-            translateZ(
-              calc(
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 260px
-              )
-            )
-            
             scale(
               calc(
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.8
+                ) * 0.18
               )
             )
-            
             scaleY(
               calc(
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 4
+                ) * 1.4
               )
-            ); 
+            );
 
           box-shadow:
-            0 0 40px rgba(120,190,255,1),
+            0 0 18px rgba(120,190,255,1),
 
             0 0
               calc(
-                220px *
+                80px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,1),
 
             0 0
               calc(
-                500px *
+                180px *
                 var(--audio-reactivity, 1)
               )
               rgba(255,255,255,0.95);
             
             0 0
               calc(
-                800px *
+                320px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,0.9);
@@ -829,12 +818,12 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 1.8
+                ) * 1.2
               )
             );
 
           transition:
-            transorm 0.08s linear,
+            transform 0.08s linear,
             box-shadow 0.08s linear,
             filter 0.08s linear;
 
