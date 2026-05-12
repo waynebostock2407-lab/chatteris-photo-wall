@@ -404,7 +404,7 @@ export default function SlideshowPage() {
         <span />
       </div>
 
-      {/* EDGE GLOW */}
+      {/* MOVING EDGE GLOW */}
       <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* DARK OVERLAY */}
@@ -500,7 +500,6 @@ export default function SlideshowPage() {
 
         ) : photos.length === 0 ? (
 
-          /* EMPTY */
           <div className="text-center">
             <div className="text-6xl font-black">
               Awaiting Photos
@@ -632,8 +631,8 @@ export default function SlideshowPage() {
           background:
             radial-gradient(
               circle,
-              rgba(120,190,255,0.55) 0%,
-              rgba(120,190,255,0.22) 28%,
+              rgba(120,190,255,0.45) 0%,
+              rgba(120,190,255,0.16) 28%,
               rgba(120,190,255,0) 70%
             );
 
@@ -641,7 +640,7 @@ export default function SlideshowPage() {
 
           filter: blur(90px);
 
-          opacity: 0.7;
+          opacity: 0.55;
 
           animation: floatOrb linear infinite;
         }
@@ -700,33 +699,120 @@ export default function SlideshowPage() {
 
           pointer-events: none;
 
-          box-shadow:
-            inset 0 0 120px rgba(120,190,255,0.22),
-            inset 0 0 220px rgba(120,190,255,0.12),
-            inset 0 0 320px rgba(255,255,255,0.06);
-
-          border:
-            1px solid rgba(180,220,255,0.14);
-
-          opacity: 1;
-
-          animation:
-            edgePulse 6s ease-in-out infinite;
-
-          mix-blend-mode: screen;
+          overflow: hidden;
         }
 
-        @keyframes edgePulse {
-          0% {
-            opacity: 0.7;
+        .edge-glow::before {
+          content: "";
+
+          position: absolute;
+
+          inset: -2px;
+
+          padding: 3px;
+
+          background:
+            conic-gradient(
+              from 0deg,
+              transparent 0deg,
+              transparent 40deg,
+
+              rgba(120,190,255,0.95) 75deg,
+
+              rgba(255,255,255,1) 90deg,
+
+              rgba(120,190,255,0.95) 105deg,
+
+              transparent 140deg,
+              transparent 360deg
+            );
+
+          animation:
+            borderTrail 5s linear infinite;
+
+          -webkit-mask:
+            linear-gradient(#fff 0 0)
+              content-box,
+            linear-gradient(#fff 0 0);
+
+          -webkit-mask-composite: xor;
+
+          mask-composite: exclude;
+
+          filter:
+            blur(2px)
+            drop-shadow(
+              0 0 12px
+                rgba(120,190,255,0.95)
+            )
+            drop-shadow(
+              0 0 28px
+                rgba(120,190,255,0.65)
+            )
+            drop-shadow(
+              0 0 48px
+                rgba(255,255,255,0.35)
+            );
+
+          opacity: 0.95;
+        }
+
+        .edge-glow::after {
+          content: "";
+
+          position: absolute;
+
+          inset: -2px;
+
+          padding: 2px;
+
+          background:
+            conic-gradient(
+              from 180deg,
+              transparent 0deg,
+              rgba(255,255,255,0.9) 30deg,
+              transparent 60deg
+            );
+
+          animation:
+            borderTrailReverse 12s linear infinite;
+
+          -webkit-mask:
+            linear-gradient(#fff 0 0)
+              content-box,
+            linear-gradient(#fff 0 0);
+
+          -webkit-mask-composite: xor;
+
+          mask-composite: exclude;
+
+          filter:
+            blur(8px)
+            drop-shadow(
+              0 0 20px
+                rgba(255,255,255,0.5)
+            );
+
+          opacity: 0.5;
+        }
+
+        @keyframes borderTrail {
+          from {
+            transform: rotate(0deg);
           }
 
-          50% {
-            opacity: 1;
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes borderTrailReverse {
+          from {
+            transform: rotate(360deg);
           }
 
-          100% {
-            opacity: 0.7;
+          to {
+            transform: rotate(0deg);
           }
         }
 
