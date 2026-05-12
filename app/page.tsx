@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
 export default function UploadPage() {
 
-  const [selectedFile, setSelectedFile] =
-    useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] =
+    useState<File[]>([]);
 
   const [name, setName] = useState("");
 
@@ -13,11 +20,19 @@ export default function UploadPage() {
 
   const submitMessage = async () => {
 
-    if (!name || !message) return;
+    if (!message) return;
 
     try {
 
-      console.log("Submitting message");
+      await addDoc(
+        collection(db, "guestbook"),
+        {
+          name: name || "Anonymous",
+          message: message,
+          approved: false,
+          createdAt: serverTimestamp(),
+        }
+      );
 
       setName("");
       setMessage("");
@@ -29,7 +44,6 @@ export default function UploadPage() {
       console.error(error);
 
     }
-
   };
 
   return (
@@ -130,7 +144,7 @@ export default function UploadPage() {
             "
           >
             Upload your favourite photos and
-            messages for Presentation Day —
+            messages for Presentation Day
             and see them featured LIVE on the
             big screen during the event.
           </p>
@@ -210,10 +224,10 @@ export default function UploadPage() {
               className="hidden"
               onChange={(e) => {
 
-                if (e.target.files?.[0]) {
+                if (e.target.files){
 
-                  setSelectedFile(
-                    e.target.files[0]
+                  setSelectedFiles(
+                    Array.from(e.target.files)
                   );
 
                 }
@@ -258,9 +272,9 @@ export default function UploadPage() {
                   font-semibold
                 "
               >
-                {selectedFile
-                  ? selectedFile.name
-                  : "No file chosen"}
+                {selectedFiles.length > 0
+                  ? `${selectedFiles.length} files selected`
+                  : "No files chosen"}
               </div>
 
             </div>
