@@ -482,7 +482,7 @@ export default function SlideshowPage() {
       </div>
 
       {/* GLOW */}
-      <div className="edge-glow absolute inset-0 z-[3]" />
+      <div className="edge-glow absolute inset-0 z-[15]" />
 
       {/* OVERLAY */}
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
@@ -812,10 +812,11 @@ export default function SlideshowPage() {
 
           overflow: hidden;
 
-          mix-blend-mode: screen;
-
           border:
-            1px solid rgba(140,190,255,0.16);
+            1px solid rgba(120,190,255,0.22);
+          
+          box-shadow:
+            inset 0 0 40px rgba(120,190,255,0.12);
         }
 
         .edge-glow::before {
@@ -823,11 +824,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 26%;
+          width: 24%;
           height: 6px;
 
           top: 0;
-          left: -26%;
+          left: -24%;
 
           border-radius: 999px;
 
@@ -836,9 +837,9 @@ export default function SlideshowPage() {
               90deg,
               transparent 0%,
               rgba(120,190,255,0.25) 10%,
-              rgba(120,190,255,1) 30%,
+              rgba(120,190,255,1) 35%,
               rgba(255,255,255,1) 50%,
-              rgba(120,190,255,1) 70%,
+              rgba(120,190,255,1) 65%,
               transparent 100%
             );
 
@@ -849,24 +850,24 @@ export default function SlideshowPage() {
             
             0 0
               calc(
-                30px *
+                24px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.95),
+              rgba(120,190,255,1),
 
             0 0
               calc(
-                70px *
+                60px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.7),
+              rgba(120,190,255,0.9),
 
             0 0
               calc(
                 120px *
                 var(--audio-reactivity, 1)
               )
-              rgba(255,255,255,0.4);
+              rgba(255,255,255,0.55);
             
           transform:
             scaleY(
@@ -874,7 +875,7 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(audio-reactivity,1) - 1
-                ) * 0.5
+                ) * 0.35
               )
             );
 
@@ -940,7 +941,7 @@ export default function SlideshowPage() {
           justify-content: center;
           gap: 10px;
 
-          padding: 0 80px 100px;
+          padding: 0 120px 220px;
 
           opacity: 0.82;
         }
@@ -948,7 +949,7 @@ export default function SlideshowPage() {
         .eq-bar {
           width: 18px;
 
-          height: 160px;
+          height: 110px;
 
           border-radius: 999px;
 
@@ -979,8 +980,36 @@ export default function SlideshowPage() {
         .party-logo {
           width: 240px;
 
-          animation:
-            logoPulse 2s ease-in-out infinite;
+          transform:
+            scale(
+              calc(
+                1 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 0.18
+              )
+            );
+
+          filter:
+            drop-shadow(
+              0 0
+              calc(
+                18px *
+                var(--audio-reactivity, 1)
+              )
+             rgba(120,190,255,1)
+            )
+            hue-rotate(
+              calc(
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 120deg
+              )
+            );
+
+          transition:
+            transform 0.08s linear,
+            filter 0.08s linear;
         }
 
         .party-title {
