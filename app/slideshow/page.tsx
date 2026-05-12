@@ -148,7 +148,7 @@ export default function SlideshowPage() {
         /* MASSIVE REACTION */
 
         const targetLevel =
-          1 + kickStrength / 10;
+          1 + kickStrength / 4.5;
 
         /* FAST ATTACK / SLOW RELEASE */
 
@@ -433,13 +433,13 @@ export default function SlideshowPage() {
         <span />
       </div>
 
+      {/*OVERLAY */}
+
+      <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
+
       {/* EDGE GLOW */}
 
-      <div className="edge-glow absolute inset-0 z-[25]" />
-
-      {/* OVERLAY */}
-
-      <div className="absolute inset-0 bg-[#02112B]/8 z-[4]" />
+      <div className="edge-glow absolute inset-0 z-[40]" />
 
       {/* FLASH */}
 
@@ -769,90 +769,93 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 28%;
-          height: 10px;
+          width: 30%;
+          height: 12px;
 
           top: 0;
-          left: -28%;
+          left: -30%;
 
           border-radius: 999px;
 
+          z-index: 9999;
+
           background:
             linear-gradient(
-              90deg,
-              transparent 0%,
-              rgba(120,190,255,0.1) 10%,
-              rgba(120,190,255,1) 35%,
-              rgba(255,255,255,1) 50%,
-              rgba(120,190,255,1) 65%,
-              transparent 100%
-            );
+            90deg,
+            transparent 0%,
+          rgba(120,190,255,0.15) 10%,
+          rgba(120,190,255,1) 30%,
+          rgba(255,255,255,1) 50%,
+          rgba(120,190,255,1) 70%,
+            transparent 100%
+          );
 
-          opacity: 1;
+        opacity: 1;
 
-          z-index: 999;
+        mix-blend-mode: screen;
 
-          filter:
-            blur(1px)
-            brightness(
-              calc(
-                1.5 +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 2
-              )
-            );
-
-          transform:
-            scale(
-              calc(
-                1 +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 0.28
-              )
+        filter:
+          blur(0.5px)
+          brightness(
+            calc(
+              2 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 3
             )
-            scaleY(
-              calc(
-                1 +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 2.8
-              )
-            );
+          );
 
-          box-shadow:
-            0 0 30px rgba(120,190,255,1),
+        transform:
+          scale(
+            calc(
+              1 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 0.32
+            )
+          )
 
-            0 0
-              calc(
-                160px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1),
+          scaleY(
+            calc(
+              1 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 3.5
+            )
+          );
 
-            0 0 
-              calc(
-                320px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1),
+        box-shadow:
+          0 0 40px rgba(120,190,255,1),
 
-            0 0
-              calc(
-                520px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,0.8);
+          0 0
+            calc(
+              220px *
+              var(--audio-reactivity, 1)
+            )
+          rgba(120,190,255,1),
 
-          transition:
-            transform 0.08s linear,
-            box-shadow 0.08s linear,
-            filter 0.08s linear;
+          0 0
+            calc(
+              420px *
+              var(--audio-reactivity, 1)
+            )
+          rgba(255,255,255,1),
 
-          animation:
-            borderTrail 34s linear infinite;
-        }
+          0 0
+            calc(
+              700px *
+              var(--audio-reactivity, 1)
+            )
+          rgba(120,190,255,1);
+
+        transition:
+          transform 0.06s linear,
+          box-shadow 0.06s linear,
+          filter 0.06s linear;
+
+        animation:
+          borderTrail 34s linear infinite;
+      }
 
         .photo-shadow {
           position: absolute;
