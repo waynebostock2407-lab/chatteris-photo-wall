@@ -408,7 +408,7 @@ export default function SlideshowPage() {
       <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-[#02112B]/20 z-[4]" />
+      <div className="absolute inset-0 bg-[#02112B]/8 z-[4]" />
 
       {/* FLASH */}
       <div
@@ -632,64 +632,64 @@ export default function SlideshowPage() {
           background:
             radial-gradient(
               circle,
-              rgba(255, 255, 255, 0.95) 0%,
-              rgba(180, 220, 255, 0.65) 18%,
-              rgba(120, 180, 255, 0.22) 42%,
+              rgba(255, 255, 255, 1) 0%,
+              rgba(120, 190, 255, 0.95) 12%,
+              rgba(90, 160, 255, 0.55) 34%,
               rgba(255, 255, 255, 0) 72%
             );
 
           mix-blend-mode: screen;
 
-          filter: blur(28px);
+          filter: blur(70px);
 
-          opacity: 1;
+          opacity: 0.95;
 
           animation: floatOrb linear infinite;
         }
 
         .ambient-orbs span:nth-child(1) {
-          width: 340px;
-          height: 340px;
+          width: 700px;
+          height: 700px;
           left: -8%;
           top: 8%;
           animation-duration: 28s;
         }
 
         .ambient-orbs span:nth-child(2) {
-          width: 340px;
-          height: 340px;
+          width: 700px;
+          height: 700px;
           left: 16%;
           top: 72%;
           animation-duration: 34s;
         }
 
         .ambient-orbs span:nth-child(3) {
-          width: 340px;
-          height: 340px;
+          width: 700px;
+          height: 700px;
           right: 4%;
           top: 10%;
           animation-duration: 40s;
         }
 
         .ambient-orbs span:nth-child(4) {
-          width: 340px;
-          height: 340px;
+          width: 700px;
+          height: 700px;
           right: -6%;
           top: 60%;
           animation-duration: 30s;
         }
 
         .ambient-orbs span:nth-child(5) {
-          width: 340px;
-          height: 340px;
+          width: 700px;
+          height: 700px;
           left: 42%;
           top: 2%;
           animation-duration: 24s;
         }
 
         .ambient-orbs span:nth-child(6) {
-          width: 340px;
-          height: 340px;
+          width: 700px;
+          height: 700px;
           left: 46%;
           bottom: -10%;
           animation-duration: 38s;
@@ -697,31 +697,37 @@ export default function SlideshowPage() {
 
         .edge-glow {
           position: absolute;
-          inset: 0;
+          inset: -2%;
+
+          pointer-events: none;
 
           background:
             radial-gradient(
               circle at top,
-              rgba(120, 180, 255, 0.16),
-              transparent 35%
+              rgba(120, 190, 255, 0.55),
+              transparent 38%
             ),
             radial-gradient(
               circle at bottom,
-              rgba(255, 255, 255, 0.08),
-              transparent 40%
+              rgba(255, 255, 255, 0.22),
+              transparent 42%
             ),
             radial-gradient(
               circle at left,
-              rgba(90, 150, 255, 0.12),
-              transparent 35%
+              rgba(80, 150, 255, 0.42),
+              transparent 36%
             ),
             radial-gradient(
               circle at right,
-              rgba(180, 220, 255, 0.1),
-              transparent 35%
+              rgba(180, 220, 255, 0.38),
+              transparent 36%
             );
 
-          filter: blur(90px);
+          filter: blur(120px);
+
+          opacity: 1;
+
+          mix-blend-mode: screen;
 
           animation:
             edgePulse 8s ease-in-out infinite;
