@@ -37,6 +37,7 @@ const MESSAGE_MAX_DURATION = 30000;
 
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
+
   const [messages, setMessages] = useState<
     GuestbookMessage[]
   >([]);
@@ -76,11 +77,9 @@ export default function SlideshowPage() {
   const fadeTimeoutRef =
     useRef<NodeJS.Timeout | null>(null);
 
-  const audioLevelRef = useRef(0);
+  const audioLevelRef = useRef(1);
 
-  /* -------------------------------------------------- */
   /* FULLSCREEN */
-  /* -------------------------------------------------- */
 
   const toggleFullscreen = async () => {
     try {
@@ -112,35 +111,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* -------------------------------------------------- */
-  /* WAKE LOCK */
-  /* -------------------------------------------------- */
-
-  useEffect(() => {
-    let wakeLock: any = null;
-
-    const requestWakeLock = async () => {
-      try {
-        if ("wakeLock" in navigator) {
-          wakeLock = await (
-            navigator as any
-          ).wakeLock.request("screen");
-        }
-      } catch (err) {
-        console.error("Wake lock failed:", err);
-      }
-    };
-
-    requestWakeLock();
-
-    return () => {
-      wakeLock?.release?.();
-    };
-  }, []);
-
-  /* -------------------------------------------------- */
   /* AUDIO REACTIVITY */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     let audioContext: AudioContext;
@@ -171,6 +142,8 @@ export default function SlideshowPage() {
           analyser.frequencyBinCount
         );
 
+        let smoothedLevel = 1;
+
         const updateAudio = () => {
           analyser.getByteFrequencyData(dataArray);
 
@@ -187,14 +160,21 @@ export default function SlideshowPage() {
           const average =
             sum / dataArray.length;
 
-          audioLevelRef.current = average;
+          const targetLevel = Math.min(
+            1.8,
+            1 + average / 220
+          );
+
+          smoothedLevel =
+            smoothedLevel * 0.82 +
+            targetLevel * 0.18;
+
+          audioLevelRef.current =
+            smoothedLevel;
 
           document.documentElement.style.setProperty(
             "--audio-reactivity",
-            `${Math.min(
-              1.8,
-              1 + average / 120
-            )}`
+            `${smoothedLevel}`
           );
 
           requestAnimationFrame(updateAudio);
@@ -212,9 +192,7 @@ export default function SlideshowPage() {
     setupAudio();
   }, []);
 
-  /* -------------------------------------------------- */
   /* INTRO */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -236,35 +214,21 @@ export default function SlideshowPage() {
     return () => clearInterval(introCycle);
   }, []);
 
-  /* -------------------------------------------------- */
   /* PARTY MODE */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     const partyInterval = setInterval(() => {
       setShowPartyMode(true);
 
-      document.documentElement.style.setProperty(
-        "--party-energy",
-        "1.8"
-      );
-
       setTimeout(() => {
         setShowPartyMode(false);
-
-        document.documentElement.style.setProperty(
-          "--party-energy",
-          "1"
-        );
       }, 60000);
     }, 600000);
 
     return () => clearInterval(partyInterval);
   }, []);
 
-  /* -------------------------------------------------- */
   /* FIRESTORE - PHOTOS */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     const q = query(
@@ -286,9 +250,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* -------------------------------------------------- */
   /* FIRESTORE - MESSAGES */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     const q = query(
@@ -313,9 +275,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* -------------------------------------------------- */
   /* PRELOAD IMAGES */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     photos.forEach((photo) => {
@@ -335,9 +295,7 @@ export default function SlideshowPage() {
     });
   }, [photos]);
 
-  /* -------------------------------------------------- */
   /* PHOTO LOOP */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     if (
@@ -351,18 +309,6 @@ export default function SlideshowPage() {
 
     photoIntervalRef.current = setInterval(() => {
       setFlash(true);
-
-      document.documentElement.style.setProperty(
-        "--trail-intensity",
-        "1.4"
-      );
-
-      setTimeout(() => {
-        document.documentElement.style.setProperty(
-          "--trail-intensity",
-          "1"
-        );
-      }, 450);
 
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
@@ -410,9 +356,7 @@ export default function SlideshowPage() {
     showPartyMode,
   ]);
 
-  /* -------------------------------------------------- */
-  /* MESSAGE CYCLE */
-  /* -------------------------------------------------- */
+  /* MESSAGE LOOP */
 
   useEffect(() => {
     if (messages.length === 0) return;
@@ -426,10 +370,6 @@ export default function SlideshowPage() {
 
     return () => clearInterval(cycle);
   }, [messages, showPartyMode]);
-
-  /* -------------------------------------------------- */
-  /* MESSAGE LOOP */
-  /* -------------------------------------------------- */
 
   useEffect(() => {
     if (
@@ -516,9 +456,6 @@ export default function SlideshowPage() {
         />
       )}
 
-      {/* FILM GRAIN */}
-      <div className="film-grain z-[1]" />
-
       {/* ORBS */}
       <div className="ambient-orbs absolute inset-0 z-[2]">
         <span />
@@ -529,7 +466,7 @@ export default function SlideshowPage() {
         <span />
       </div>
 
-      {/* EDGE GLOW */}
+      {/* GLOW */}
       <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* OVERLAY */}
@@ -721,30 +658,65 @@ export default function SlideshowPage() {
         ) : null}
       </div>
 
+      {/* BRANDING */}
+      {!showIntro && (
+        <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
+
+          <img
+            src="/logo.png"
+            alt="Club logo"
+            className="w-32 h-32 object-contain"
+          />
+
+          <div className="leading-none">
+
+            <div
+              className="text-white font-black uppercase tracking-wide"
+              style={{
+                fontSize:
+                  "clamp(2rem, 3vw, 3.5rem)",
+              }}
+            >
+              Chatteris Town FC
+            </div>
+
+            <div
+              className="text-slate-100 mt-1"
+              style={{
+                fontFamily:
+                  "var(--font-great-vibes)",
+                fontSize:
+                  "clamp(2.3rem, 3vw, 4rem)",
+              }}
+            >
+              Presentation Day
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* QR */}
+      <div className="absolute bottom-8 right-8 z-30">
+
+        <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
+
+          <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
+            ADD PHOTOS
+            <br />
+            & MESSAGES
+          </div>
+
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
+            alt="QR Code"
+            className="rounded-xl w-[180px] h-[180px]"
+          />
+
+        </div>
+      </div>
+
       <style jsx>{`
-        :root {
-          --audio-reactivity: 1;
-          --trail-intensity: 1;
-          --party-energy: 1;
-        }
-
-        .film-grain {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          opacity: 0.03;
-
-          background-image:
-            radial-gradient(
-              rgba(255,255,255,0.12) 1px,
-              transparent 1px
-            );
-
-          background-size: 3px 3px;
-
-          mix-blend-mode: soft-light;
-        }
-
         .ambient-orbs {
           overflow: hidden;
           pointer-events: none;
@@ -766,13 +738,7 @@ export default function SlideshowPage() {
 
           filter: blur(90px);
 
-          opacity:
-            calc(
-              0.35 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 0.45
-            );
+          opacity: 0.45;
 
           animation: floatOrb linear infinite;
         }
@@ -835,10 +801,6 @@ export default function SlideshowPage() {
 
           border:
             1px solid rgba(140,190,255,0.16);
-
-          box-shadow:
-            inset 0 0 20px rgba(120,190,255,0.08),
-            inset 0 0 60px rgba(120,190,255,0.05);
         }
 
         .edge-glow::before {
@@ -864,31 +826,30 @@ export default function SlideshowPage() {
               transparent 100%
             );
 
-          opacity:
-            calc(
-              0.7 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 0.8
-            );
-
           box-shadow:
             0 0
               calc(
-                12px *
+                18px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,1),
+
+            0 0
+              calc(
+                45px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,0.95),
 
             0 0
               calc(
-                30px *
+                90px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.65);
+              rgba(255,255,255,0.45);
 
           animation:
-            borderTrail 14s linear infinite;
+            borderTrail 28s linear infinite;
         }
 
         .photo-shadow {
@@ -957,13 +918,7 @@ export default function SlideshowPage() {
         .eq-bar {
           width: 18px;
 
-          height: calc(
-            40px +
-            (
-              var(--audio-reactivity, 1) *
-              140px
-            )
-          );
+          height: 160px;
 
           border-radius: 999px;
 
@@ -976,8 +931,7 @@ export default function SlideshowPage() {
             );
 
           animation:
-            eqDance 0.45s ease-in-out infinite
-              alternate;
+            eqDance 0.45s ease-in-out infinite alternate;
 
           box-shadow:
             0 0 20px rgba(120,190,255,0.7);
@@ -997,11 +951,6 @@ export default function SlideshowPage() {
 
           animation:
             logoPulse 2s ease-in-out infinite;
-
-          filter:
-            drop-shadow(
-              0 0 30px rgba(120,190,255,0.8)
-            );
         }
 
         .party-title {
@@ -1011,9 +960,6 @@ export default function SlideshowPage() {
           font-weight: 900;
 
           letter-spacing: 0.08em;
-
-          text-shadow:
-            0 0 30px rgba(120,190,255,0.65);
         }
 
         .party-subtitle {
@@ -1097,16 +1043,7 @@ export default function SlideshowPage() {
           }
 
           to {
-            transform:
-              scaleY(
-                calc(
-                  0.8 +
-                  (
-                    var(--audio-reactivity, 1) *
-                    0.9
-                  )
-                )
-              );
+            transform: scaleY(1);
           }
         }
 
