@@ -472,8 +472,6 @@ export default function SlideshowPage() {
             <div
               className="text-white font-black uppercase tracking-wide"
               style={{
-                fontFamily:
-                  "var(--font-great-vibes)",
                 fontSize:
                   "clamp(2rem, 3vw, 3.5rem)",
               }}
@@ -484,6 +482,8 @@ export default function SlideshowPage() {
             <div
               className="text-slate-100 mt-1"
               style={{
+                  fontFamily:
+                    "var(--font-great-vibes)",
                 fontSize:
                   "clamp(2.3rem, 3vw, 4rem)",
               }}
@@ -634,14 +634,9 @@ export default function SlideshowPage() {
         }
 
         .eq-bar {
-          width: 18px;
+          width: 14px;
 
-          height: calc(
-            40px +
-            (
-              var(--audio-reactivity, 1) * 90px
-            )
-          );
+          height: 120px
 
           border-radius: 999px;
 
@@ -658,7 +653,7 @@ export default function SlideshowPage() {
           transform:
             scaleY(
               calc(
-                0.5 +
+                0.35 +
                 (
                   var(--audio-reactivity, 1) - 1
                 ) * 0.9
@@ -690,7 +685,6 @@ export default function SlideshowPage() {
 
           transition:
             transform 0.08s linear,
-            height 0.08s linear,
             opacity 0.08s linear,
             box-shadow 0.08s linear;
         }
