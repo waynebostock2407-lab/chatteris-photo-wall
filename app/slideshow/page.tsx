@@ -622,16 +622,29 @@ export default function SlideshowPage() {
           align-items: center;
           justify-content: center;
         }
-
+        
+        .party-center {
+          position: relative;
+          
+          z-index: 40;
+          
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
         .equaliser {
           position: absolute;
           inset: 0;
+
           display: flex;
           align-items: flex-end;
           justify-content: center;
+          
           gap: 10px;
+          
           padding-bottom: 120px;
-          z-index: 5;
+          
+          z-index: 30;
         }
 
         .eq-bar {
