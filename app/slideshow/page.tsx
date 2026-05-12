@@ -71,6 +71,8 @@ export default function SlideshowPage() {
   const fadeTimeoutRef =
     useRef<NodeJS.Timeout | null>(null);
 
+  const audioLevelRef = useRef(0);
+
   /* -------------------------------------------------- */
   /* FULLSCREEN */
   /* -------------------------------------------------- */
@@ -129,6 +131,80 @@ export default function SlideshowPage() {
     return () => {
       wakeLock?.release?.();
     };
+  }, []);
+
+  /* -------------------------------------------------- */
+  /* AUDIO REACTIVITY */
+  /* -------------------------------------------------- */
+
+  useEffect(() => {
+    let audioContext: AudioContext;
+    let analyser: AnalyserNode;
+    let microphone: MediaStreamAudioSourceNode;
+
+    const setupAudio = async () => {
+      try {
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
+
+        audioContext = new AudioContext();
+
+        analyser = audioContext.createAnalyser();
+
+        analyser.fftSize = 256;
+
+        microphone =
+          audioContext.createMediaStreamSource(
+            stream
+          );
+
+        microphone.connect(analyser);
+
+        const dataArray = new Uint8Array(
+          analyser.frequencyBinCount
+        );
+
+        const updateAudio = () => {
+          analyser.getByteFrequencyData(dataArray);
+
+          let sum = 0;
+
+          for (
+            let i = 0;
+            i < dataArray.length;
+            i++
+          ) {
+            sum += dataArray[i];
+          }
+
+          const average =
+            sum / dataArray.length;
+
+          audioLevelRef.current = average;
+
+          document.documentElement.style.setProperty(
+            "--audio-reactivity",
+            `${Math.min(
+              1.8,
+              1 + average / 120
+            )}`
+          );
+
+          requestAnimationFrame(updateAudio);
+        };
+
+        updateAudio();
+      } catch (err) {
+        console.error(
+          "Microphone access failed:",
+          err
+        );
+      }
+    };
+
+    setupAudio();
   }, []);
 
   /* -------------------------------------------------- */
@@ -243,6 +319,18 @@ export default function SlideshowPage() {
     photoIntervalRef.current = setInterval(() => {
       setFlash(true);
 
+      document.documentElement.style.setProperty(
+        "--trail-intensity",
+        "1.4"
+      );
+
+      setTimeout(() => {
+        document.documentElement.style.setProperty(
+          "--trail-intensity",
+          "1"
+        );
+      }, 450);
+
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
       }
@@ -276,7 +364,7 @@ export default function SlideshowPage() {
   }, [photos, showIntro, showMessages]);
 
   /* -------------------------------------------------- */
-  /* MESSAGE MODE TRIGGER */
+  /* MESSAGE MODE */
   /* -------------------------------------------------- */
 
   useEffect(() => {
@@ -374,7 +462,7 @@ export default function SlideshowPage() {
       {/* BACKGROUND */}
       {showIntro ? (
         <div
-          className="absolute inset-0 bg-cover bg-center z-0"
+          className="absolute inset-0 bg-cover bg-center z-0 animate-backgroundDrift"
           style={{
             backgroundImage:
               "url('/presentation-stage.jpg')",
@@ -382,7 +470,7 @@ export default function SlideshowPage() {
         />
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center z-0 transition-all duration-[2000ms]"
+          className="absolute inset-0 bg-cover bg-center z-0 animate-backgroundDrift"
           style={{
             backgroundImage:
               "url('/blank-presentation-stage.jpg')",
@@ -390,7 +478,10 @@ export default function SlideshowPage() {
         />
       )}
 
-      {/* AMBIENT ORBS */}
+      {/* FILM GRAIN */}
+      <div className="film-grain z-[1]" />
+
+      {/* ORBS */}
       <div className="ambient-orbs absolute inset-0 z-[2]">
         <span />
         <span />
@@ -400,10 +491,10 @@ export default function SlideshowPage() {
         <span />
       </div>
 
-      {/* MOVING BORDER TRAILS */}
+      {/* MOVING BORDER */}
       <div className="edge-glow absolute inset-0 z-[3]" />
 
-      {/* DARK OVERLAY */}
+      {/* OVERLAY */}
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
 
       {/* FLASH */}
@@ -422,7 +513,6 @@ export default function SlideshowPage() {
       {/* FULLSCREEN */}
       {!isFullscreen && (
         <button
-          aria-label="Enter fullscreen"
           onClick={toggleFullscreen}
           className="fixed top-6 right-6 z-[9999] bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl text-lg font-bold tracking-wide transition-all duration-300"
         >
@@ -433,7 +523,6 @@ export default function SlideshowPage() {
       {/* MAIN CONTENT */}
       <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
 
-        {/* INTRO */}
         {showIntro ? (
           <></>
         ) : showMessages &&
@@ -511,8 +600,10 @@ export default function SlideshowPage() {
                 : "opacity-0 scale-[1.03] translate-y-4 blur-[2px]"
             }`}
           >
+            <div className="photo-shadow" />
+
             <div
-              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem] shadow-[0_18px_70px_rgba(0,0,0,0.5)] transition-transform duration-700 ${polaroidStyle}`}
+              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem] shadow-[0_18px_70px_rgba(0,0,0,0.5)] transition-transform duration-700 animate-polaroidFloat ${polaroidStyle}`}
             >
               <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
 
@@ -611,8 +702,31 @@ export default function SlideshowPage() {
         </div>
       </div>
 
-      {/* STYLES */}
       <style jsx>{`
+        :root {
+          --audio-reactivity: 1;
+          --trail-intensity: 1;
+        }
+
+        .film-grain {
+          position: absolute;
+          inset: 0;
+
+          pointer-events: none;
+
+          opacity: 0.03;
+
+          background-image:
+            radial-gradient(
+              rgba(255,255,255,0.12) 1px,
+              transparent 1px
+            );
+
+          background-size: 3px 3px;
+
+          mix-blend-mode: soft-light;
+        }
+
         .ambient-orbs {
           overflow: hidden;
           pointer-events: none;
@@ -634,7 +748,13 @@ export default function SlideshowPage() {
 
           filter: blur(90px);
 
-          opacity: 0.55;
+          opacity:
+            calc(
+              0.35 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 0.45
+            );
 
           animation: floatOrb linear infinite;
         }
@@ -703,8 +823,6 @@ export default function SlideshowPage() {
             inset 0 0 60px rgba(120,190,255,0.05);
         }
 
-        /* MOVING BLUE TRAIL */
-
         .edge-glow::before {
           content: "";
 
@@ -728,6 +846,22 @@ export default function SlideshowPage() {
               transparent 100%
             );
 
+          transform:
+            scale(
+              calc(
+                var(--trail-intensity, 1) *
+                var(--audio-reactivity, 1)
+              )
+            );
+
+          opacity:
+            calc(
+              0.7 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 0.8
+            );
+
           filter:
             blur(2px)
             drop-shadow(
@@ -740,10 +874,13 @@ export default function SlideshowPage() {
             );
 
           animation:
-            borderTrail 12s linear infinite;
+            borderTrail
+            calc(
+              14s /
+              var(--audio-reactivity, 1)
+            )
+            linear infinite;
         }
-
-        /* SECONDARY WHITE SHIMMER */
 
         .edge-glow::after {
           content: "";
@@ -777,6 +914,29 @@ export default function SlideshowPage() {
             borderTrail 18s linear infinite reverse;
 
           opacity: 0.75;
+        }
+
+        .photo-shadow {
+          position: absolute;
+
+          width: 70%;
+          height: 40px;
+
+          bottom: -22px;
+          left: 50%;
+
+          transform: translateX(-50%);
+
+          background:
+            radial-gradient(
+              ellipse,
+              rgba(0,0,0,0.38) 0%,
+              rgba(0,0,0,0) 72%
+            );
+
+          filter: blur(18px);
+
+          z-index: -1;
         }
 
         @keyframes borderTrail {
@@ -846,16 +1006,14 @@ export default function SlideshowPage() {
 
         @keyframes floatOrb {
           0% {
-            transform: translate3d(
-                0px,
-                0px,
-                0
-              )
+            transform:
+              translate3d(0px, 0px, 0)
               scale(1);
           }
 
           25% {
-            transform: translate3d(
+            transform:
+              translate3d(
                 30px,
                 -40px,
                 0
@@ -864,7 +1022,8 @@ export default function SlideshowPage() {
           }
 
           50% {
-            transform: translate3d(
+            transform:
+              translate3d(
                 -20px,
                 -70px,
                 0
@@ -873,7 +1032,8 @@ export default function SlideshowPage() {
           }
 
           75% {
-            transform: translate3d(
+            transform:
+              translate3d(
                 40px,
                 -30px,
                 0
@@ -882,35 +1042,79 @@ export default function SlideshowPage() {
           }
 
           100% {
-            transform: translate3d(
-                0px,
-                0px,
-                0
-              )
+            transform:
+              translate3d(0px, 0px, 0)
               scale(1);
           }
         }
 
         @keyframes kenburns {
           0% {
-            transform: scale(1)
+            transform:
+              scale(1)
               translate(0, 0);
           }
 
           50% {
-            transform: scale(1.04)
+            transform:
+              scale(1.04)
               translate(-0.5%, -0.5%);
           }
 
           100% {
-            transform: scale(1.08)
+            transform:
+              scale(1.08)
               translate(0.5%, 0.5%);
+          }
+        }
+
+        @keyframes polaroidFloat {
+          0% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(-8px);
+          }
+
+          100% {
+            transform: translateY(0px);
+          }
+        }
+
+        @keyframes backgroundDrift {
+          0% {
+            transform:
+              scale(1)
+              translateX(0px);
+          }
+
+          50% {
+            transform:
+              scale(1.03)
+              translateX(-8px);
+          }
+
+          100% {
+            transform:
+              scale(1)
+              translateX(0px);
           }
         }
 
         .animate-kenburns {
           animation:
             kenburns 12s ease-in-out forwards;
+        }
+
+        .animate-polaroidFloat {
+          animation:
+            polaroidFloat 7s ease-in-out infinite;
+        }
+
+        .animate-backgroundDrift {
+          animation:
+            backgroundDrift 30s ease-in-out infinite;
         }
       `}</style>
     </main>
