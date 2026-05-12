@@ -160,9 +160,24 @@ export default function SlideshowPage() {
           const average =
             sum / dataArray.length;
 
+          const bassFrequencies = dataArray.slice(0, 18);
+
+          let bassSum = 0;
+
+          for (
+            let i = 0;
+            i < bassFrequencies.length;
+            i++
+          ) {
+            bassSum += bassFrequencies[i];
+          }
+
+          const bassAverage =
+            bassSum / bassFrequencies.length;
+
           const targetLevel = Math.min(
-            1.8,
-            1 + average / 220
+            3.2,
+            1 + bassAverage / 55
           );
 
           smoothedLevel =
@@ -820,33 +835,61 @@ export default function SlideshowPage() {
             linear-gradient(
               90deg,
               transparent 0%,
-              rgba(120,190,255,0.15) 15%,
-              rgba(120,190,255,1) 50%,
-              rgba(255,255,255,1) 70%,
+              rgba(120,190,255,0.15) 10%,
+              rgba(120,190,255,1) 45%,
+              rgba(255,255,255,1) 60%,
               transparent 100%
+            );
+
+          opacity:
+            calc(
+              0.5 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 0.6
+            );
+
+          transform:
+            scaleY(
+              calc(
+                1 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 0.45
+              )
+            );
+
+          filter:
+            blur(
+              calc(
+                1px +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 3px
+              )
             );
 
           box-shadow:
             0 0
               calc(
-                18px *
+                30px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,1),
 
             0 0
               calc(
-                45px *
+                80px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,0.95),
 
             0 0
               calc(
-                90px *
+                160px *
                 var(--audio-reactivity, 1)
               )
-              rgba(255,255,255,0.45);
+              rgba(255,255,255,0.55);
 
           animation:
             borderTrail 28s linear infinite;
@@ -1194,3 +1237,4 @@ export default function SlideshowPage() {
     </main>
   );
 }
+```
