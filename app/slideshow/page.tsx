@@ -32,6 +32,7 @@ export default function SlideshowPage() {
 
   const [fade, setFade] = useState(true);
   const [flash, setFlash] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<string[]>([]);
 
   const [showMessages, setShowMessages] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
@@ -64,6 +65,7 @@ export default function SlideshowPage() {
     };
   }, []);
 
+  /* INTRO */
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -72,6 +74,7 @@ export default function SlideshowPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  /* INTRO LOOP */
   useEffect(() => {
     const introCycle = setInterval(() => {
       setShowIntro(true);
@@ -93,6 +96,7 @@ export default function SlideshowPage() {
     "rotate-[1deg] translate-y-1",
   ];
 
+  /* PHOTOS */
   useEffect(() => {
     const q = query(
       collection(db, "photos"),
@@ -113,6 +117,29 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
+  /* PRELOAD IMAGES */
+useEffect(() => {
+
+  photos.forEach((photo) => {
+
+    if (loadedImages.includes(photo.imageUrl)) return;
+
+    const img = new Image();
+
+    img.src = photo.imageUrl;
+
+    img.onload = () => {
+      setLoadedImages((prev) => [
+        ...prev,
+        photo.imageUrl,
+      ]);
+    };
+
+  });
+
+}, [photos]);
+
+  /* MESSAGES */
   useEffect(() => {
     const q = query(
       collection(db, "guestbook"),
@@ -133,6 +160,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
+  /* PHOTO LOOP */
   useEffect(() => {
     if (photos.length === 0) return;
 
@@ -155,12 +183,13 @@ export default function SlideshowPage() {
 
           setFade(true);
         }, 650);
-      }, 6500);
+      }, 8000);
     }
 
     return () => clearInterval(interval);
   }, [photos, showMessages, showIntro]);
 
+  /* MESSAGE CYCLE */
   useEffect(() => {
     if (messages.length === 0) return;
 
@@ -172,8 +201,9 @@ export default function SlideshowPage() {
     return () => clearInterval(cycle);
   }, [messages]);
 
+  /* MESSAGE LOOP */
   useEffect(() => {
-    if (!showMessages) return;
+    if (!showMessages || messages.length === 0) return;
 
     const interval = setInterval(() => {
       setFade(false);
@@ -252,12 +282,12 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* MAIN */}
+      {/* MAIN CONTENT */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
 
         {showIntro ? (
           <></>
-        ) : showMessages && messages[messageIndex] ? (
+        ) : showMessages && messages.length > 0 ? (
 
           <div className="w-full flex justify-center items-center px-12">
 
@@ -325,7 +355,7 @@ export default function SlideshowPage() {
 
           <div
             key={photos[currentIndex]?.id}
-            className={`transition-all duration-[1400ms] ease-out ${
+            className={`transition-all duration-[900ms] ease-out ${
               fade
                 ? "opacity-100 scale-100 translate-y-0"
                 : "opacity-0 scale-[1.03] translate-y-4 blur-[2px]"
@@ -343,6 +373,7 @@ export default function SlideshowPage() {
               <div className="flex items-center justify-center overflow-hidden bg-[#f4f4f4] max-w-[74vw] max-h-[58vh]">
 
                 <img
+                  key={photos[currentIndex].imageUrl}
                   src={photos[currentIndex].imageUrl}
                   alt="Slideshow"
                   className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem]"
