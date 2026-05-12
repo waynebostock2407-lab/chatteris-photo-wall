@@ -482,7 +482,7 @@ export default function SlideshowPage() {
       </div>
 
       {/* GLOW */}
-      <div className="edge-glow absolute inset-0 z-[3]" />
+      <div className="edge-glow absolute inset-0 z-[15]" />
 
       {/* OVERLAY */}
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
@@ -821,6 +821,7 @@ export default function SlideshowPage() {
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,0.18);
+        }
 
         .edge-glow::before {
           content: "";
@@ -872,13 +873,12 @@ export default function SlideshowPage() {
                 ) * 0.45
               )
             )
-          
-            translateY:(calc(
+            translateY(
               calc(
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 4px
-            )
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 4px
+              )
             );
 
           animation:
