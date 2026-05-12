@@ -347,10 +347,6 @@ export default function SlideshowPage() {
     messages,
   ]);
 
-  /* -------------------------------------------------- */
-  /* CURRENT DATA */
-  /* -------------------------------------------------- */
-
   const currentPhoto =
     photos[currentPhotoIndex];
 
@@ -394,7 +390,7 @@ export default function SlideshowPage() {
         />
       )}
 
-      {/* ORBS */}
+      {/* AMBIENT ORBS */}
       <div className="ambient-orbs absolute inset-0 z-[2]">
         <span />
         <span />
@@ -404,7 +400,7 @@ export default function SlideshowPage() {
         <span />
       </div>
 
-      {/* MOVING EDGE GLOW */}
+      {/* MOVING BORDER TRAILS */}
       <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* DARK OVERLAY */}
@@ -443,7 +439,6 @@ export default function SlideshowPage() {
         ) : showMessages &&
           currentMessage ? (
 
-          /* MESSAGE VIEW */
           <div
             className={`w-full max-w-5xl transition-all duration-500 ${
               fade
@@ -508,7 +503,6 @@ export default function SlideshowPage() {
 
         ) : currentPhoto ? (
 
-          /* PHOTO VIEW */
           <div
             key={currentPhoto.id}
             className={`transition-all duration-[900ms] ease-out ${
@@ -700,119 +694,153 @@ export default function SlideshowPage() {
           pointer-events: none;
 
           overflow: hidden;
+
+          border:
+            1px solid rgba(140,190,255,0.16);
+
+          box-shadow:
+            inset 0 0 20px rgba(120,190,255,0.08),
+            inset 0 0 60px rgba(120,190,255,0.05);
         }
+
+        /* MOVING BLUE TRAIL */
 
         .edge-glow::before {
           content: "";
 
           position: absolute;
 
-          inset: -2px;
+          width: 22%;
+          height: 4px;
 
-          padding: 3px;
+          top: 0;
+          left: -25%;
+
+          border-radius: 999px;
 
           background:
-            conic-gradient(
-              from 0deg,
-              transparent 0deg,
-              transparent 40deg,
-
-              rgba(120,190,255,0.95) 75deg,
-
-              rgba(255,255,255,1) 90deg,
-
-              rgba(120,190,255,0.95) 105deg,
-
-              transparent 140deg,
-              transparent 360deg
+            linear-gradient(
+              90deg,
+              transparent 0%,
+              rgba(120,190,255,0.15) 15%,
+              rgba(120,190,255,1) 50%,
+              rgba(255,255,255,1) 70%,
+              transparent 100%
             );
-
-          animation:
-            borderTrail 5s linear infinite;
-
-          -webkit-mask:
-            linear-gradient(#fff 0 0)
-              content-box,
-            linear-gradient(#fff 0 0);
-
-          -webkit-mask-composite: xor;
-
-          mask-composite: exclude;
 
           filter:
             blur(2px)
             drop-shadow(
               0 0 12px
-                rgba(120,190,255,0.95)
+                rgba(120,190,255,1)
             )
             drop-shadow(
-              0 0 28px
-                rgba(120,190,255,0.65)
-            )
-            drop-shadow(
-              0 0 48px
-                rgba(255,255,255,0.35)
+              0 0 24px
+                rgba(120,190,255,0.75)
             );
 
-          opacity: 0.95;
+          animation:
+            borderTrail 12s linear infinite;
         }
+
+        /* SECONDARY WHITE SHIMMER */
 
         .edge-glow::after {
           content: "";
 
           position: absolute;
 
-          inset: -2px;
+          width: 12%;
+          height: 2px;
 
-          padding: 2px;
+          top: 0;
+          left: -15%;
+
+          border-radius: 999px;
 
           background:
-            conic-gradient(
-              from 180deg,
-              transparent 0deg,
-              rgba(255,255,255,0.9) 30deg,
-              transparent 60deg
+            linear-gradient(
+              90deg,
+              transparent 0%,
+              rgba(255,255,255,0.9) 50%,
+              transparent 100%
+            );
+
+          filter:
+            blur(6px)
+            drop-shadow(
+              0 0 18px
+                rgba(255,255,255,0.9)
             );
 
           animation:
-            borderTrailReverse 12s linear infinite;
+            borderTrail 18s linear infinite reverse;
 
-          -webkit-mask:
-            linear-gradient(#fff 0 0)
-              content-box,
-            linear-gradient(#fff 0 0);
-
-          -webkit-mask-composite: xor;
-
-          mask-composite: exclude;
-
-          filter:
-            blur(8px)
-            drop-shadow(
-              0 0 20px
-                rgba(255,255,255,0.5)
-            );
-
-          opacity: 0.5;
+          opacity: 0.75;
         }
 
         @keyframes borderTrail {
-          from {
-            transform: rotate(0deg);
+          0% {
+            top: 0;
+            left: -25%;
+            width: 22%;
+            height: 4px;
           }
 
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes borderTrailReverse {
-          from {
-            transform: rotate(360deg);
+          24% {
+            top: 0;
+            left: 100%;
+            width: 22%;
+            height: 4px;
           }
 
-          to {
-            transform: rotate(0deg);
+          25% {
+            top: -25%;
+            left: calc(100% - 4px);
+            width: 4px;
+            height: 22%;
+          }
+
+          49% {
+            top: 100%;
+            left: calc(100% - 4px);
+            width: 4px;
+            height: 22%;
+          }
+
+          50% {
+            top: calc(100% - 4px);
+            left: 100%;
+            width: 22%;
+            height: 4px;
+          }
+
+          74% {
+            top: calc(100% - 4px);
+            left: -25%;
+            width: 22%;
+            height: 4px;
+          }
+
+          75% {
+            top: 100%;
+            left: 0;
+            width: 4px;
+            height: 22%;
+          }
+
+          99% {
+            top: -25%;
+            left: 0;
+            width: 4px;
+            height: 22%;
+          }
+
+          100% {
+            top: 0;
+            left: -25%;
+            width: 22%;
+            height: 4px;
           }
         }
 
