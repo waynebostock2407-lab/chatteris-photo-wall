@@ -233,61 +233,81 @@ useEffect(() => {
     <main className="relative w-screen h-screen overflow-hidden text-white">
 
       {/* BACKGROUND */}
-      {showIntro ? (
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/presentation-stage.jpg')",
-          }}
-        />
-      ) : (
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/blank-presentation-stage.jpg')",
-          }}
-        />
-      )}
+{showIntro ? (
+  <div
+    className="absolute inset-0 bg-cover bg-center z-0"
+    style={{
+      backgroundImage: "url('/presentation-stage.jpg')",
+    }}
+  />
+) : (
+  <div
+    className="absolute inset-0 bg-cover bg-center z-0"
+    style={{
+      backgroundImage:
+        "url('/blank-presentation-stage.jpg')",
+    }}
+  />
+)}
 
-      <div className="absolute inset-0 bg-[#02112B]/15" />
+{/* ORBS */}
+<div className="ambient-orbs absolute inset-0 z-[2]">
+  <span />
+  <span />
+  <span />
+  <span />
+  <span />
+  <span />
+</div>
 
-      {/* ORBS */}
-      <div className="ambient-orbs z-10">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
+{/* EDGE GLOW */}
+<div className="edge-glow absolute inset-0 z-[3] pointer-events-none" />
 
-      {/* FLASH */}
-      <div
-        className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
-          flash ? "opacity-100" : "opacity-0"
-        }`}
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.55) 35%, rgba(255,255,255,0) 100%)",
-        }}
-      />
+{/* DARK OVERLAY */}
+<div className="absolute inset-0 bg-[#02112B]/10 z-[4]" />
 
-      {/* FULLSCREEN */}
-      {!isFullscreen && (
-        <button
-          onClick={toggleFullscreen}
-          className="fixed top-6 right-6 z-[9999] bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl text-lg font-bold tracking-wide transition-all duration-300"
-        >
-          ⛶ FULL SCREEN
-        </button>
-      )}
+{/* FLASH */}
+<div
+  className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
+    flash ? "opacity-100" : "opacity-0"
+  }`}
+  style={{
+    background:
+      "radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.55) 35%, rgba(255,255,255,0) 100%)",
+  }}
+/>
 
-      {/*EDGE GLOW*/}
-      <div className="edge-glow pointer-events-none" />
+{/* FULLSCREEN */}
+{!isFullscreen && (
+  <button
+    onClick={toggleFullscreen}
+    className="
+      fixed
+      top-6
+      right-6
+      z-[9999]
+      bg-black/40
+      hover:bg-black/60
+      backdrop-blur-xl
+      border
+      border-white/20
+      text-white
+      px-6
+      py-3
+      rounded-2xl
+      text-lg
+      font-bold
+      tracking-wide
+      transition-all
+      duration-300
+    "
+  >
+    ⛶ FULL SCREEN
+  </button>
+)}
 
-      {/* MAIN CONTENT */}
-      <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
-
+{/* MAIN CONTENT */}
+<div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
         {showIntro ? (
           <></>
         ) : showMessages && messages.length > 0 ? (
