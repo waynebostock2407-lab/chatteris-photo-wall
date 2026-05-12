@@ -749,8 +749,6 @@ export default function SlideshowPage() {
               rgba(120,190,255,0) 70%
             );
 
-          mix-blend-mode: screen;
-
           filter: blur(90px);
 
           opacity: 0.45;
@@ -825,11 +823,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 28%;
-          height: 8px;
+          width: 26%;
+          height: 6px;
 
           top: 0;
-          left: -30%;
+          left: -26%;
 
           border-radius: 999px;
 
@@ -837,69 +835,48 @@ export default function SlideshowPage() {
             linear-gradient(
               90deg,
               transparent 0%,
-              rgba(120,190,255,0.25) 8%,
-              rgba(120,190,255,1) 35%,
-              rgba(255,255,255,1) 52%,
-              rgba(120,190,255,1) 68%,
+              rgba(120,190,255,0.25) 10%,
+              rgba(120,190,255,1) 30%,
+              rgba(255,255,255,1) 50%,
+              rgba(120,190,255,1) 70%,
               transparent 100%
             );
 
-          opacity:
-            calc(
-              0.8 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 0.75
-            );
+          opacity: 1;
 
+          box-shadow:
+            0 0 12px rgba(120,190,255,1),
+            
+            0 0
+              calc(
+                30px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.95),
+
+            0 0
+              calc(
+                70px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.7),
+
+            0 0
+              calc(
+                120px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(255,255,255,0.4);
+            
           transform:
             scaleY(
               calc(
                 1 +
                 (
-                  var(--audio-reactivity, 1) - 1
-                ) * 1.2
+                  var(audio-reactivity,1) - 1
+                ) * 0.5
               )
             );
-
-          filter:
-            blur(
-              calc(
-                2px +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 7px
-              )
-            );
-
-          box-shadow:
-            0 0
-              calc(
-                40px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1),
-
-            0 0
-              calc(
-                90px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1),
-
-            0 0
-              calc(
-                180px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(255,255,255,0.95);
-            
-            0 0
-              calc(
-                260px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,0.75);
 
           animation:
             borderTrail 34s linear infinite;
