@@ -48,10 +48,15 @@ export default function SlideshowPage() {
     useState(0);
 
   const [showIntro, setShowIntro] = useState(true);
+
   const [showMessages, setShowMessages] =
     useState(false);
 
+  const [showPartyMode, setShowPartyMode] =
+    useState(false);
+
   const [fade, setFade] = useState(true);
+
   const [flash, setFlash] = useState(false);
 
   const [isFullscreen, setIsFullscreen] =
@@ -212,11 +217,15 @@ export default function SlideshowPage() {
   /* -------------------------------------------------- */
 
   useEffect(() => {
-    const initialIntroTimeout = setTimeout(() => {
+    const timer = setTimeout(() => {
       setShowIntro(false);
     }, INTRO_DURATION);
 
-    const recurringIntroInterval = setInterval(() => {
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const introCycle = setInterval(() => {
       setShowIntro(true);
 
       setTimeout(() => {
@@ -224,10 +233,33 @@ export default function SlideshowPage() {
       }, 20000);
     }, INTRO_REPEAT_INTERVAL);
 
-    return () => {
-      clearTimeout(initialIntroTimeout);
-      clearInterval(recurringIntroInterval);
-    };
+    return () => clearInterval(introCycle);
+  }, []);
+
+  /* -------------------------------------------------- */
+  /* PARTY MODE */
+  /* -------------------------------------------------- */
+
+  useEffect(() => {
+    const partyInterval = setInterval(() => {
+      setShowPartyMode(true);
+
+      document.documentElement.style.setProperty(
+        "--party-energy",
+        "1.8"
+      );
+
+      setTimeout(() => {
+        setShowPartyMode(false);
+
+        document.documentElement.style.setProperty(
+          "--party-energy",
+          "1"
+        );
+      }, 60000);
+    }, 600000);
+
+    return () => clearInterval(partyInterval);
   }, []);
 
   /* -------------------------------------------------- */
@@ -282,7 +314,7 @@ export default function SlideshowPage() {
   }, []);
 
   /* -------------------------------------------------- */
-  /* IMAGE PRELOAD */
+  /* PRELOAD IMAGES */
   /* -------------------------------------------------- */
 
   useEffect(() => {
@@ -304,14 +336,15 @@ export default function SlideshowPage() {
   }, [photos]);
 
   /* -------------------------------------------------- */
-  /* PHOTO SLIDESHOW */
+  /* PHOTO LOOP */
   /* -------------------------------------------------- */
 
   useEffect(() => {
     if (
       photos.length === 0 ||
       showIntro ||
-      showMessages
+      showMessages ||
+      showPartyMode
     ) {
       return;
     }
@@ -346,11 +379,20 @@ export default function SlideshowPage() {
       }
 
       fadeTimeoutRef.current = setTimeout(() => {
-        setCurrentPhotoIndex((prev) =>
-          prev === photos.length - 1
-            ? 0
-            : prev + 1
-        );
+        setCurrentPhotoIndex((prev) => {
+          if (photos.length <= 1)
+            return prev;
+
+          let nextIndex = prev;
+
+          while (nextIndex === prev) {
+            nextIndex = Math.floor(
+              Math.random() * photos.length
+            );
+          }
+
+          return nextIndex;
+        });
 
         setFade(true);
       }, PHOTO_FADE_DURATION);
@@ -361,22 +403,29 @@ export default function SlideshowPage() {
         clearInterval(photoIntervalRef.current);
       }
     };
-  }, [photos, showIntro, showMessages]);
+  }, [
+    photos,
+    showIntro,
+    showMessages,
+    showPartyMode,
+  ]);
 
   /* -------------------------------------------------- */
-  /* MESSAGE MODE */
+  /* MESSAGE CYCLE */
   /* -------------------------------------------------- */
 
   useEffect(() => {
     if (messages.length === 0) return;
 
-    const interval = setInterval(() => {
-      setCurrentMessageIndex(0);
-      setShowMessages(true);
+    const cycle = setInterval(() => {
+      if (!showPartyMode) {
+        setShowMessages(true);
+        setCurrentMessageIndex(0);
+      }
     }, 300000);
 
-    return () => clearInterval(interval);
-  }, [messages]);
+    return () => clearInterval(cycle);
+  }, [messages, showPartyMode]);
 
   /* -------------------------------------------------- */
   /* MESSAGE LOOP */
@@ -390,19 +439,7 @@ export default function SlideshowPage() {
       return;
     }
 
-    const currentMessage =
-      messages[currentMessageIndex];
-
-    const duration = Math.min(
-      Math.max(
-        MESSAGE_MIN_DURATION,
-        (currentMessage?.message?.length || 0) *
-          60
-      ),
-      MESSAGE_MAX_DURATION
-    );
-
-    messageIntervalRef.current = setInterval(() => {
+    const interval = setInterval(() => {
       setFade(false);
 
       setTimeout(() => {
@@ -410,8 +447,8 @@ export default function SlideshowPage() {
           currentMessageIndex >=
           messages.length - 1
         ) {
-          setCurrentMessageIndex(0);
           setShowMessages(false);
+          setCurrentMessageIndex(0);
         } else {
           setCurrentMessageIndex(
             (prev) => prev + 1
@@ -420,15 +457,16 @@ export default function SlideshowPage() {
 
         setFade(true);
       }, 350);
-    }, duration);
+    }, Math.min(
+      Math.max(
+        MESSAGE_MIN_DURATION,
+        messages[currentMessageIndex]
+          ?.message.length * 60
+      ),
+      MESSAGE_MAX_DURATION
+    ));
 
-    return () => {
-      if (messageIntervalRef.current) {
-        clearInterval(
-          messageIntervalRef.current
-        );
-      }
-    };
+    return () => clearInterval(interval);
   }, [
     showMessages,
     currentMessageIndex,
@@ -491,7 +529,7 @@ export default function SlideshowPage() {
         <span />
       </div>
 
-      {/* MOVING BORDER */}
+      {/* EDGE GLOW */}
       <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* OVERLAY */}
@@ -525,6 +563,43 @@ export default function SlideshowPage() {
 
         {showIntro ? (
           <></>
+        ) : showPartyMode ? (
+
+          <div className="party-mode">
+
+            <div className="party-bg-pulse" />
+
+            <div className="equaliser">
+              {[...Array(48)].map((_, i) => (
+                <div
+                  key={i}
+                  className="eq-bar"
+                  style={{
+                    animationDelay: `${i * 0.04}s`,
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="party-center">
+
+              <img
+                src="/logo.png"
+                className="party-logo"
+              />
+
+              <div className="party-title">
+                END OF SEASON
+              </div>
+
+              <div className="party-subtitle">
+                PRESENTATION DAY
+              </div>
+
+            </div>
+
+          </div>
+
         ) : showMessages &&
           currentMessage ? (
 
@@ -579,6 +654,7 @@ export default function SlideshowPage() {
                   {currentMessage.name}
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -645,75 +721,17 @@ export default function SlideshowPage() {
         ) : null}
       </div>
 
-      {/* BRANDING */}
-      {!showIntro && (
-        <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
-
-          <img
-            src="/logo.png"
-            alt="Club logo"
-            className="w-32 h-32 object-contain"
-          />
-
-          <div className="leading-none">
-
-            <div
-              className="text-white font-black uppercase tracking-wide"
-              style={{
-                fontSize:
-                  "clamp(2rem, 3vw, 3.5rem)",
-              }}
-            >
-              Chatteris Town FC
-            </div>
-
-            <div
-              className="text-slate-100 mt-1"
-              style={{
-                fontFamily:
-                  "var(--font-great-vibes)",
-                fontSize:
-                  "clamp(2.3rem, 3vw, 4rem)",
-              }}
-            >
-              Presentation Day
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* QR */}
-      <div className="absolute bottom-8 right-8 z-30">
-
-        <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
-
-          <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
-            ADD PHOTOS
-            <br />
-            & MESSAGES
-          </div>
-
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
-            alt="QR Code"
-            className="rounded-xl w-[180px] h-[180px]"
-          />
-
-        </div>
-      </div>
-
       <style jsx>{`
         :root {
           --audio-reactivity: 1;
           --trail-intensity: 1;
+          --party-energy: 1;
         }
 
         .film-grain {
           position: absolute;
           inset: 0;
-
           pointer-events: none;
-
           opacity: 0.03;
 
           background-image:
@@ -846,14 +864,6 @@ export default function SlideshowPage() {
               transparent 100%
             );
 
-          transform:
-            scale(
-              calc(
-                var(--trail-intensity, 1) *
-                var(--audio-reactivity, 1)
-              )
-            );
-
           opacity:
             calc(
               0.7 +
@@ -862,58 +872,23 @@ export default function SlideshowPage() {
               ) * 0.8
             );
 
-          filter:
-            blur(2px)
-            drop-shadow(
-              0 0 12px
-                rgba(120,190,255,1)
-            )
-            drop-shadow(
-              0 0 24px
-                rgba(120,190,255,0.75)
-            );
+          box-shadow:
+            0 0
+              calc(
+                12px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.95),
+
+            0 0
+              calc(
+                30px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.65);
 
           animation:
-            borderTrail
-            calc(
-              14s /
-              var(--audio-reactivity, 1)
-            )
-            linear infinite;
-        }
-
-        .edge-glow::after {
-          content: "";
-
-          position: absolute;
-
-          width: 12%;
-          height: 2px;
-
-          top: 0;
-          left: -15%;
-
-          border-radius: 999px;
-
-          background:
-            linear-gradient(
-              90deg,
-              transparent 0%,
-              rgba(255,255,255,0.9) 50%,
-              transparent 100%
-            );
-
-          filter:
-            blur(6px)
-            drop-shadow(
-              0 0 18px
-                rgba(255,255,255,0.9)
-            );
-
-          animation:
-            borderTrail 18s linear infinite reverse;
-
-          opacity: 0.75;
+            borderTrail 14s linear infinite;
         }
 
         .photo-shadow {
@@ -937,6 +912,118 @@ export default function SlideshowPage() {
           filter: blur(18px);
 
           z-index: -1;
+        }
+
+        .party-mode {
+          position: absolute;
+          inset: 0;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          overflow: hidden;
+        }
+
+        .party-bg-pulse {
+          position: absolute;
+          inset: 0;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(120,190,255,0.18),
+              transparent 70%
+            );
+
+          animation:
+            partyPulse 3s ease-in-out infinite;
+        }
+
+        .equaliser {
+          position: absolute;
+          inset: 0;
+
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          gap: 10px;
+
+          padding: 0 80px 100px;
+
+          opacity: 0.82;
+        }
+
+        .eq-bar {
+          width: 18px;
+
+          height: calc(
+            40px +
+            (
+              var(--audio-reactivity, 1) *
+              140px
+            )
+          );
+
+          border-radius: 999px;
+
+          background:
+            linear-gradient(
+              to top,
+              rgba(120,190,255,0.2),
+              rgba(120,190,255,1),
+              rgba(255,255,255,1)
+            );
+
+          animation:
+            eqDance 0.45s ease-in-out infinite
+              alternate;
+
+          box-shadow:
+            0 0 20px rgba(120,190,255,0.7);
+        }
+
+        .party-center {
+          position: relative;
+          z-index: 20;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .party-logo {
+          width: 240px;
+
+          animation:
+            logoPulse 2s ease-in-out infinite;
+
+          filter:
+            drop-shadow(
+              0 0 30px rgba(120,190,255,0.8)
+            );
+        }
+
+        .party-title {
+          margin-top: 34px;
+
+          font-size: 5rem;
+          font-weight: 900;
+
+          letter-spacing: 0.08em;
+
+          text-shadow:
+            0 0 30px rgba(120,190,255,0.65);
+        }
+
+        .party-subtitle {
+          margin-top: 16px;
+
+          font-size: 2rem;
+
+          opacity: 0.78;
+
+          letter-spacing: 0.3em;
         }
 
         @keyframes borderTrail {
@@ -1001,6 +1088,56 @@ export default function SlideshowPage() {
             left: -25%;
             width: 22%;
             height: 4px;
+          }
+        }
+
+        @keyframes eqDance {
+          from {
+            transform: scaleY(0.35);
+          }
+
+          to {
+            transform:
+              scaleY(
+                calc(
+                  0.8 +
+                  (
+                    var(--audio-reactivity, 1) *
+                    0.9
+                  )
+                )
+              );
+          }
+        }
+
+        @keyframes logoPulse {
+          0% {
+            transform: scale(1);
+          }
+
+          50% {
+            transform: scale(1.08);
+          }
+
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        @keyframes partyPulse {
+          0% {
+            opacity: 0.4;
+            transform: scale(1);
+          }
+
+          50% {
+            opacity: 1;
+            transform: scale(1.06);
+          }
+
+          100% {
+            opacity: 0.4;
+            transform: scale(1);
           }
         }
 
