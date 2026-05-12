@@ -123,14 +123,17 @@ export default function SlideshowPage() {
 
           const bassAverage = bassSum / bass.length;
 
+          const normalizedBass =
+            Math.max(0, bassAverage - 35);
+
           const targetLevel = Math.min(
-            2,
-            1 + bassAverage / 120
+            1.45,
+            1 + normalizedBass / 220
           );
 
           smoothedLevel =
-            smoothedLevel * 0.82 +
-            targetLevel * 0.18;
+            smoothedLevel * 0.94 +
+            targetLevel * 0.06;
 
           audioLevelRef.current = smoothedLevel;
 
@@ -634,7 +637,11 @@ export default function SlideshowPage() {
         }
         .equaliser {
           position: absolute;
-          inset: 0;
+          left: 0;
+          right: 0;
+          bottom: 120px;
+
+          height: 260px;
 
           display: flex;
           align-items: flex-end;
@@ -642,29 +649,29 @@ export default function SlideshowPage() {
           
           gap: 10px;
           
-          padding-bottom: 120px;
-          
           z-index: 30;
+
+          pointer-events: none;
         }
 
         .eq-bar {
           width: 14px;
 
-          min-height: 40px
-
           height: calc(
-            40px +
+            60px +
             (
-              var(--audio-reactivity, 1) * 55px
+              var(--audio-reactivity, 1) * 140px
             )
           );
           
+          min-height: 60px
+
           border-radius: 999px;
 
           background:
             linear-gradient(
               to top,
-            rgba(120,190,255,0.2),
+            rgba(120,190,255,0.15),
             rgba(120,190,255,1),
             rgba(255,255,255,1)
           );
@@ -676,7 +683,7 @@ export default function SlideshowPage() {
             0 0 50px rgba(120,190,255,0.7),
 
           transition:
-            height 0.04s linear,
+            height 0.08s linear,
             box-shadow 0.08s linear;
         }
 
