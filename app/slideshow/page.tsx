@@ -38,46 +38,31 @@ const MESSAGE_MAX_DURATION = 30000;
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
 
-  const [messages, setMessages] = useState<
-    GuestbookMessage[]
-  >([]);
+  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
 
-  const [currentPhotoIndex, setCurrentPhotoIndex] =
-    useState(0);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
-  const [currentMessageIndex, setCurrentMessageIndex] =
-    useState(0);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
   const [showIntro, setShowIntro] = useState(true);
 
-  const [showMessages, setShowMessages] =
-    useState(false);
+  const [showMessages, setShowMessages] = useState(false);
 
-  const [showPartyMode, setShowPartyMode] =
-    useState(false);
+  const [showPartyMode, setShowPartyMode] = useState(false);
 
   const [fade, setFade] = useState(true);
 
   const [flash, setFlash] = useState(false);
 
-  const [isFullscreen, setIsFullscreen] =
-    useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const loadedImages = useRef(new Set<string>());
 
-  const photoIntervalRef =
-    useRef<NodeJS.Timeout | null>(null);
+  const photoIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const messageIntervalRef =
-    useRef<NodeJS.Timeout | null>(null);
+  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const flashTimeoutRef =
-    useRef<NodeJS.Timeout | null>(null);
-
-  const fadeTimeoutRef =
-    useRef<NodeJS.Timeout | null>(null);
-
-  const audioLevelRef = useRef(1);
+  const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   /* FULLSCREEN */
 
@@ -120,10 +105,9 @@ export default function SlideshowPage() {
 
     const setupAudio = async () => {
       try {
-        const stream =
-          await navigator.mediaDevices.getUserMedia({
-            audio: true,
-          });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
 
         audioContext = new AudioContext();
 
@@ -131,10 +115,7 @@ export default function SlideshowPage() {
 
         analyser.fftSize = 256;
 
-        microphone =
-          audioContext.createMediaStreamSource(
-            stream
-          );
+        microphone = audioContext.createMediaStreamSource(stream);
 
         microphone.connect(analyser);
 
@@ -147,45 +128,20 @@ export default function SlideshowPage() {
         const updateAudio = () => {
           analyser.getByteFrequencyData(dataArray);
 
-          let sum = 0;
-
-          for (
-            let i = 0;
-            i < dataArray.length;
-            i++
-          ) {
-            sum += dataArray[i];
-          }
-
-          const average =
-            sum / dataArray.length;
-
           const bassFrequencies = dataArray.slice(0, 18);
 
           let bassSum = 0;
 
-          for (
-            let i = 0;
-            i < bassFrequencies.length;
-            i++
-          ) {
+          for (let i = 0; i < bassFrequencies.length; i++) {
             bassSum += bassFrequencies[i];
           }
 
-          const bassAverage =
-            bassSum / bassFrequencies.length;
+          const bassAverage = bassSum / bassFrequencies.length;
 
-          const targetLevel = Math.min(
-            3.2,
-            1 + bassAverage / 38
-          );
+          const targetLevel = Math.min(3.8, 1 + bassAverage / 28);
 
           smoothedLevel =
-            smoothedLevel * 0.82 +
-            targetLevel * 0.18;
-
-          audioLevelRef.current =
-            smoothedLevel;
+            smoothedLevel * 0.76 + targetLevel * 0.24;
 
           document.documentElement.style.setProperty(
             "--audio-reactivity",
@@ -197,10 +153,7 @@ export default function SlideshowPage() {
 
         updateAudio();
       } catch (err) {
-        console.error(
-          "Microphone access failed:",
-          err
-        );
+        console.error("Microphone access failed:", err);
       }
     };
 
@@ -277,10 +230,7 @@ export default function SlideshowPage() {
       const fetchedMessages = snapshot.docs
         .map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<
-            GuestbookMessage,
-            "id"
-          >),
+          ...(doc.data() as Omit<GuestbookMessage, "id">),
         }))
         .filter((message) => message.approved);
 
@@ -294,9 +244,7 @@ export default function SlideshowPage() {
 
   useEffect(() => {
     photos.forEach((photo) => {
-      if (
-        loadedImages.current.has(photo.imageUrl)
-      ) {
+      if (loadedImages.current.has(photo.imageUrl)) {
         return;
       }
 
@@ -341,8 +289,7 @@ export default function SlideshowPage() {
 
       fadeTimeoutRef.current = setTimeout(() => {
         setCurrentPhotoIndex((prev) => {
-          if (photos.length <= 1)
-            return prev;
+          if (photos.length <= 1) return prev;
 
           let nextIndex = prev;
 
@@ -364,12 +311,7 @@ export default function SlideshowPage() {
         clearInterval(photoIntervalRef.current);
       }
     };
-  }, [
-    photos,
-    showIntro,
-    showMessages,
-    showPartyMode,
-  ]);
+  }, [photos, showIntro, showMessages, showPartyMode]);
 
   /* MESSAGE LOOP */
 
@@ -387,10 +329,7 @@ export default function SlideshowPage() {
   }, [messages, showPartyMode]);
 
   useEffect(() => {
-    if (
-      !showMessages ||
-      messages.length === 0
-    ) {
+    if (!showMessages || messages.length === 0) {
       return;
     }
 
@@ -398,41 +337,30 @@ export default function SlideshowPage() {
       setFade(false);
 
       setTimeout(() => {
-        if (
-          currentMessageIndex >=
-          messages.length - 1
-        ) {
+        if (currentMessageIndex >= messages.length - 1) {
           setShowMessages(false);
           setCurrentMessageIndex(0);
         } else {
-          setCurrentMessageIndex(
-            (prev) => prev + 1
-          );
+          setCurrentMessageIndex((prev) => prev + 1);
         }
 
         setFade(true);
       }, 350);
-    }, Math.min(
+    },
+    Math.min(
       Math.max(
         MESSAGE_MIN_DURATION,
-        messages[currentMessageIndex]
-          ?.message.length * 60
+        messages[currentMessageIndex]?.message.length * 60
       ),
       MESSAGE_MAX_DURATION
     ));
 
     return () => clearInterval(interval);
-  }, [
-    showMessages,
-    currentMessageIndex,
-    messages,
-  ]);
+  }, [showMessages, currentMessageIndex, messages]);
 
-  const currentPhoto =
-    photos[currentPhotoIndex];
+  const currentPhoto = photos[currentPhotoIndex];
 
-  const currentMessage =
-    messages[currentMessageIndex];
+  const currentMessage = messages[currentMessageIndex];
 
   const polaroidStyle = useMemo(() => {
     const styles = [
@@ -444,15 +372,14 @@ export default function SlideshowPage() {
       "rotate-[1deg] translate-y-1",
     ];
 
-    return styles[
-      currentPhotoIndex % styles.length
-    ];
+    return styles[currentPhotoIndex % styles.length];
   }, [currentPhotoIndex]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-black text-white">
 
       {/* BACKGROUND */}
+
       {showIntro ? (
         <div
           className="absolute inset-0 bg-cover bg-center z-0"
@@ -463,7 +390,7 @@ export default function SlideshowPage() {
         />
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center z-0"
+          className="absolute inset-0 bg-cover bg-center z-0 animate-backgroundDrift"
           style={{
             backgroundImage:
               "url('/blank-presentation-stage.jpg')",
@@ -472,6 +399,7 @@ export default function SlideshowPage() {
       )}
 
       {/* ORBS */}
+
       <div className="ambient-orbs absolute inset-0 z-[2]">
         <span />
         <span />
@@ -481,18 +409,19 @@ export default function SlideshowPage() {
         <span />
       </div>
 
-      {/* GLOW */}
-      <div className="edge-glow absolute inset-0 z-[15]" />
+      {/* EDGE GLOW */}
+
+      <div className="edge-glow absolute inset-0 z-[25]" />
 
       {/* OVERLAY */}
-      <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
+
+      <div className="absolute inset-0 bg-[#02112B]/8 z-[4]" />
 
       {/* FLASH */}
+
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
-          flash
-            ? "opacity-100"
-            : "opacity-0"
+          flash ? "opacity-100" : "opacity-0"
         }`}
         style={{
           background:
@@ -501,6 +430,7 @@ export default function SlideshowPage() {
       />
 
       {/* FULLSCREEN */}
+
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
@@ -511,12 +441,10 @@ export default function SlideshowPage() {
       )}
 
       {/* MAIN CONTENT */}
+
       <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
 
-        {showIntro ? (
-          <></>
-        ) : showPartyMode ? (
-
+        {showIntro ? null : showPartyMode ? (
           <div className="party-mode">
 
             <div className="party-bg-pulse" />
@@ -534,7 +462,6 @@ export default function SlideshowPage() {
             </div>
 
             <div className="party-center">
-
               <img
                 src="/logo.png"
                 className="party-logo"
@@ -547,14 +474,9 @@ export default function SlideshowPage() {
               <div className="party-subtitle">
                 PRESENTATION DAY
               </div>
-
             </div>
-
           </div>
-
-        ) : showMessages &&
-          currentMessage ? (
-
+        ) : showMessages && currentMessage ? (
           <div
             className={`w-full max-w-5xl transition-all duration-500 ${
               fade
@@ -569,21 +491,16 @@ export default function SlideshowPage() {
             </div>
 
             <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[3rem] px-14 py-12 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
-
               <div
                 style={{
-                  fontFamily:
-                    "'Caveat', cursive",
+                  fontFamily: "'Caveat', cursive",
                 }}
                 className={`leading-[1.25] whitespace-pre-wrap break-words ${
-                  currentMessage.message.length <
-                  120
+                  currentMessage.message.length < 120
                     ? "text-[3rem]"
-                    : currentMessage.message
-                        .length < 240
+                    : currentMessage.message.length < 240
                     ? "text-[2.3rem]"
-                    : currentMessage.message
-                        .length < 420
+                    : currentMessage.message.length < 420
                     ? "text-[1.9rem]"
                     : "text-[1.4rem]"
                 }`}
@@ -598,28 +515,22 @@ export default function SlideshowPage() {
 
                 <div
                   style={{
-                    fontFamily:
-                      "'Caveat', cursive",
+                    fontFamily: "'Caveat', cursive",
                   }}
                   className="text-[2.3rem] font-bold"
                 >
                   {currentMessage.name}
                 </div>
               </div>
-
             </div>
           </div>
-
         ) : photos.length === 0 ? (
-
           <div className="text-center">
             <div className="text-6xl font-black">
               Awaiting Photos
             </div>
           </div>
-
         ) : currentPhoto ? (
-
           <div
             key={currentPhoto.id}
             className={`transition-all duration-[900ms] ease-out ${
@@ -634,17 +545,14 @@ export default function SlideshowPage() {
               className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem] shadow-[0_18px_70px_rgba(0,0,0,0.5)] transition-transform duration-700 animate-polaroidFloat ${polaroidStyle}`}
             >
               <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
-
                 <img
                   src={currentPhoto.imageUrl}
                   alt="Presentation photo"
                   className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem] animate-kenburns"
                 />
-
               </div>
 
               <div className="mt-7 flex items-center justify-center gap-5">
-
                 <img
                   src="/logo.png"
                   alt=""
@@ -653,8 +561,7 @@ export default function SlideshowPage() {
 
                 <div
                   style={{
-                    fontFamily:
-                      "var(--font-great-vibes)",
+                    fontFamily: "var(--font-great-vibes)",
                   }}
                   className="text-[#222] text-[3.2rem] leading-none"
                 >
@@ -666,7 +573,6 @@ export default function SlideshowPage() {
                   alt=""
                   className="w-14 h-14 object-contain opacity-90"
                 />
-
               </div>
             </div>
           </div>
@@ -674,9 +580,9 @@ export default function SlideshowPage() {
       </div>
 
       {/* BRANDING */}
+
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
-
           <img
             src="/logo.png"
             alt="Club logo"
@@ -684,12 +590,10 @@ export default function SlideshowPage() {
           />
 
           <div className="leading-none">
-
             <div
               className="text-white font-black uppercase tracking-wide"
               style={{
-                fontSize:
-                  "clamp(2rem, 3vw, 3.5rem)",
+                fontSize: "clamp(2rem, 3vw, 3.5rem)",
               }}
             >
               Chatteris Town FC
@@ -698,24 +602,20 @@ export default function SlideshowPage() {
             <div
               className="text-slate-100 mt-1"
               style={{
-                fontFamily:
-                  "var(--font-great-vibes)",
-                fontSize:
-                  "clamp(2.3rem, 3vw, 4rem)",
+                fontFamily: "var(--font-great-vibes)",
+                fontSize: "clamp(2.3rem, 3vw, 4rem)",
               }}
             >
               Presentation Day
             </div>
-
           </div>
         </div>
       )}
 
       {/* QR */}
+
       <div className="absolute bottom-8 right-8 z-30">
-
         <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
-
           <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
             ADD PHOTOS
             <br />
@@ -727,11 +627,11 @@ export default function SlideshowPage() {
             alt="QR Code"
             className="rounded-xl w-[180px] h-[180px]"
           />
-
         </div>
       </div>
 
       <style jsx>{`
+
         .ambient-orbs {
           overflow: hidden;
           pointer-events: none;
@@ -810,17 +710,11 @@ export default function SlideshowPage() {
           position: absolute;
           inset: 0;
 
-          z-index: 15;
+          z-index: 25;
 
           pointer-events: none;
 
-          box-shadow:
-            inset 0 0
-              calc(
-                40px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,0.18);
+          overflow: visible;
         }
 
         .edge-glow::before {
@@ -828,11 +722,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 26%;
-          height: 6px;
+          width: 34%;
+          height: 12px;
 
           top: 0;
-          left: -26%;
+          left: -34%;
 
           border-radius: 999px;
 
@@ -840,44 +734,39 @@ export default function SlideshowPage() {
             linear-gradient(
               90deg,
               transparent 0%,
-              rgba(120,190,255,0.2) 10%,
-              rgba(120,190,255,1) 35%,
+              rgba(120,190,255,0.15) 8%,
+              rgba(120,190,255,1) 30%,
               rgba(255,255,255,1) 50%,
-              rgba(120,190,255,1) 65%,
+              rgba(120,190,255,1) 70%,
               transparent 100%
             );
 
+          opacity: 1;
+
           box-shadow:
-            0 0 18px rgba(120,190,255,1),
+            0 0 25px rgba(120,190,255,1),
 
             0 0
               calc(
-                40px *
+                90px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,1),
 
             0 0
               calc(
-                100px *
+                220px *
                 var(--audio-reactivity, 1)
               )
-              rgba(255,255,255,0.7);
+              rgba(255,255,255,0.95);
 
           transform:
-            scaleY(
+            scale(
               calc(
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.45
-              )
-            )
-            translateY(
-              calc(
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 4px
+                ) * 0.15
               )
             );
 
@@ -1036,65 +925,65 @@ export default function SlideshowPage() {
         @keyframes borderTrail {
           0% {
             top: 0;
-            left: -25%;
-            width: 22%;
-            height: 4px;
+            left: -34%;
+            width: 34%;
+            height: 12px;
           }
 
           24% {
             top: 0;
             left: 100%;
-            width: 22%;
-            height: 4px;
+            width: 34%;
+            height: 12px;
           }
 
           25% {
-            top: -25%;
-            left: calc(100% - 4px);
-            width: 4px;
-            height: 22%;
+            top: -34%;
+            left: calc(100% - 12px);
+            width: 12px;
+            height: 34%;
           }
 
           49% {
             top: 100%;
-            left: calc(100% - 4px);
-            width: 4px;
-            height: 22%;
+            left: calc(100% - 12px);
+            width: 12px;
+            height: 34%;
           }
 
           50% {
-            top: calc(100% - 4px);
+            top: calc(100% - 12px);
             left: 100%;
-            width: 22%;
-            height: 4px;
+            width: 34%;
+            height: 12px;
           }
 
           74% {
-            top: calc(100% - 4px);
-            left: -25%;
-            width: 22%;
-            height: 4px;
+            top: calc(100% - 12px);
+            left: -34%;
+            width: 34%;
+            height: 12px;
           }
 
           75% {
             top: 100%;
             left: 0;
-            width: 4px;
-            height: 22%;
+            width: 12px;
+            height: 34%;
           }
 
           99% {
-            top: -25%;
+            top: -34%;
             left: 0;
-            width: 4px;
-            height: 22%;
+            width: 12px;
+            height: 34%;
           }
 
           100% {
             top: 0;
-            left: -25%;
-            width: 22%;
-            height: 4px;
+            left: -34%;
+            width: 34%;
+            height: 12px;
           }
         }
 
@@ -1105,20 +994,6 @@ export default function SlideshowPage() {
 
           to {
             transform: scaleY(1);
-          }
-        }
-
-        @keyframes logoPulse {
-          0% {
-            transform: scale(1);
-          }
-
-          50% {
-            transform: scale(1.08);
-          }
-
-          100% {
-            transform: scale(1);
           }
         }
 
@@ -1251,7 +1126,9 @@ export default function SlideshowPage() {
           animation:
             backgroundDrift 30s ease-in-out infinite;
         }
+
       `}</style>
     </main>
   );
 }
+
