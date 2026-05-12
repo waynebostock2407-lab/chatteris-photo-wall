@@ -221,6 +221,7 @@ export default function UploadPage() {
 
             <input
               type="file"
+              multiple
               className="hidden"
               onChange={(e) => {
 
