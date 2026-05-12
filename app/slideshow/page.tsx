@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import {
   collection,
   onSnapshot,
@@ -26,27 +27,48 @@ interface GuestbookMessage {
 }
 
 const INTRO_DURATION = 60000;
-const INTRO_REPEAT_INTERVAL = 600000;
 
 const PHOTO_DURATION = 8000;
 const PHOTO_FADE_DURATION = 650;
 
+const MESSAGE_MIN_DURATION = 9000;
+const MESSAGE_MAX_DURATION = 30000;
+
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
 
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [messages, setMessages] = useState<
+    GuestbookMessage[]
+  >([]);
+
+  const [currentPhotoIndex, setCurrentPhotoIndex] =
+    useState(0);
+
+  const [currentMessageIndex, setCurrentMessageIndex] =
+    useState(0);
 
   const [showIntro, setShowIntro] = useState(true);
-  const [showMessages, setShowMessages] = useState(false);
-  const [showPartyMode, setShowPartyMode] = useState(false);
+
+  const [showMessages, setShowMessages] =
+    useState(false);
 
   const [fade, setFade] = useState(true);
-  const [flash, setFlash] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const audioLevelRef = useRef(1);
+  const [flash, setFlash] = useState(false);
+
+  const [isFullscreen, setIsFullscreen] =
+    useState(false);
+
+  const loadedImages = useRef(new Set<string>());
+
+  const photoIntervalRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  const flashTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  const fadeTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
 
   /* FULLSCREEN */
 
@@ -58,7 +80,7 @@ export default function SlideshowPage() {
         await document.exitFullscreen();
       }
     } catch (err) {
-      console.error(err);
+      console.error("Fullscreen failed:", err);
     }
   };
 
@@ -97,10 +119,13 @@ export default function SlideshowPage() {
         audioContext = new AudioContext();
 
         analyser = audioContext.createAnalyser();
+
         analyser.fftSize = 256;
 
         microphone =
-          audioContext.createMediaStreamSource(stream);
+          audioContext.createMediaStreamSource(
+            stream
+          );
 
         microphone.connect(analyser);
 
@@ -113,15 +138,21 @@ export default function SlideshowPage() {
         const updateAudio = () => {
           analyser.getByteFrequencyData(dataArray);
 
-          const bass = dataArray.slice(0, 18);
+          const bassFrequencies =
+            dataArray.slice(0, 18);
 
           let bassSum = 0;
 
-          for (let i = 0; i < bass.length; i++) {
-            bassSum += bass[i];
+          for (
+            let i = 0;
+            i < bassFrequencies.length;
+            i++
+          ) {
+            bassSum += bassFrequencies[i];
           }
 
-          const bassAverage = bassSum / bass.length;
+          const bassAverage =
+            bassSum / bassFrequencies.length;
 
           const normalizedBass =
             Math.max(0, bassAverage - 70);
@@ -135,8 +166,6 @@ export default function SlideshowPage() {
             smoothedLevel * 0.97 +
             targetLevel * 0.03;
 
-          audioLevelRef.current = smoothedLevel;
-
           document.documentElement.style.setProperty(
             "--audio-reactivity",
             `${smoothedLevel}`
@@ -147,7 +176,10 @@ export default function SlideshowPage() {
 
         updateAudio();
       } catch (err) {
-        console.error(err);
+        console.error(
+          "Microphone access failed:",
+          err
+        );
       }
     };
 
@@ -164,54 +196,7 @@ export default function SlideshowPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const introCycle = setInterval(() => {
-      setShowIntro(true);
-
-      setTimeout(() => {
-        setShowIntro(false);
-      }, 20000);
-    }, INTRO_REPEAT_INTERVAL);
-
-    return () => clearInterval(introCycle);
-  }, []);
-
-  /* PARTY MODE */
-
-  useEffect(() => {
-    const runPartySequence = () => {
-      setShowIntro(true);
-
-      setTimeout(() => {
-        setShowIntro(false);
-
-        setShowPartyMode(true);
-
-        setTimeout(() => {
-          setShowPartyMode(false);
-        }, 60000);
-      }, 20000);
-    };
-
-    const firstSequence = setTimeout(() => {
-      setShowPartyMode(true);
-
-      setTimeout(() => {
-        setShowPartyMode(false);
-      }, 60000);
-    }, INTRO_DURATION);
-
-    const partyInterval = setInterval(() => {
-      runPartySequence();
-    }, 600000);
-
-    return () => {
-      clearTimeout(firstSequence);
-      clearInterval(partyInterval);
-    };
-  }, []);
-
-  /* FIRESTORE */
+  /* FIRESTORE - PHOTOS */
 
   useEffect(() => {
     const q = query(
@@ -232,6 +217,8 @@ export default function SlideshowPage() {
 
     return () => unsubscribe();
   }, []);
+
+  /* FIRESTORE - MESSAGES */
 
   useEffect(() => {
     const q = query(
@@ -256,56 +243,145 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
+  /* PRELOAD IMAGES */
+
+  useEffect(() => {
+    photos.forEach((photo) => {
+      if (
+        loadedImages.current.has(photo.imageUrl)
+      ) {
+        return;
+      }
+
+      const img = new window.Image();
+
+      img.src = photo.imageUrl;
+
+      img.onload = () => {
+        loadedImages.current.add(photo.imageUrl);
+      };
+    });
+  }, [photos]);
+
   /* PHOTO LOOP */
 
   useEffect(() => {
     if (
       photos.length === 0 ||
       showIntro ||
-      showMessages ||
-      showPartyMode
+      showMessages
     ) {
       return;
     }
 
-    const interval = setInterval(() => {
+    photoIntervalRef.current = setInterval(() => {
       setFlash(true);
 
-      setTimeout(() => {
+      if (flashTimeoutRef.current) {
+        clearTimeout(flashTimeoutRef.current);
+      }
+
+      flashTimeoutRef.current = setTimeout(() => {
         setFlash(false);
-      }, 120);
+      }, 100);
 
       setFade(false);
 
-      setTimeout(() => {
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+      }
+
+      fadeTimeoutRef.current = setTimeout(() => {
         setCurrentPhotoIndex((prev) => {
-          if (photos.length <= 1) return prev;
+          if (photos.length <= 1)
+            return prev;
 
-          let next = prev;
+          let nextIndex = prev;
 
-          while (next === prev) {
-            next = Math.floor(
+          while (nextIndex === prev) {
+            nextIndex = Math.floor(
               Math.random() * photos.length
             );
           }
 
-          return next;
+          return nextIndex;
         });
 
         setFade(true);
       }, PHOTO_FADE_DURATION);
     }, PHOTO_DURATION);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (photoIntervalRef.current) {
+        clearInterval(photoIntervalRef.current);
+      }
+    };
   }, [
     photos,
     showIntro,
     showMessages,
-    showPartyMode,
   ]);
 
-  const currentPhoto = photos[currentPhotoIndex];
-  const currentMessage = messages[currentMessageIndex];
+  /* MESSAGE LOOP */
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const cycle = setInterval(() => {
+      setShowMessages(true);
+      setCurrentMessageIndex(0);
+    }, 300000);
+
+    return () => clearInterval(cycle);
+  }, [messages]);
+
+  useEffect(() => {
+    if (
+      !showMessages ||
+      messages.length === 0
+    ) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setFade(false);
+
+      setTimeout(() => {
+        if (
+          currentMessageIndex >=
+          messages.length - 1
+        ) {
+          setShowMessages(false);
+          setCurrentMessageIndex(0);
+        } else {
+          setCurrentMessageIndex(
+            (prev) => prev + 1
+          );
+        }
+
+        setFade(true);
+      }, 350);
+    }, Math.min(
+      Math.max(
+        MESSAGE_MIN_DURATION,
+        messages[currentMessageIndex]
+          ?.message.length * 60
+      ),
+      MESSAGE_MAX_DURATION
+    ));
+
+    return () => clearInterval(interval);
+  }, [
+    showMessages,
+    currentMessageIndex,
+    messages,
+  ]);
+
+  const currentPhoto =
+    photos[currentPhotoIndex];
+
+  const currentMessage =
+    messages[currentMessageIndex];
 
   const polaroidStyle = useMemo(() => {
     const styles = [
@@ -349,6 +425,10 @@ export default function SlideshowPage() {
 
       <div className="edge-trail" />
 
+      {/* OVERLAY */}
+
+      <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
+
       {/* FLASH */}
 
       <div
@@ -372,51 +452,76 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* CONTENT */}
+      {/* MAIN CONTENT */}
 
       <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
 
         {showIntro ? (
           <></>
-        ) : showPartyMode ? (
+        ) : showMessages &&
+          currentMessage ? (
 
-          <div className="party-mode">
+          <div
+            className={`w-full max-w-5xl transition-all duration-500 ${
+              fade
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-[0.98]"
+            }`}
+          >
+            <div className="mb-8 text-center">
+              <div className="text-6xl font-black">
+                Messages for Vicky
+              </div>
+            </div>
 
-            <div className="equaliser">
-              {[...Array(48)].map((_, i) => (
+            <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[3rem] px-14 py-12 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
+
+              <div
+                style={{
+                  fontFamily:
+                    "'Caveat', cursive",
+                }}
+                className={`leading-[1.25] whitespace-pre-wrap break-words ${
+                  currentMessage.message.length <
+                  120
+                    ? "text-[3rem]"
+                    : currentMessage.message
+                        .length < 240
+                    ? "text-[2.3rem]"
+                    : currentMessage.message
+                        .length < 420
+                    ? "text-[1.9rem]"
+                    : "text-[1.4rem]"
+                }`}
+              >
+                {currentMessage.message}
+              </div>
+
+              <div className="mt-10 text-right">
+                <div className="text-white/50 uppercase text-sm tracking-[0.3em] mb-2">
+                  Shared by
+                </div>
+
                 <div
-                  key={i}
-                  className="eq-bar"
                   style={{
-                    height: `calc()
-                      40px +
-                      (
-                        (var(--audio-reactivity, 1) -1)
-                        * ${60 + ((i * 9) % 180)}px
-                      )
-                    )`,
-
-                    width: `${10 + (i % 4)}px`,
-
-                    opacity:
-                      0.45 + ((i % 6) * 0.08),
-
-                    transform: `
-                    translateY(${(i % 5) * -2}px)
-                    scaleY(${0.85 + ((i % 7) * 0.05)})
-                  `,
+                    fontFamily:
+                      "'Caveat', cursive",
                   }}
-                />
-              ))}
-            </div>
+                  className="text-[2.3rem] font-bold"
+                >
+                  {currentMessage.name}
+                </div>
+              </div>
 
-            <div className="party-center">
-              <img
-                src="/logo.png"
-                className="party-logo"
-              />
             </div>
+          </div>
 
+        ) : photos.length === 0 ? (
+
+          <div className="text-center">
+            <div className="text-6xl font-black">
+              Awaiting Photos
+            </div>
           </div>
 
         ) : currentPhoto ? (
@@ -444,34 +549,33 @@ export default function SlideshowPage() {
 
               </div>
 
-            <div className="mt-7 flex items-center justify-center gap-5">
+              <div className="mt-7 flex items-center justify-center gap-5">
 
-              <img
-                src="/logo.png"
-                alt="Club logo"
-                className="w-14 h-14 object-contain opacity-90"
-              />
+                <img
+                  src="/logo.png"
+                  alt="Club logo"
+                  className="w-14 h-14 object-contain opacity-90"
+                />
 
-              <div
-                style={{
-                  fontFamily:
-                    "var(--font-great-vibes)",
-                }}
-                className="text-[#222] text-[3.2rem] leading-none"
-              >
-                Memories
+                <div
+                  style={{
+                    fontFamily:
+                      "var(--font-great-vibes)",
+                  }}
+                  className="text-[#222] text-[3.2rem] leading-none"
+                >
+                  Memories
+                </div>
+
+                <img
+                  src="/logo.png"
+                  alt="Club logo"
+                  className="w-14 h-14 object-contain opacity-90"
+                />
+
               </div>
-
-              <img
-                src="/logo.png"
-                alt="Club logo"
-                className="w-14 h-14 object-contain opacity-90"
-              />
-
-            </div>
             </div>
           </div>
-
         ) : null}
       </div>
 
@@ -501,8 +605,8 @@ export default function SlideshowPage() {
             <div
               className="text-slate-100 mt-1"
               style={{
-                  fontFamily:
-                    "var(--font-great-vibes)",
+                fontFamily:
+                  "var(--font-great-vibes)",
                 fontSize:
                   "clamp(2.3rem, 3vw, 4rem)",
               }}
@@ -549,11 +653,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 24%;
+          width: 240px;
           height: 8px;
 
           top: 0;
-          left: -24%;
+          left: -240px;
 
           border-radius: 999px;
 
@@ -561,10 +665,10 @@ export default function SlideshowPage() {
             linear-gradient(
               90deg,
               transparent 0%,
-            rgba(120,190,255,0.15) 8%,
-            rgba(120,190,255,1) 30%,
-            rgba(255,255,255,1) 50%,
-            rgba(120,190,255,1) 70%,
+              rgba(120,190,255,0.15) 8%,
+              rgba(120,190,255,1) 30%,
+              rgba(255,255,255,1) 50%,
+              rgba(120,190,255,1) 70%,
               transparent 100%
             );
 
@@ -602,7 +706,7 @@ export default function SlideshowPage() {
                 160px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.9);
+            rgba(120,190,255,0.9);
 
           transform:
             scale(
@@ -614,139 +718,13 @@ export default function SlideshowPage() {
               )
             );
 
-          filter:
-            brightness(
-              calc(
-                1 +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 1.6
-              )
-            );
-
           transition:
             transform 0.06s linear,
-            filter 0.06s linear,
             opacity 0.06s linear,
             box-shadow 0.06s linear;
 
           animation:
             borderTrail 34s linear infinite;
-        }
-
-        .party-mode {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        
-        .party-center {
-          position: relative;
-          
-          z-index: 40;
-          
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .equaliser {
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 120px;
-
-          height: 260px;
-
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          
-          gap: 10px;
-          
-          z-index: 10;
-
-          pointer-events: none;
-        }
-
-        .eq-bar {
-          width: 12px;
-
-          height: calc(
-            40px +
-            (
-              var(--audio-reactivity, 1) 
-              * 220px
-            )
-          );
-
-          border-radius: 999px;
-
-          position: relative;
-
-          overflow: visible;
-
-          background:
-            linear-gradient(
-              to top,
-            rgba(120,190,255,0.08), 0%
-            rgba(120,190,255,0.55) 30%,
-            rgba(120,190,255,1) 70%,
-            rgba(255,255,255,1) 100%
-          );
-
-          opacity: 0.9;
-
-          box-shadow:
-            0 0 12px rgba(120,190,255,0.5),
-            0 0 30px rgba(120,190,255,0.45),
-            0 0 60px rgba(255,255,255,0.25);
-
-          transform-origin: bottom;
-
-          transition:
-            height 0.06s linear,
-            transform 0.06s linear,
-            opacity 0.06s linear;
-        }
-
-        .party-logo {
-          width: 240px;
-
-          position: relative;
-          z-index: 20;
-
-          transform:
-            scale(
-              calc(
-                1 +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 0.22
-              )
-            );
-
-          filter:
-            drop-shadow(
-              0 0 
-              calc(
-                35px *
-                var(--audio-reactivity, 1)
-              ) 
-            rgba(120,190,255,1)
-            )
-            hue-rotate(
-              calc(
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 160deg
-              )
-            );
-
-          transition:
-            transform 0.08s linear,
-            filter 0.08s linear;
         }
 
         @keyframes borderTrail {
@@ -814,16 +792,6 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes eqDance {
-          from {
-            transform: scaleY(0.35);
-          }
-
-          to {
-            transform: scaleY(1);
-          }
-        }
-
         @keyframes kenburns {
           0% {
             transform: scale(1);
@@ -860,6 +828,5 @@ export default function SlideshowPage() {
     </main>
   );
 }
-
 
 
