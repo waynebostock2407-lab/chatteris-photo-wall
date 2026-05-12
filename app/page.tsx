@@ -7,6 +7,7 @@ import {
   collection,
   serverTimestamp,
 } from "firebase/firestore";
+
 import { db } from "@/lib/firebase";
 
 export default function UploadPage() {
@@ -18,6 +19,40 @@ export default function UploadPage() {
 
   const [message, setMessage] = useState("");
 
+  /* PHOTO UPLOAD */
+  const uploadPhotos = async () => {
+
+    if (selectedFiles.length === 0) return;
+
+    try {
+
+      for (const file of selectedFiles) {
+
+        console.log(
+          "Uploading:",
+          file.name
+        );
+
+        /*
+          PUT YOUR FIREBASE STORAGE
+          UPLOAD CODE HERE
+        */
+
+      }
+
+      alert("Photos uploaded!");
+
+      setSelectedFiles([]);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  };
+
+  /* MESSAGE SUBMIT */
   const submitMessage = async () => {
 
     if (!message) return;
@@ -44,6 +79,7 @@ export default function UploadPage() {
       console.error(error);
 
     }
+
   };
 
   return (
@@ -144,7 +180,7 @@ export default function UploadPage() {
             "
           >
             Upload your favourite photos and
-            messages for Presentation Day
+            messages for Presentation Day —
             and see them featured LIVE on the
             big screen during the event.
           </p>
@@ -205,6 +241,7 @@ export default function UploadPage() {
                 "
               >
                 Share your favourite moments
+                from the season.
               </div>
 
             </div>
@@ -225,7 +262,7 @@ export default function UploadPage() {
               className="hidden"
               onChange={(e) => {
 
-                if (e.target.files){
+                if (e.target.files) {
 
                   setSelectedFiles(
                     Array.from(e.target.files)
@@ -281,6 +318,27 @@ export default function UploadPage() {
             </div>
 
           </label>
+
+          {/* UPLOAD BUTTON */}
+          <button
+            onClick={uploadPhotos}
+            className="
+              w-full
+              rounded-2xl
+              bg-[#245DFF]
+              hover:bg-[#184FEA]
+              transition
+              text-white
+              font-black
+              uppercase
+              text-xl
+              py-5
+              shadow-lg
+              mt-6
+            "
+          >
+            Upload Photos
+          </button>
 
         </div>
 
@@ -346,7 +404,7 @@ export default function UploadPage() {
           {/* NAME */}
           <input
             type="text"
-            placeholder="Your Name"
+            placeholder="Your Name (Optional)"
             value={name}
             onChange={(e) =>
               setName(e.target.value)
