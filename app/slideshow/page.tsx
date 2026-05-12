@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import {
   collection,
   onSnapshot,
@@ -14,6 +16,7 @@ interface Photo {
   id: string;
   imageUrl: string;
   approved: boolean;
+  createdAt?: any;
 }
 
 interface GuestbookMessage {
@@ -21,29 +24,67 @@ interface GuestbookMessage {
   name: string;
   message: string;
   approved: boolean;
+  createdAt?: any;
 }
+
+const INTRO_DURATION = 60000;
+const INTRO_REPEAT_INTERVAL = 600000;
+
+const PHOTO_DURATION = 8000;
+const PHOTO_FADE_DURATION = 650;
+
+const MESSAGE_MIN_DURATION = 9000;
+const MESSAGE_MAX_DURATION = 30000;
 
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
+  const [messages, setMessages] = useState<
+    GuestbookMessage[]
+  >([]);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [messageIndex, setMessageIndex] = useState(0);
+  const [currentPhotoIndex, setCurrentPhotoIndex] =
+    useState(0);
+
+  const [currentMessageIndex, setCurrentMessageIndex] =
+    useState(0);
+
+  const [showIntro, setShowIntro] = useState(true);
+  const [showMessages, setShowMessages] =
+    useState(false);
 
   const [fade, setFade] = useState(true);
   const [flash, setFlash] = useState(false);
-  const [loadedImages, setLoadedImages] = useState<string[]>([]);
 
-  const [showMessages, setShowMessages] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const [isFullscreen, setIsFullscreen] =
+    useState(false);
 
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const loadedImages = useRef(new Set<string>());
+
+  const photoIntervalRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  const messageIntervalRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  const flashTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  const fadeTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
+
+  /* -------------------------------------------------- */
+  /* FULLSCREEN */
+  /* -------------------------------------------------- */
 
   const toggleFullscreen = async () => {
-    if (!document.fullscreenElement) {
-      await document.documentElement.requestFullscreen();
-    } else {
-      await document.exitFullscreen();
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Fullscreen failed:", err);
     }
   };
 
@@ -65,38 +106,59 @@ export default function SlideshowPage() {
     };
   }, []);
 
-  /* INTRO */
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowIntro(false);
-    }, 60000);
+  /* -------------------------------------------------- */
+  /* WAKE LOCK */
+  /* -------------------------------------------------- */
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    let wakeLock: any = null;
+
+    const requestWakeLock = async () => {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await (
+            navigator as any
+          ).wakeLock.request("screen");
+        }
+      } catch (err) {
+        console.error("Wake lock failed:", err);
+      }
+    };
+
+    requestWakeLock();
+
+    return () => {
+      wakeLock?.release?.();
+    };
   }, []);
 
-  /* INTRO LOOP */
+  /* -------------------------------------------------- */
+  /* INTRO */
+  /* -------------------------------------------------- */
+
   useEffect(() => {
-    const introCycle = setInterval(() => {
+    const initialIntroTimeout = setTimeout(() => {
+      setShowIntro(false);
+    }, INTRO_DURATION);
+
+    const recurringIntroInterval = setInterval(() => {
       setShowIntro(true);
 
       setTimeout(() => {
         setShowIntro(false);
       }, 20000);
-    }, 600000);
+    }, INTRO_REPEAT_INTERVAL);
 
-    return () => clearInterval(introCycle);
+    return () => {
+      clearTimeout(initialIntroTimeout);
+      clearInterval(recurringIntroInterval);
+    };
   }, []);
 
-  const polaroidStyles = [
-    "rotate-[-2deg] translate-y-1",
-    "rotate-[1.8deg] -translate-y-1",
-    "rotate-[-1deg] translate-y-2",
-    "rotate-[2.4deg]",
-    "rotate-[-2.5deg]",
-    "rotate-[1deg] translate-y-1",
-  ];
+  /* -------------------------------------------------- */
+  /* FIRESTORE - PHOTOS */
+  /* -------------------------------------------------- */
 
-  /* PHOTOS */
   useEffect(() => {
     const q = query(
       collection(db, "photos"),
@@ -109,7 +171,7 @@ export default function SlideshowPage() {
           id: doc.id,
           ...(doc.data() as Omit<Photo, "id">),
         }))
-        .filter((photo: any) => photo.approved);
+        .filter((photo) => photo.approved);
 
       setPhotos(fetchedPhotos);
     });
@@ -117,29 +179,10 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* PRELOAD IMAGES */
-useEffect(() => {
+  /* -------------------------------------------------- */
+  /* FIRESTORE - MESSAGES */
+  /* -------------------------------------------------- */
 
-  photos.forEach((photo) => {
-
-    if (loadedImages.includes(photo.imageUrl)) return;
-
-    const img = new Image();
-
-    img.src = photo.imageUrl;
-
-    img.onload = () => {
-      setLoadedImages((prev) => [
-        ...prev,
-        photo.imageUrl,
-      ]);
-    };
-
-  });
-
-}, [photos]);
-
-  /* MESSAGES */
   useEffect(() => {
     const q = query(
       collection(db, "guestbook"),
@@ -150,9 +193,12 @@ useEffect(() => {
       const fetchedMessages = snapshot.docs
         .map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<GuestbookMessage, "id">),
+          ...(doc.data() as Omit<
+            GuestbookMessage,
+            "id"
+          >),
         }))
-        .filter((message: any) => message.approved);
+        .filter((message) => message.approved);
 
       setMessages(fetchedMessages);
     });
@@ -160,295 +206,407 @@ useEffect(() => {
     return () => unsubscribe();
   }, []);
 
-  /* PHOTO LOOP */
+  /* -------------------------------------------------- */
+  /* IMAGE PRELOAD */
+  /* -------------------------------------------------- */
+
   useEffect(() => {
-    if (photos.length === 0) return;
+    photos.forEach((photo) => {
+      if (
+        loadedImages.current.has(photo.imageUrl)
+      ) {
+        return;
+      }
 
-    let interval: NodeJS.Timeout;
+      const img = new window.Image();
 
-    if (!showMessages && !showIntro) {
-      interval = setInterval(() => {
-        setFlash(true);
+      img.src = photo.imageUrl;
 
-        setTimeout(() => {
-          setFlash(false);
-        }, 90);
+      img.onload = () => {
+        loadedImages.current.add(photo.imageUrl);
+      };
+    });
+  }, [photos]);
 
-        setFade(false);
+  /* -------------------------------------------------- */
+  /* PHOTO SLIDESHOW */
+  /* -------------------------------------------------- */
 
-        setTimeout(() => {
-          setCurrentIndex((prev) =>
-            prev === photos.length - 1 ? 0 : prev + 1
-          );
-
-          setFade(true);
-        }, 650);
-      }, 8000);
+  useEffect(() => {
+    if (
+      photos.length === 0 ||
+      showIntro ||
+      showMessages
+    ) {
+      return;
     }
 
-    return () => clearInterval(interval);
-  }, [photos, showMessages, showIntro]);
+    photoIntervalRef.current = setInterval(() => {
+      setFlash(true);
 
-  /* MESSAGE CYCLE */
+      if (flashTimeoutRef.current) {
+        clearTimeout(flashTimeoutRef.current);
+      }
+
+      flashTimeoutRef.current = setTimeout(() => {
+        setFlash(false);
+      }, 100);
+
+      setFade(false);
+
+      if (fadeTimeoutRef.current) {
+        clearTimeout(fadeTimeoutRef.current);
+      }
+
+      fadeTimeoutRef.current = setTimeout(() => {
+        setCurrentPhotoIndex((prev) =>
+          prev === photos.length - 1
+            ? 0
+            : prev + 1
+        );
+
+        setFade(true);
+      }, PHOTO_FADE_DURATION);
+    }, PHOTO_DURATION);
+
+    return () => {
+      if (photoIntervalRef.current) {
+        clearInterval(photoIntervalRef.current);
+      }
+    };
+  }, [photos, showIntro, showMessages]);
+
+  /* -------------------------------------------------- */
+  /* MESSAGE MODE TRIGGER */
+  /* -------------------------------------------------- */
+
   useEffect(() => {
     if (messages.length === 0) return;
 
-    const cycle = setInterval(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex(0);
       setShowMessages(true);
-      setMessageIndex(0);
     }, 300000);
 
-    return () => clearInterval(cycle);
+    return () => clearInterval(interval);
   }, [messages]);
 
+  /* -------------------------------------------------- */
   /* MESSAGE LOOP */
-  useEffect(() => {
-    if (!showMessages || messages.length === 0) return;
+  /* -------------------------------------------------- */
 
-    const interval = setInterval(() => {
+  useEffect(() => {
+    if (
+      !showMessages ||
+      messages.length === 0
+    ) {
+      return;
+    }
+
+    const currentMessage =
+      messages[currentMessageIndex];
+
+    const duration = Math.min(
+      Math.max(
+        MESSAGE_MIN_DURATION,
+        (currentMessage?.message?.length || 0) *
+          60
+      ),
+      MESSAGE_MAX_DURATION
+    );
+
+    messageIntervalRef.current = setInterval(() => {
       setFade(false);
 
       setTimeout(() => {
-        if (messageIndex >= messages.length - 1) {
+        if (
+          currentMessageIndex >=
+          messages.length - 1
+        ) {
+          setCurrentMessageIndex(0);
           setShowMessages(false);
-          setMessageIndex(0);
         } else {
-          setMessageIndex((prev) => prev + 1);
+          setCurrentMessageIndex(
+            (prev) => prev + 1
+          );
         }
 
         setFade(true);
       }, 350);
-    }, Math.min(
-      Math.max(
-        9000,
-        messages[messageIndex]?.message.length * 60
-      ),
-      30000
-    ));
+    }, duration);
 
-    return () => clearInterval(interval);
-  }, [showMessages, messageIndex, messages]);
+    return () => {
+      if (messageIntervalRef.current) {
+        clearInterval(
+          messageIntervalRef.current
+        );
+      }
+    };
+  }, [
+    showMessages,
+    currentMessageIndex,
+    messages,
+  ]);
+
+  /* -------------------------------------------------- */
+  /* CURRENT DATA */
+  /* -------------------------------------------------- */
+
+  const currentPhoto =
+    photos[currentPhotoIndex];
+
+  const currentMessage =
+    messages[currentMessageIndex];
+
+  const polaroidStyle = useMemo(() => {
+    const styles = [
+      "rotate-[-2deg] translate-y-1",
+      "rotate-[1.8deg] -translate-y-1",
+      "rotate-[-1deg] translate-y-2",
+      "rotate-[2.4deg]",
+      "rotate-[-2.5deg]",
+      "rotate-[1deg] translate-y-1",
+    ];
+
+    return styles[
+      currentPhotoIndex % styles.length
+    ];
+  }, [currentPhotoIndex]);
+
+  /* -------------------------------------------------- */
+  /* RENDER */
+  /* -------------------------------------------------- */
 
   return (
-    <main className="relative w-screen h-screen overflow-hidden text-white">
+    <main className="relative w-screen h-screen overflow-hidden bg-black text-white">
 
       {/* BACKGROUND */}
-{showIntro ? (
-  <div
-    className="absolute inset-0 bg-cover bg-center z-0"
-    style={{
-      backgroundImage: "url('/presentation-stage.jpg')",
-    }}
-  />
-) : (
-  <div
-    className="absolute inset-0 bg-cover bg-center z-0"
-    style={{
-      backgroundImage:
-        "url('/blank-presentation-stage.jpg')",
-    }}
-  />
-)}
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0 transition-all duration-[2000ms]"
+        style={{
+          backgroundImage: showIntro
+            ? "url('/presentation-stage.jpg')"
+            : "url('/blank-presentation-stage.jpg')",
+        }}
+      />
 
-{/* ORBS */}
-<div className="ambient-orbs absolute inset-0 z-[2]">
-  <span />
-  <span />
-  <span />
-  <span />
-  <span />
-  <span />
-</div>
+      {/* ORBS */}
+      <div className="ambient-orbs absolute inset-0 z-[2]">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
 
-{/* EDGE GLOW */}
-<div className="edge-glow absolute inset-0 z-[3] pointer-events-none" />
+      {/* EDGE GLOW */}
+      <div className="edge-glow absolute inset-0 z-[3]" />
 
-{/* DARK OVERLAY */}
-<div className="absolute inset-0 bg-[#02112B]/10 z-[4]" />
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-[#02112B]/20 z-[4]" />
 
-{/* FLASH */}
-<div
-  className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
-    flash ? "opacity-100" : "opacity-0"
-  }`}
-  style={{
-    background:
-      "radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.55) 35%, rgba(255,255,255,0) 100%)",
-  }}
-/>
+      {/* FLASH */}
+      <div
+        className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
+          flash
+            ? "opacity-100"
+            : "opacity-0"
+        }`}
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.55) 35%, rgba(255,255,255,0) 100%)",
+        }}
+      />
 
-{/* FULLSCREEN */}
-{!isFullscreen && (
-  <button
-    onClick={toggleFullscreen}
-    className="
-      fixed
-      top-6
-      right-6
-      z-[9999]
-      bg-black/40
-      hover:bg-black/60
-      backdrop-blur-xl
-      border
-      border-white/20
-      text-white
-      px-6
-      py-3
-      rounded-2xl
-      text-lg
-      font-bold
-      tracking-wide
-      transition-all
-      duration-300
-    "
-  >
-    ⛶ FULL SCREEN
-  </button>
-)}
+      {/* FULLSCREEN BUTTON */}
+      {!isFullscreen && (
+        <button
+          aria-label="Enter fullscreen"
+          onClick={toggleFullscreen}
+          className="fixed top-6 right-6 z-[9999] bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl text-lg font-bold tracking-wide transition-all duration-300"
+        >
+          ⛶ FULL SCREEN
+        </button>
+      )}
 
-{/* MAIN CONTENT */}
-<div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
+      {/* MAIN CONTENT */}
+      <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
+
+        {/* INTRO */}
         {showIntro ? (
-          <></>
-        ) : showMessages && messages.length > 0 ? (
+          <div className="text-center animate-fadeIn">
 
-          <div className="w-full flex justify-center items-center px-12">
+            <div
+              className="text-white font-black uppercase tracking-[0.12em]"
+              style={{
+                fontSize:
+                  "clamp(3rem, 5vw, 6rem)",
+              }}
+            >
+              Chatteris Town FC
+            </div>
 
-            <div className="w-full max-w-5xl text-center flex flex-col items-center">
+            <div
+              className="text-white/90 mt-4"
+              style={{
+                fontFamily:
+                  "var(--font-great-vibes)",
+                fontSize:
+                  "clamp(3rem, 5vw, 6rem)",
+              }}
+            >
+              Presentation Day
+            </div>
+          </div>
 
-              <div className="mb-6 flex-shrink-0">
-                <div className="text-6xl font-extrabold text-white tracking-wide">
-                  Messages for Vicky
-                </div>
+        ) : showMessages &&
+          currentMessage ? (
+
+          /* MESSAGE VIEW */
+          <div
+            className={`w-full max-w-5xl transition-all duration-500 ${
+              fade
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-[0.98]"
+            }`}
+          >
+            <div className="mb-8 text-center">
+              <div className="text-6xl font-black">
+                Messages for Vicky
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[3rem] px-14 py-12 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
+
+              <div
+                style={{
+                  fontFamily:
+                    "'Caveat', cursive",
+                }}
+                className={`leading-[1.25] whitespace-pre-wrap break-words ${
+                  currentMessage.message.length <
+                  120
+                    ? "text-[3rem]"
+                    : currentMessage.message
+                        .length < 240
+                    ? "text-[2.3rem]"
+                    : currentMessage.message
+                        .length < 420
+                    ? "text-[1.9rem]"
+                    : "text-[1.4rem]"
+                }`}
+              >
+                {currentMessage.message}
               </div>
 
-              <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-xl rounded-[3rem] px-16 py-12 shadow-[0_0_80px_rgba(0,0,0,0.35)] w-full max-w-5xl min-h-[42vh] max-h-[70vh] flex flex-col justify-between">
+              <div className="mt-10 text-right">
+                <div className="text-white/50 uppercase text-sm tracking-[0.3em] mb-2">
+                  Shared by
+                </div>
 
                 <div
                   style={{
-                    fontFamily: "'Caveat', cursive",
+                    fontFamily:
+                      "'Caveat', cursive",
                   }}
-                  className={`relative z-10 text-white font-semibold tracking-[0.01em] text-left whitespace-pre-wrap break-words leading-[1.28] flex-1 flex items-center ${
-                    messages[messageIndex].message.length < 120
-                      ? "text-[3rem]"
-                      : messages[messageIndex].message.length < 220
-                      ? "text-[2.45rem]"
-                      : messages[messageIndex].message.length < 350
-                      ? "text-[2rem]"
-                      : messages[messageIndex].message.length < 500
-                      ? "text-[1.65rem]"
-                      : messages[messageIndex].message.length < 700
-                      ? "text-[1.35rem]"
-                      : "text-[1.1rem]"
-                  }`}
+                  className="text-[2.3rem] font-bold"
                 >
-                  {messages[messageIndex].message}
+                  {currentMessage.name}
                 </div>
-
-                <div className="relative z-10 mt-8 flex justify-end">
-                  <div className="text-right">
-                    <div className="text-white/60 text-sm uppercase tracking-[0.35em] mb-1">
-                      Shared by
-                    </div>
-
-                    <div
-                      style={{
-                        fontFamily: "'Caveat', cursive",
-                      }}
-                      className="text-white font-bold leading-none text-[2.2rem]"
-                    >
-                      {messages[messageIndex].name}
-                    </div>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
 
         ) : photos.length === 0 ? (
 
+          /* EMPTY */
           <div className="text-center">
-            <div className="text-6xl font-bold text-white mb-6">
+            <div className="text-6xl font-black">
               Awaiting Photos
             </div>
           </div>
 
-        ) : (
+        ) : currentPhoto ? (
 
+          /* PHOTO VIEW */
           <div
-            key={photos[currentIndex]?.id}
+            key={currentPhoto.id}
             className={`transition-all duration-[900ms] ease-out ${
               fade
                 ? "opacity-100 scale-100 translate-y-0"
                 : "opacity-0 scale-[1.03] translate-y-4 blur-[2px]"
             }`}
           >
-
             <div
-              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.6rem] shadow-[0_18px_50px_rgba(0,0,0,0.38)] transition-transform duration-700 ${
-                polaroidStyles[
-                  currentIndex % polaroidStyles.length
-                ]
-              }`}
+              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem] shadow-[0_18px_70px_rgba(0,0,0,0.5)] transition-transform duration-700 ${polaroidStyle}`}
             >
+              <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
 
-              <div className="flex items-center justify-center overflow-hidden bg-[#f4f4f4] max-w-[74vw] max-h-[58vh]">
-
-                <img
-                  key={photos[currentIndex].imageUrl}
-                  src={photos[currentIndex].imageUrl}
-                  alt="Slideshow"
-                  className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem]"
+                <Image
+                  src={currentPhoto.imageUrl}
+                  alt="Presentation photo"
+                  width={1600}
+                  height={1200}
+                  priority
+                  className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem] animate-kenburns"
                 />
 
               </div>
 
               <div className="mt-7 flex items-center justify-center gap-5">
 
-                <img
+                <Image
                   src="/logo.png"
-                  alt="Logo"
-                  className="w-14 h-14 object-contain opacity-90"
+                  alt=""
+                  width={56}
+                  height={56}
+                  className="opacity-90"
                 />
 
                 <div
                   style={{
-                    fontFamily: "var(--font-great-vibes)",
+                    fontFamily:
+                      "var(--font-great-vibes)",
                   }}
                   className="text-[#222] text-[3.2rem] leading-none"
                 >
                   Memories
                 </div>
 
-                <img
+                <Image
                   src="/logo.png"
-                  alt="Logo"
-                  className="w-14 h-14 object-contain opacity-90"
+                  alt=""
+                  width={56}
+                  height={56}
+                  className="opacity-90"
                 />
 
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* BRANDING */}
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
 
-          <img
+          <Image
             src="/logo.png"
-            alt="Club Logo"
-            className="w-32 h-32 object-contain"
+            alt="Club logo"
+            width={128}
+            height={128}
+            className="object-contain"
           />
 
           <div className="leading-none">
 
             <div
-              className="text-white font-black tracking-wide uppercase"
+              className="text-white font-black uppercase tracking-wide"
               style={{
-                fontSize: "clamp(2rem, 3vw, 3.4rem)",
+                fontSize:
+                  "clamp(2rem, 3vw, 3.5rem)",
               }}
             >
               Chatteris Town FC
@@ -457,13 +615,14 @@ useEffect(() => {
             <div
               className="text-slate-100 mt-1"
               style={{
-                fontFamily: "var(--font-great-vibes)",
-                fontSize: "clamp(2.3rem, 3vw, 4rem)",
+                fontFamily:
+                  "var(--font-great-vibes)",
+                fontSize:
+                  "clamp(2.3rem, 3vw, 4rem)",
               }}
             >
               Presentation Day
             </div>
-
           </div>
         </div>
       )}
@@ -475,24 +634,23 @@ useEffect(() => {
 
           <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
             ADD PHOTOS
-            <br />
-            & MESSAGES
+            <br />& MESSAGES
           </div>
 
-          <img
+          <Image
             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
             alt="QR Code"
-            className="rounded-xl w-[180px] h-[180px]"
+            width={180}
+            height={180}
+            className="rounded-xl"
           />
 
         </div>
       </div>
 
+      {/* STYLES */}
       <style jsx>{`
-
         .ambient-orbs {
-          position: absolute;
-          inset: 0;
           overflow: hidden;
           pointer-events: none;
         }
@@ -500,15 +658,16 @@ useEffect(() => {
         .ambient-orbs span {
           position: absolute;
           border-radius: 999px;
+
           background:
             radial-gradient(
               circle,
-              rgba(255,255,255,0.95) 0%,
-              rgba(180,220,255,0.65) 18%
-              rgba(120,180,255,0.22) 42%,
-              rgba(255,255,255,0) 72%
+              rgba(255, 255, 255, 0.95) 0%,
+              rgba(180, 220, 255, 0.65) 18%,
+              rgba(120, 180, 255, 0.22) 42%,
+              rgba(255, 255, 255, 0) 72%
             );
-          
+
           mix-blend-mode: screen;
 
           filter: blur(22px);
@@ -569,40 +728,36 @@ useEffect(() => {
         .edge-glow {
           position: absolute;
           inset: -8%;
-          z-index: 5;
-          
-          border-radius: 40px;
-          
+
           background:
             radial-gradient(
               circle at top,
-              rgba(120,180,255,0.16),
+              rgba(120, 180, 255, 0.16),
               transparent 35%
             ),
             radial-gradient(
               circle at bottom,
-              rgba(255,255,255,0.08),
+              rgba(255, 255, 255, 0.08),
               transparent 40%
             ),
             radial-gradient(
               circle at left,
-              rgba(90,150,255,0.12),
+              rgba(90, 150, 255, 0.12),
               transparent 35%
             ),
             radial-gradient(
               circle at right,
-              rgba(180,220,255,0.10),
+              rgba(180, 220, 255, 0.1),
               transparent 35%
             );
-            
+
           filter: blur(60px);
-          
+
           animation:
             edgePulse 8s ease-in-out infinite;
         }
-        
+
         @keyframes edgePulse {
-        
           0% {
             opacity: 0.55;
             transform: scale(1);
@@ -612,36 +767,97 @@ useEffect(() => {
             opacity: 0.9;
             transform: scale(1.02);
           }
-          
+
           100% {
             opacity: 0.55;
             transform: scale(1);
           }
-
-      }
+        }
 
         @keyframes floatOrb {
           0% {
-            transform: translate3d(0px, 0px, 0) scale(1);
+            transform: translate3d(
+                0px,
+                0px,
+                0
+              )
+              scale(1);
           }
 
           25% {
-            transform: translate3d(30px, -40px, 0) scale(1.08);
+            transform: translate3d(
+                30px,
+                -40px,
+                0
+              )
+              scale(1.08);
           }
 
           50% {
-            transform: translate3d(-20px, -70px, 0) scale(0.96);
+            transform: translate3d(
+                -20px,
+                -70px,
+                0
+              )
+              scale(0.96);
           }
 
           75% {
-            transform: translate3d(40px, -30px, 0) scale(1.04);
+            transform: translate3d(
+                40px,
+                -30px,
+                0
+              )
+              scale(1.04);
           }
 
           100% {
-            transform: translate3d(0px, 0px, 0) scale(1);
+            transform: translate3d(
+                0px,
+                0px,
+                0
+              )
+              scale(1);
           }
         }
 
+        @keyframes kenburns {
+          0% {
+            transform: scale(1)
+              translate(0, 0);
+          }
+
+          50% {
+            transform: scale(1.04)
+              translate(-0.5%, -0.5%);
+          }
+
+          100% {
+            transform: scale(1.08)
+              translate(0.5%, 0.5%);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 1.2s ease;
+        }
+
+        .animate-kenburns {
+          animation:
+            kenburns 12s ease-in-out forwards;
+        }
       `}</style>
     </main>
   );
