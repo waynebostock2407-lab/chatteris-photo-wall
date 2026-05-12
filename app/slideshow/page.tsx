@@ -408,7 +408,7 @@ export default function SlideshowPage() {
       <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-[#02112B]/8 z-[4]" />
+      <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
 
       {/* FLASH */}
       <div
@@ -632,121 +632,101 @@ export default function SlideshowPage() {
           background:
             radial-gradient(
               circle,
-              rgba(255, 255, 255, 1) 0%,
-              rgba(120, 190, 255, 0.95) 12%,
-              rgba(90, 160, 255, 0.55) 34%,
-              rgba(255, 255, 255, 0) 72%
+              rgba(120,190,255,0.55) 0%,
+              rgba(120,190,255,0.22) 28%,
+              rgba(120,190,255,0) 70%
             );
 
           mix-blend-mode: screen;
 
-          filter: blur(70px);
+          filter: blur(90px);
 
-          opacity: 0.95;
+          opacity: 0.7;
 
           animation: floatOrb linear infinite;
         }
 
         .ambient-orbs span:nth-child(1) {
-          width: 700px;
-          height: 700px;
-          left: -8%;
-          top: 8%;
-          animation-duration: 28s;
+          width: 900px;
+          height: 900px;
+          left: -28%;
+          top: -18%;
+          animation-duration: 32s;
         }
 
         .ambient-orbs span:nth-child(2) {
-          width: 700px;
-          height: 700px;
-          left: 16%;
-          top: 72%;
-          animation-duration: 34s;
+          width: 800px;
+          height: 800px;
+          left: -22%;
+          bottom: -30%;
+          animation-duration: 38s;
         }
 
         .ambient-orbs span:nth-child(3) {
-          width: 700px;
-          height: 700px;
-          right: 4%;
-          top: 10%;
-          animation-duration: 40s;
+          width: 900px;
+          height: 900px;
+          right: -28%;
+          top: -14%;
+          animation-duration: 42s;
         }
 
         .ambient-orbs span:nth-child(4) {
-          width: 700px;
-          height: 700px;
-          right: -6%;
-          top: 60%;
-          animation-duration: 30s;
+          width: 850px;
+          height: 850px;
+          right: -24%;
+          bottom: -24%;
+          animation-duration: 34s;
         }
 
         .ambient-orbs span:nth-child(5) {
-          width: 700px;
-          height: 700px;
-          left: 42%;
-          top: 2%;
-          animation-duration: 24s;
+          width: 600px;
+          height: 600px;
+          left: 38%;
+          top: -40%;
+          animation-duration: 28s;
         }
 
         .ambient-orbs span:nth-child(6) {
           width: 700px;
           height: 700px;
-          left: 46%;
-          bottom: -10%;
-          animation-duration: 38s;
+          left: 42%;
+          bottom: -45%;
+          animation-duration: 36s;
         }
 
         .edge-glow {
           position: absolute;
-          inset: -2%;
+          inset: 0;
 
           pointer-events: none;
 
-          background:
-            radial-gradient(
-              circle at top,
-              rgba(120, 190, 255, 0.55),
-              transparent 38%
-            ),
-            radial-gradient(
-              circle at bottom,
-              rgba(255, 255, 255, 0.22),
-              transparent 42%
-            ),
-            radial-gradient(
-              circle at left,
-              rgba(80, 150, 255, 0.42),
-              transparent 36%
-            ),
-            radial-gradient(
-              circle at right,
-              rgba(180, 220, 255, 0.38),
-              transparent 36%
-            );
+          box-shadow:
+            inset 0 0 120px rgba(120,190,255,0.22),
+            inset 0 0 220px rgba(120,190,255,0.12),
+            inset 0 0 320px rgba(255,255,255,0.06);
 
-          filter: blur(120px);
+          border:
+            1px solid rgba(180,220,255,0.14);
 
           opacity: 1;
 
-          mix-blend-mode: screen;
-
           animation:
-            edgePulse 8s ease-in-out infinite;
+            edgePulse 6s ease-in-out infinite;
+
+          mix-blend-mode: screen;
         }
 
         @keyframes edgePulse {
           0% {
-            opacity: 0.55;
-            transform: scale(1);
+            opacity: 0.7;
           }
 
           50% {
-            opacity: 0.9;
-            transform: scale(1.02);
+            opacity: 1;
           }
 
           100% {
-            opacity: 0.55;
-            transform: scale(1);
+            opacity: 0.7;
           }
         }
 
