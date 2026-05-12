@@ -124,13 +124,13 @@ export default function SlideshowPage() {
           const bassAverage = bassSum / bass.length;
 
           const targetLevel = Math.min(
-            1.55,
-            1 + bassAverage / 180
+            2,
+            1 + bassAverage / 120
           );
 
           smoothedLevel =
-            smoothedLevel * 0.92 +
-            targetLevel * 0.08;
+            smoothedLevel * 0.82 +
+            targetLevel * 0.18;
 
           audioLevelRef.current = smoothedLevel;
 
@@ -630,47 +630,48 @@ export default function SlideshowPage() {
           align-items: flex-end;
           justify-content: center;
           gap: 10px;
-          padding: 0 120px 120px;
+          padding-bottom: 120px;
+          z-index: 5;
         }
 
         .eq-bar {
           width: 14px;
 
-          height: 120px
+          min-height: 40px
 
+          height: calc(
+            40px +
+            (
+              var(--audio-reactivity, 1) * 55px
+            )
+          );
+          
           border-radius: 999px;
 
           background:
             linear-gradient(
               to top,
-            rgba(120,190,255,0.15),
+            rgba(120,190,255,0.2),
             rgba(120,190,255,1),
             rgba(255,255,255,1)
           );
 
-          transform-origin: bottom;
-
-          transform:
-            scaleY(
-              calc(
-                0.45 +
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 0.9
-              )
-            );
-
-          opacity: 0.9;
+          opacity: 0.95;
 
           box-shadow:
-            0 0 18px rgba(120,190,255,0.7);
+            0 0 20px rgba(120,190,255,0.8),
+            0 0 50px rgba(120,190,255,0.7),
 
           transition:
-            transform 0.08s linear,
+            height 0.04s linear,
+            box-shadow 0.08s linear;
         }
 
         .party-logo {
           width: 240px;
+
+          position: relative;
+          z-index: 20;
 
           transform:
             scale(
@@ -678,7 +679,7 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.12
+                ) * 0.22
               )
             );
 
@@ -686,7 +687,7 @@ export default function SlideshowPage() {
             drop-shadow(
               0 0 
               calc(
-                25px *
+                35px *
                 var(--audio-reactivity, 1)
               ) 
             rgba(120,190,255,1)
@@ -695,7 +696,7 @@ export default function SlideshowPage() {
               calc(
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 120deg
+                ) * 160deg
               )
             );
 
