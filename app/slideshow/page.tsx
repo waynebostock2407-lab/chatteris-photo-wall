@@ -500,7 +500,7 @@ export default function SlideshowPage() {
 
         ) : photos.length === 0 ? (
 
-          /* EMPTY */}
+          /* EMPTY */
           <div className="text-center">
             <div className="text-6xl font-black">
               Awaiting Photos
