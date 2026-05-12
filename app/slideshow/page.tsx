@@ -176,15 +176,36 @@ export default function SlideshowPage() {
   /* PARTY MODE */
 
   useEffect(() => {
-    const partyInterval = setInterval(() => {
+    const runPartySequence = () => {
+      setShowIntro(true);
+
+      setTimeout(() => {
+        setShowIntro(false);
+
+        setShowPartyMode(true);
+
+        setTimeout(() => {
+          setShowPartyMode(false);
+        }, 60000);
+      }, 20000);
+    };
+
+    const firstSequence = setTimeout(() => {
       setShowPartyMode(true);
 
       setTimeout(() => {
         setShowPartyMode(false);
       }, 60000);
+    }, INTRO_DURATION);
+
+    const partyInterval = setInterval(() => {
+      runPartySequence();
     }, 600000);
 
-    return () => clearInterval(partyInterval);
+    return () => {
+      clearTimeout(firstSequence);
+      clearInterval(partyInterval);
+    };
   }, []);
 
   /* FIRESTORE */
@@ -404,6 +425,31 @@ export default function SlideshowPage() {
 
               </div>
 
+            <div className="mt-7 flex items-center justify-center gap-5">
+
+              <img
+                src="/logo.png"
+                alt="Club logo"
+                className="w-14 h-14 object-contain opacity-90"
+              />
+
+              <div
+                style={{
+                  fontFamily:
+                    "var(--font-great-vibes)",
+                }}
+                className="text-[#222] text-[3.2rem] leading-none"
+              >
+                Memories
+              </div>
+
+              <img
+                src="/logo.png"
+                alt="Club logo"
+                className="w-14 h-14 object-contain opacity-90"
+              />
+
+            </div>
             </div>
           </div>
 
@@ -426,6 +472,8 @@ export default function SlideshowPage() {
             <div
               className="text-white font-black uppercase tracking-wide"
               style={{
+                fontFamily:
+                  "var(--font-great-vibes)",
                 fontSize:
                   "clamp(2rem, 3vw, 3.5rem)",
               }}
@@ -479,30 +527,63 @@ export default function SlideshowPage() {
 
         .edge-trail::before {
           content: "";
+
           position: absolute;
 
-          width: 240px;
+          width: 24%;
           height: 8px;
 
           top: 0;
-          left: -240px;
+          left: -24%;
 
           border-radius: 999px;
 
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(120,190,255,0.2) 10%,
-            rgba(120,190,255,1) 35%,
+          background:
+            linear-gradient(
+              90deg,
+              transparent 0%,
+            rgba(120,190,255,0.15) 8%,
+            rgba(120,190,255,1) 30%,
             rgba(255,255,255,1) 50%,
-            rgba(120,190,255,1) 65%,
-            transparent 100%
+            rgba(120,190,255,1) 70%,
+              transparent 100%
+            );
+
+          opacity: calc(
+            0.7 +
+            (
+              var(--audio-reactivity, 1) - 1
+            ) * 0.55
           );
 
           box-shadow:
-            0 0 30px rgba(120,190,255,1),
-            0 0 calc(120px * var(--audio-reactivity, 1)) rgba(120,190,255,1),
-            0 0 calc(220px * var(--audio-reactivity, 1)) rgba(255,255,255,0.9);
+            0 0
+              calc(
+                18px *
+                var(--audio-reactivity, 1)
+              )
+            rgba(120,190,255,1),
+
+            0 0
+              calc(
+                40px *
+                var(--audio-reactivity, 1)
+              )
+            rgba(120,190,255,1),
+
+            0 0
+              calc(
+                90px *
+                var(--audio-reactivity, 1)
+              )
+            rgba(255,255,255,0.95),
+
+            0 0
+              calc(
+                160px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.9);
 
           transform:
             scale(
@@ -510,12 +591,28 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.5
+                ) * 0.42
               )
             );
 
+          filter:
+            brightness(
+              calc(
+                1 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 1.6
+              )
+            );
+
+          transition:
+            transform 0.06s linear,
+            filter 0.06s linear,
+            opacity 0.06s linear,
+            box-shadow 0.06s linear;
+
           animation:
-            borderTrail 28s linear infinite;
+            borderTrail 34s linear infinite;
         }
 
         .party-mode {
@@ -538,18 +635,64 @@ export default function SlideshowPage() {
 
         .eq-bar {
           width: 18px;
-          height: 110px;
+
+          height: calc(
+            40px +
+            (
+              var(--audio-reactivity, 1) * 90px
+            )
+          );
+
           border-radius: 999px;
 
-          background: linear-gradient(
-            to top,
-            rgba(120,190,255,0.2),
+          background:
+            linear-gradient(
+              to top,
+            rgba(120,190,255,0.15),
             rgba(120,190,255,1),
             rgba(255,255,255,1)
           );
 
-          animation:
-            eqDance 0.45s ease-in-out infinite alternate;
+          transform-origin: bottom;
+
+          transform:
+            scaleY(
+              calc(
+                0.5 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 0.9
+              )
+            );
+
+          opacity:
+            calc(
+              0.55 +
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 0.35
+            );
+
+          box-shadow:
+            0 0
+              calc(
+                15px *
+                var(--audio-reactivity, 1)
+              )
+            rgba(120,190,255,0.8),
+
+            0 0
+              calc(
+                45px *
+                var(--audio-reactivity, 1)
+              )
+            rgba(120,190,255,0.7);
+
+          transition:
+            transform 0.08s linear,
+            height 0.08s linear,
+            opacity 0.08s linear,
+            box-shadow 0.08s linear;
         }
 
         .party-logo {
