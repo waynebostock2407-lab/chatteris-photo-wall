@@ -249,7 +249,7 @@ useEffect(() => {
         />
       )}
 
-      <div className="absolute inset-0 bg-[#02112B]/35" />
+      <div className="absolute inset-0 bg-[#02112B]/15" />
 
       {/* ORBS */}
       <div className="ambient-orbs z-10">
@@ -281,6 +281,9 @@ useEffect(() => {
           ⛶ FULL SCREEN
         </button>
       )}
+
+      {/*EDGE GLOW*/}
+      <div className="edge-glow pointer-events-none" />
 
       {/* MAIN CONTENT */}
       <div className="absolute inset-0 flex items-center justify-center px-16 pb-44 z-20">
@@ -480,62 +483,122 @@ useEffect(() => {
           background:
             radial-gradient(
               circle,
-              rgba(255,255,255,0.28) 0%,
-              rgba(255,255,255,0.12) 45%,
-              rgba(255,255,255,0) 75%
+              rgba(255,255,255,0.95) 0%,
+              rgba(180,220,255,0.65) 18%
+              rgba(120,180,255,0.22) 42%,
+              rgba(255,255,255,0) 72%
             );
+          
+          mix-blend-mode: screen;
 
-          filter: blur(18px);
+          filter: blur(22px);
+
+          opacity: 0.9;
+
           animation: floatOrb linear infinite;
         }
 
         .ambient-orbs span:nth-child(1) {
-          width: 420px;
-          height: 420px;
+          width: 340px;
+          height: 340px;
           left: -8%;
           top: 8%;
           animation-duration: 28s;
         }
 
         .ambient-orbs span:nth-child(2) {
-          width: 260px;
-          height: 260px;
+          width: 340px;
+          height: 340px;
           left: 16%;
           top: 72%;
           animation-duration: 34s;
         }
 
         .ambient-orbs span:nth-child(3) {
-          width: 520px;
-          height: 520px;
+          width: 340px;
+          height: 340px;
           right: 4%;
           top: 10%;
           animation-duration: 40s;
         }
 
         .ambient-orbs span:nth-child(4) {
-          width: 320px;
-          height: 320px;
+          width: 340px;
+          height: 340px;
           right: -6%;
           top: 60%;
           animation-duration: 30s;
         }
 
         .ambient-orbs span:nth-child(5) {
-          width: 220px;
-          height: 220px;
+          width: 340px;
+          height: 340px;
           left: 42%;
           top: 2%;
           animation-duration: 24s;
         }
 
         .ambient-orbs span:nth-child(6) {
-          width: 420px;
-          height: 420px;
+          width: 340px;
+          height: 340px;
           left: 46%;
           bottom: -10%;
           animation-duration: 38s;
         }
+
+        .edge-glow {
+          position: absolute;
+          inset: -8%;
+          z-index: 5;
+          
+          border-radius: 40px;
+          
+          background:
+            radial-gradient(
+              circle at top,
+              rgba(120,180,255,0.16),
+              transparent 35%
+            ),
+            radial-gradient(
+              circle at bottom,
+              rgba(255,255,255,0.08),
+              transparent 40%
+            ),
+            radial-gradient(
+              circle at left,
+              rgba(90,150,255,0.12),
+              transparent 35%
+            ),
+            radial-gradient(
+              circle at right,
+              rgba(180,220,255,0.10),
+              transparent 35%
+            );
+            
+          filter: blur(60px);
+          
+          animation:
+            edgePulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes edgePulse {
+        
+          0% {
+            opacity: 0.55;
+            transform: scale(1);
+          }
+
+          50% {
+            opacity: 0.9;
+            transform: scale(1.02);
+          }
+          
+          100% {
+            opacity: 0.55;
+            transform: scale(1);
+          }
+
+      }
 
         @keyframes floatOrb {
           0% {
