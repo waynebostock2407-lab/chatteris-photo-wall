@@ -64,6 +64,8 @@ export default function SlideshowPage() {
 
   const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const audioLevelRef = useRef(1);
+
   /* FULLSCREEN */
 
   const toggleFullscreen = async () => {
