@@ -124,16 +124,16 @@ export default function SlideshowPage() {
           const bassAverage = bassSum / bass.length;
 
           const normalizedBass =
-            Math.max(0, bassAverage - 35);
+            Math.max(0, bassAverage - 70);
 
           const targetLevel = Math.min(
-            1.45,
-            1 + normalizedBass / 220
+            1.18,
+            1 + normalizedBass / 520
           );
 
           smoothedLevel =
-            smoothedLevel * 0.94 +
-            targetLevel * 0.06;
+            smoothedLevel * 0.97 +
+            targetLevel * 0.03;
 
           audioLevelRef.current = smoothedLevel;
 
@@ -388,7 +388,23 @@ export default function SlideshowPage() {
                   key={i}
                   className="eq-bar"
                   style={{
-                    animationDelay: `${i * 0.04}s`,
+                    height: `calc()
+                      40px +
+                      (
+                        (var(--audio-reactivity, 1) -1)
+                        * ${60 + ((i * 9) % 180)}px
+                      )
+                    )`,
+
+                    width: `${10 + (i % 4)}px`,
+
+                    opacity:
+                      0.45 + ((i % 6) * 0.08),
+
+                    transform: `
+                    translateY(${(i % 5) * -2}px)
+                    scaleY(${0.85 + ((i % 7) * 0.05)})
+                  `,
                   }}
                 />
               ))}
@@ -649,42 +665,50 @@ export default function SlideshowPage() {
           
           gap: 10px;
           
-          z-index: 30;
+          z-index: 10;
 
           pointer-events: none;
         }
 
         .eq-bar {
-          width: 14px;
+          width: 12px;
 
           height: calc(
-            60px +
+            40px +
             (
-              var(--audio-reactivity, 1) * 140px
+              var(--audio-reactivity, 1) 
+              * 220px
             )
           );
-          
-          min-height: 60px
 
           border-radius: 999px;
+
+          position: relative;
+
+          overflow: visible;
 
           background:
             linear-gradient(
               to top,
-            rgba(120,190,255,0.15),
-            rgba(120,190,255,1),
-            rgba(255,255,255,1)
+            rgba(120,190,255,0.08), 0%
+            rgba(120,190,255,0.55) 30%,
+            rgba(120,190,255,1) 70%,
+            rgba(255,255,255,1) 100%
           );
 
-          opacity: 0.95;
+          opacity: 0.9;
 
           box-shadow:
-            0 0 20px rgba(120,190,255,0.8),
-            0 0 50px rgba(120,190,255,0.7),
+            0 0 12px rgba(120,190,255,0.5),
+            0 0 30px rgba(120,190,255,0.45),
+            0 0 60px rgba(255,255,255,0.25);
+
+          transform-origin: bottom;
 
           transition:
-            height 0.08s linear,
-            box-shadow 0.08s linear;
+            height 0.06s linear,
+            transform 0.06s linear,
+            opacity 0.06s linear;
         }
 
         .party-logo {
