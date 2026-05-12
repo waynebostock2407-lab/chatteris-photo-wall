@@ -455,7 +455,7 @@ export default function SlideshowPage() {
       {/* BACKGROUND */}
       {showIntro ? (
         <div
-          className="absolute inset-0 bg-cover bg-center z-0 animate-backgroundDrift"
+          className="absolute inset-0 bg-cover bg-center z-0"
           style={{
             backgroundImage:
               "url('/presentation-stage.jpg')",
@@ -463,7 +463,7 @@ export default function SlideshowPage() {
         />
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center z-0 animate-backgroundDrift"
+          className="absolute inset-0 bg-cover bg-center z-0"
           style={{
             backgroundImage:
               "url('/blank-presentation-stage.jpg')",
@@ -482,7 +482,7 @@ export default function SlideshowPage() {
       </div>
 
       {/* GLOW */}
-      <div className="edge-glow absolute inset-0 z-[15]" />
+      <div className="edge-glow absolute inset-0 z-[3]" />
 
       {/* OVERLAY */}
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
@@ -749,6 +749,8 @@ export default function SlideshowPage() {
               rgba(120,190,255,0) 70%
             );
 
+          mix-blend-mode: screen;
+
           filter: blur(90px);
 
           opacity: 0.45;
@@ -808,15 +810,9 @@ export default function SlideshowPage() {
           position: absolute;
           inset: 0;
 
+          z-index: 15;
+
           pointer-events: none;
-
-          overflow: hidden;
-
-          border:
-            1px solid rgba(120,190,255,0.22);
-          
-          box-shadow:
-            inset 0 0 40px rgba(120,190,255,0.12);
         }
 
         .edge-glow::before {
@@ -824,11 +820,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 24%;
+          width: 26%;
           height: 6px;
 
           top: 0;
-          left: -24%;
+          left: -26%;
 
           border-radius: 999px;
 
@@ -836,46 +832,37 @@ export default function SlideshowPage() {
             linear-gradient(
               90deg,
               transparent 0%,
-              rgba(120,190,255,0.25) 10%,
+              rgba(120,190,255,0.2) 10%,
               rgba(120,190,255,1) 35%,
               rgba(255,255,255,1) 50%,
               rgba(120,190,255,1) 65%,
               transparent 100%
             );
 
-          opacity: 1;
-
           box-shadow:
-            0 0 12px rgba(120,190,255,1),
-            
+            0 0 18px rgba(120,190,255,1),
+
             0 0
               calc(
-                24px *
+                40px *
                 var(--audio-reactivity, 1)
               )
               rgba(120,190,255,1),
 
             0 0
               calc(
-                60px *
+                100px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.9),
+              rgba(255,255,255,0.7);
 
-            0 0
-              calc(
-                120px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(255,255,255,0.55);
-            
           transform:
             scaleY(
               calc(
                 1 +
                 (
-                  var(audio-reactivity,1) - 1
-                ) * 0.35
+                  var(--audio-reactivity, 1) - 1
+                ) * 0.4
               )
             );
 
@@ -997,7 +984,7 @@ export default function SlideshowPage() {
                 18px *
                 var(--audio-reactivity, 1)
               )
-             rgba(120,190,255,1)
+              rgba(120,190,255,1)
             )
             hue-rotate(
               calc(
