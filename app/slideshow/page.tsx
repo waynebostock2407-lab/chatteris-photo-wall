@@ -177,7 +177,7 @@ export default function SlideshowPage() {
 
           const targetLevel = Math.min(
             3.2,
-            1 + bassAverage / 55
+            1 + bassAverage / 38
           );
 
           smoothedLevel =
@@ -813,7 +813,14 @@ export default function SlideshowPage() {
           z-index: 15;
 
           pointer-events: none;
-        }
+
+          box-shadow:
+            inset 0 0
+              calc(
+                40px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.18);
 
         .edge-glow::before {
           content: "";
@@ -862,8 +869,16 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.4
+                ) * 0.45
               )
+            )
+          
+            translateY:(calc(
+              calc(
+              (
+                var(--audio-reactivity, 1) - 1
+              ) * 4px
+            )
             );
 
           animation:
