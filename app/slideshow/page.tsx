@@ -467,15 +467,10 @@ export default function SlideshowPage() {
                 className="party-logo"
               />
 
-              <div className="party-title">
-                END OF SEASON
-              </div>
-
-              <div className="party-subtitle">
-                PRESENTATION DAY
-              </div>
             </div>
+          
           </div>
+
         ) : showMessages && currentMessage ? (
           <div
             className={`w-full max-w-5xl transition-all duration-500 ${
@@ -1131,4 +1126,5 @@ export default function SlideshowPage() {
     </main>
   );
 }
+
 
