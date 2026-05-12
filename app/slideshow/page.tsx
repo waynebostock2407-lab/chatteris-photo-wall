@@ -740,14 +740,23 @@ export default function SlideshowPage() {
 
           position: absolute;
           inset: 0;
+
+          border-radius: 24px;
           
           box-shadow:
             inset 0 0
               calc(
-                45px *
+                80px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.22);
+              rgba(120,190,255,0.35),
+
+            inset 0 0
+              calc(
+                180px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.18);
               
           opacity: 1;
           
@@ -760,11 +769,11 @@ export default function SlideshowPage() {
 
           position: absolute;
 
-          width: 24%;
-          height: 8px;
+          width: 28%;
+          height: 10px;
 
           top: 0;
-          left: -24%;
+          left: -28%;
 
           border-radius: 999px;
 
@@ -781,33 +790,18 @@ export default function SlideshowPage() {
 
           opacity: 1;
 
+          z-index: 999;
+
           filter:
-            blur(0.5px)
+            blur(1px)
             brightness(
               calc(
-                1.2 +
+                1.5 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 1.5
+                ) * 2
               )
             );
-
-          box-shadow:
-            0 0 20px rgba(120,190,255,1),
-
-            0 0
-              calc(
-                120px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1);
-
-            0 0
-              calc(
-                260px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,0.95);
 
           transform:
             scale(
@@ -815,7 +809,7 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.22
+                ) * 0.28
               )
             )
             scaleY(
@@ -823,9 +817,33 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 2
+                ) * 2.8
               )
             );
+
+          box-shadow:
+            0 0 30px rgba(120,190,255,1),
+
+            0 0
+              calc(
+                160px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,1),
+
+            0 0 
+              calc(
+                320px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,1),
+
+            0 0
+              calc(
+                520px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.8);
 
           transition:
             transform 0.08s linear,
