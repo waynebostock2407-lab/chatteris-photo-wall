@@ -37,32 +37,41 @@ const MESSAGE_MAX_DURATION = 30000;
 
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [messages, setMessages] = useState<
+    GuestbookMessage[]
+  >([]);
 
-  const [messages, setMessages] = useState<GuestbookMessage[]>([]);
+  const [currentPhotoIndex, setCurrentPhotoIndex] =
+    useState(0);
 
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [currentMessageIndex, setCurrentMessageIndex] =
+    useState(0);
 
   const [showIntro, setShowIntro] = useState(true);
 
-  const [showMessages, setShowMessages] = useState(false);
+  const [showMessages, setShowMessages] =
+    useState(false);
 
-  const [showPartyMode, setShowPartyMode] = useState(false);
+  const [showPartyMode, setShowPartyMode] =
+    useState(false);
 
   const [fade, setFade] = useState(true);
 
   const [flash, setFlash] = useState(false);
 
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] =
+    useState(false);
 
   const loadedImages = useRef(new Set<string>());
 
-  const photoIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const photoIntervalRef =
+    useRef<NodeJS.Timeout | null>(null);
 
-  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const flashTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
 
-  const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fadeTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
 
   const audioLevelRef = useRef(1);
 
@@ -107,9 +116,10 @@ export default function SlideshowPage() {
 
     const setupAudio = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
+        const stream =
+          await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
 
         audioContext = new AudioContext();
 
@@ -117,7 +127,10 @@ export default function SlideshowPage() {
 
         analyser.fftSize = 256;
 
-        microphone = audioContext.createMediaStreamSource(stream);
+        microphone =
+          audioContext.createMediaStreamSource(
+            stream
+          );
 
         microphone.connect(analyser);
 
@@ -138,46 +151,41 @@ export default function SlideshowPage() {
 
           const bassAverage = bassSum / 18;
 
-        /* HARD KICK DETECTION */
+          const kickStrength = Math.max(
+            0,
+            bassAverage - 110
+          );
 
-        const kickStrength = Math.max(
-          0,
-          bassAverage - 110
-        );
+          const targetLevel =
+            1 + kickStrength / 4.5;
 
-        /* MASSIVE REACTION */
+          smoothedLevel = Math.max(
+            targetLevel,
+            smoothedLevel * 0.88
+          );
 
-        const targetLevel =
-          1 + kickStrength / 4.5;
+          smoothedLevel = Math.min(
+            smoothedLevel,
+            10
+          );
 
-        /* FAST ATTACK / SLOW RELEASE */
+          audioLevelRef.current =
+            smoothedLevel;
 
-        smoothedLevel = Math.max(
-          targetLevel,
-          smoothedLevel * 0.88
-        );
+          document.documentElement.style.setProperty(
+            "--audio-reactivity",
+            `${smoothedLevel}`
+          );
 
-        /* CLAMP */
-
-        smoothedLevel = Math.min(
-          smoothedLevel,
-          10
-        );
-
-        audioLevelRef.current = smoothedLevel;
-
-        document.documentElement.style.setProperty(
-          "--audio-reactivity",
-          `${smoothedLevel}`
-        );
-
-        requestAnimationFrame(updateAudio);
-
+          requestAnimationFrame(updateAudio);
         };
 
         updateAudio();
       } catch (err) {
-        console.error("Microphone access failed:", err);
+        console.error(
+          "Microphone access failed:",
+          err
+        );
       }
     };
 
@@ -220,7 +228,7 @@ export default function SlideshowPage() {
     return () => clearInterval(partyInterval);
   }, []);
 
-  /* FIRESTORE - PHOTOS */
+  /* FIRESTORE PHOTOS */
 
   useEffect(() => {
     const q = query(
@@ -242,7 +250,7 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* FIRESTORE - MESSAGES */
+  /* FIRESTORE MESSAGES */
 
   useEffect(() => {
     const q = query(
@@ -254,7 +262,10 @@ export default function SlideshowPage() {
       const fetchedMessages = snapshot.docs
         .map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<GuestbookMessage, "id">),
+          ...(doc.data() as Omit<
+            GuestbookMessage,
+            "id"
+          >),
         }))
         .filter((message) => message.approved);
 
@@ -264,11 +275,13 @@ export default function SlideshowPage() {
     return () => unsubscribe();
   }, []);
 
-  /* PRELOAD IMAGES */
+  /* PRELOAD */
 
   useEffect(() => {
     photos.forEach((photo) => {
-      if (loadedImages.current.has(photo.imageUrl)) {
+      if (
+        loadedImages.current.has(photo.imageUrl)
+      ) {
         return;
       }
 
@@ -313,7 +326,8 @@ export default function SlideshowPage() {
 
       fadeTimeoutRef.current = setTimeout(() => {
         setCurrentPhotoIndex((prev) => {
-          if (photos.length <= 1) return prev;
+          if (photos.length <= 1)
+            return prev;
 
           let nextIndex = prev;
 
@@ -335,56 +349,15 @@ export default function SlideshowPage() {
         clearInterval(photoIntervalRef.current);
       }
     };
-  }, [photos, showIntro, showMessages, showPartyMode]);
+  }, [
+    photos,
+    showIntro,
+    showMessages,
+    showPartyMode,
+  ]);
 
-  /* MESSAGE LOOP */
-
-  useEffect(() => {
-    if (messages.length === 0) return;
-
-    const cycle = setInterval(() => {
-      if (!showPartyMode) {
-        setShowMessages(true);
-        setCurrentMessageIndex(0);
-      }
-    }, 300000);
-
-    return () => clearInterval(cycle);
-  }, [messages, showPartyMode]);
-
-  useEffect(() => {
-    if (!showMessages || messages.length === 0) {
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setFade(false);
-
-      setTimeout(() => {
-        if (currentMessageIndex >= messages.length - 1) {
-          setShowMessages(false);
-          setCurrentMessageIndex(0);
-        } else {
-          setCurrentMessageIndex((prev) => prev + 1);
-        }
-
-        setFade(true);
-      }, 350);
-    },
-    Math.min(
-      Math.max(
-        MESSAGE_MIN_DURATION,
-        messages[currentMessageIndex]?.message.length * 60
-      ),
-      MESSAGE_MAX_DURATION
-    ));
-
-    return () => clearInterval(interval);
-  }, [showMessages, currentMessageIndex, messages]);
-
-  const currentPhoto = photos[currentPhotoIndex];
-
-  const currentMessage = messages[currentMessageIndex];
+  const currentPhoto =
+    photos[currentPhotoIndex];
 
   const polaroidStyle = useMemo(() => {
     const styles = [
@@ -396,7 +369,9 @@ export default function SlideshowPage() {
       "rotate-[1deg] translate-y-1",
     ];
 
-    return styles[currentPhotoIndex % styles.length];
+    return styles[
+      currentPhotoIndex % styles.length
+    ];
   }, [currentPhotoIndex]);
 
   return (
@@ -414,7 +389,7 @@ export default function SlideshowPage() {
         />
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center z-0 animate-backgroundDrift"
+          className="absolute inset-0 bg-cover bg-center z-0"
           style={{
             backgroundImage:
               "url('/blank-presentation-stage.jpg')",
@@ -429,23 +404,23 @@ export default function SlideshowPage() {
         <span />
         <span />
         <span />
-        <span />
-        <span />
       </div>
 
-      {/*OVERLAY */}
+      {/* OVERLAY */}
 
-      <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
+      <div className="absolute inset-0 bg-[#02112B]/10 z-[4]" />
 
-      {/* EDGE GLOW */}
+      {/* REACTIVE BORDER */}
 
-      <div className="edge-glow absolute inset-0 z-[40]" />
+      <div className="edge-glow absolute inset-0 z-[999]" />
 
       {/* FLASH */}
 
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
-          flash ? "opacity-100" : "opacity-0"
+          flash
+            ? "opacity-100"
+            : "opacity-0"
         }`}
         style={{
           background:
@@ -464,14 +439,12 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* MAIN CONTENT */}
+      {/* CONTENT */}
 
       <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
 
-        {showIntro ? null : showPartyMode ? (
+        {showPartyMode ? (
           <div className="party-mode">
-
-            <div className="party-bg-pulse" />
 
             <div className="equaliser">
               {[...Array(48)].map((_, i) => (
@@ -490,64 +463,8 @@ export default function SlideshowPage() {
                 src="/logo.png"
                 className="party-logo"
               />
-
-            </div>
-          
-          </div>
-
-        ) : showMessages && currentMessage ? (
-          <div
-            className={`w-full max-w-5xl transition-all duration-500 ${
-              fade
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-[0.98]"
-            }`}
-          >
-            <div className="mb-8 text-center">
-              <div className="text-6xl font-black">
-                Messages for Vicky
-              </div>
             </div>
 
-            <div className="relative overflow-hidden bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[3rem] px-14 py-12 shadow-[0_0_80px_rgba(0,0,0,0.45)]">
-              <div
-                style={{
-                  fontFamily: "'Caveat', cursive",
-                }}
-                className={`leading-[1.25] whitespace-pre-wrap break-words ${
-                  currentMessage.message.length < 120
-                    ? "text-[3rem]"
-                    : currentMessage.message.length < 240
-                    ? "text-[2.3rem]"
-                    : currentMessage.message.length < 420
-                    ? "text-[1.9rem]"
-                    : "text-[1.4rem]"
-                }`}
-              >
-                {currentMessage.message}
-              </div>
-
-              <div className="mt-10 text-right">
-                <div className="text-white/50 uppercase text-sm tracking-[0.3em] mb-2">
-                  Shared by
-                </div>
-
-                <div
-                  style={{
-                    fontFamily: "'Caveat', cursive",
-                  }}
-                  className="text-[2.3rem] font-bold"
-                >
-                  {currentMessage.name}
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : photos.length === 0 ? (
-          <div className="text-center">
-            <div className="text-6xl font-black">
-              Awaiting Photos
-            </div>
           </div>
         ) : currentPhoto ? (
           <div
@@ -564,77 +481,25 @@ export default function SlideshowPage() {
               className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem] shadow-[0_18px_70px_rgba(0,0,0,0.5)] transition-transform duration-700 animate-polaroidFloat ${polaroidStyle}`}
             >
               <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
+
                 <img
                   src={currentPhoto.imageUrl}
                   alt="Presentation photo"
                   className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem] animate-kenburns"
                 />
-              </div>
 
-              <div className="mt-7 flex items-center justify-center gap-5">
-                <img
-                  src="/logo.png"
-                  alt=""
-                  className="w-14 h-14 object-contain opacity-90"
-                />
-
-                <div
-                  style={{
-                    fontFamily: "var(--font-great-vibes)",
-                  }}
-                  className="text-[#222] text-[3.2rem] leading-none"
-                >
-                  Memories
-                </div>
-
-                <img
-                  src="/logo.png"
-                  alt=""
-                  className="w-14 h-14 object-contain opacity-90"
-                />
               </div>
             </div>
           </div>
         ) : null}
+
       </div>
-
-      {/* BRANDING */}
-
-      {!showIntro && (
-        <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
-          <img
-            src="/logo.png"
-            alt="Club logo"
-            className="w-32 h-32 object-contain"
-          />
-
-          <div className="leading-none">
-            <div
-              className="text-white font-black uppercase tracking-wide"
-              style={{
-                fontSize: "clamp(2rem, 3vw, 3.5rem)",
-              }}
-            >
-              Chatteris Town FC
-            </div>
-
-            <div
-              className="text-slate-100 mt-1"
-              style={{
-                fontFamily: "var(--font-great-vibes)",
-                fontSize: "clamp(2.3rem, 3vw, 4rem)",
-              }}
-            >
-              Presentation Day
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* QR */}
 
       <div className="absolute bottom-8 right-8 z-30">
         <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
+
           <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
             ADD PHOTOS
             <br />
@@ -646,94 +511,20 @@ export default function SlideshowPage() {
             alt="QR Code"
             className="rounded-xl w-[180px] h-[180px]"
           />
+
         </div>
       </div>
 
       <style jsx>{`
 
-        .ambient-orbs {
-          overflow: hidden;
-          pointer-events: none;
-        }
-
-        .ambient-orbs span {
-          position: absolute;
-          border-radius: 999px;
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(120,190,255,0.45) 0%,
-              rgba(120,190,255,0.16) 28%,
-              rgba(120,190,255,0) 70%
-            );
-
-          mix-blend-mode: screen;
-
-          filter: blur(90px);
-
-          opacity: 0.45;
-
-          animation: floatOrb linear infinite;
-        }
-
-        .ambient-orbs span:nth-child(1) {
-          width: 900px;
-          height: 900px;
-          left: -28%;
-          top: -18%;
-          animation-duration: 32s;
-        }
-
-        .ambient-orbs span:nth-child(2) {
-          width: 800px;
-          height: 800px;
-          left: -22%;
-          bottom: -30%;
-          animation-duration: 38s;
-        }
-
-        .ambient-orbs span:nth-child(3) {
-          width: 900px;
-          height: 900px;
-          right: -28%;
-          top: -14%;
-          animation-duration: 42s;
-        }
-
-        .ambient-orbs span:nth-child(4) {
-          width: 850px;
-          height: 850px;
-          right: -24%;
-          bottom: -24%;
-          animation-duration: 34s;
-        }
-
-        .ambient-orbs span:nth-child(5) {
-          width: 600px;
-          height: 600px;
-          left: 38%;
-          top: -40%;
-          animation-duration: 28s;
-        }
-
-        .ambient-orbs span:nth-child(6) {
-          width: 700px;
-          height: 700px;
-          left: 42%;
-          bottom: -45%;
-          animation-duration: 36s;
-        }
-
         .edge-glow {
           position: absolute;
           inset: 0;
 
-          z-index: 50;
-
           pointer-events: none;
 
           overflow: hidden;
+        }
 
         .edge-glow::after {
           content: "";
@@ -741,27 +532,23 @@ export default function SlideshowPage() {
           position: absolute;
           inset: 0;
 
-          border-radius: 24px;
-          
           box-shadow:
             inset 0 0
               calc(
-                80px *
+                70px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.35),
+              rgba(120,190,255,0.28),
 
             inset 0 0
               calc(
                 180px *
                 var(--audio-reactivity, 1)
               )
-              rgba(120,190,255,0.18);
-              
-          opacity: 1;
-          
+              rgba(255,255,255,0.12);
+
           transition:
-            box-shadow 0.08s linear;
+            box-shadow 0.06s linear;
         }
 
         .edge-glow::before {
@@ -777,440 +564,120 @@ export default function SlideshowPage() {
 
           border-radius: 999px;
 
-          z-index: 9999;
-
           background:
             linear-gradient(
-            90deg,
-            transparent 0%,
-          rgba(120,190,255,0.15) 10%,
-          rgba(120,190,255,1) 30%,
-          rgba(255,255,255,1) 50%,
-          rgba(120,190,255,1) 70%,
-            transparent 100%
-          );
-
-        opacity: 1;
-
-        mix-blend-mode: screen;
-
-        filter:
-          blur(0.5px)
-          brightness(
-            calc(
-              2 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 3
-            )
-          );
-
-        transform:
-          scale(
-            calc(
-              1 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 0.32
-            )
-          )
-
-          scaleY(
-            calc(
-              1 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 3.5
-            )
-          );
-
-        box-shadow:
-          0 0 40px rgba(120,190,255,1),
-
-          0 0
-            calc(
-              220px *
-              var(--audio-reactivity, 1)
-            )
-          rgba(120,190,255,1),
-
-          0 0
-            calc(
-              420px *
-              var(--audio-reactivity, 1)
-            )
-          rgba(255,255,255,1),
-
-          0 0
-            calc(
-              700px *
-              var(--audio-reactivity, 1)
-            )
-          rgba(120,190,255,1);
-
-        transition:
-          transform 0.06s linear,
-          box-shadow 0.06s linear,
-          filter 0.06s linear;
-
-        animation:
-          borderTrail 34s linear infinite;
-      }
-
-        .photo-shadow {
-          position: absolute;
-
-          width: 70%;
-          height: 40px;
-
-          bottom: -22px;
-          left: 50%;
-
-          transform: translateX(-50%);
-
-          background:
-            radial-gradient(
-              ellipse,
-              rgba(0,0,0,0.38) 0%,
-              rgba(0,0,0,0) 72%
+              90deg,
+              transparent 0%,
+              rgba(120,190,255,0.25) 15%,
+              rgba(120,190,255,1) 35%,
+              rgba(255,255,255,1) 50%,
+              rgba(120,190,255,1) 65%,
+              transparent 100%
             );
-
-          filter: blur(18px);
-
-          z-index: -1;
-        }
-
-        .party-mode {
-          position: absolute;
-          inset: 0;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          overflow: hidden;
-        }
-
-        .party-bg-pulse {
-          position: absolute;
-          inset: 0;
-
-          background:
-            radial-gradient(
-              circle,
-              rgba(120,190,255,0.18),
-              transparent 70%
-            );
-
-          animation:
-            partyPulse 3s ease-in-out infinite;
-        }
-
-        .equaliser {
-          position: absolute;
-          inset: 0;
-
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          gap: 10px;
-
-          padding: 0 120px 220px;
-
-          opacity: 0.82;
-        }
-
-        .eq-bar {
-          width: 18px;
-
-          height: 110px;
-
-          border-radius: 999px;
-
-          background:
-            linear-gradient(
-              to top,
-              rgba(120,190,255,0.2),
-              rgba(120,190,255,1),
-              rgba(255,255,255,1)
-            );
-
-          animation:
-            eqDance 0.45s ease-in-out infinite alternate;
 
           box-shadow:
-            0 0 20px rgba(120,190,255,0.7);
-        }
+            0 0 25px rgba(120,190,255,1),
 
-        .party-center {
-          position: relative;
-          z-index: 20;
+            0 0
+              calc(
+                120px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,1),
 
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .party-logo {
-          width: 240px;
+            0 0
+              calc(
+                260px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(255,255,255,1);
 
           transform:
-            scale(
+            scaleY(
               calc(
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.18
-              )
-            );
-
-          filter:
-            drop-shadow(
-              0 0
-              calc(
-                18px *
-                var(--audio-reactivity, 1)
-              )
-              rgba(120,190,255,1)
-            )
-            hue-rotate(
-              calc(
-                (
-                  var(--audio-reactivity, 1) - 1
-                ) * 120deg
+                ) * 2.5
               )
             );
 
           transition:
-            transform 0.08s linear,
-            filter 0.08s linear;
-        }
+            transform 0.05s linear,
+            box-shadow 0.05s linear;
 
-        .party-title {
-          margin-top: 34px;
-
-          font-size: 5rem;
-          font-weight: 900;
-
-          letter-spacing: 0.08em;
-        }
-
-        .party-subtitle {
-          margin-top: 16px;
-
-          font-size: 2rem;
-
-          opacity: 0.78;
-
-          letter-spacing: 0.3em;
+          animation:
+            borderTrail 34s linear infinite;
         }
 
         @keyframes borderTrail {
+
           0% {
             top: 0;
-            left: -28%;
-            width: 28%;
-            height: 10px;
+            left: -30%;
+            width: 30%;
+            height: 12px;
           }
 
           24% {
             top: 0;
             left: 100%;
-            width: 28%;
-            height: 10px;
+            width: 30%;
+            height: 12px;
           }
 
           25% {
-            top: -28%;
-            left: calc(100% - 10px);
-            width: 10px;
-            height: 28%;
+            top: -30%;
+            left: calc(100% - 12px);
+            width: 12px;
+            height: 30%;
           }
 
           49% {
             top: 100%;
-            left: calc(100% - 10px);
-            width: 10px;
-            height: 28%;
+            left: calc(100% - 12px);
+            width: 12px;
+            height: 30%;
           }
 
           50% {
-            top: calc(100% - 10px);
+            top: calc(100% - 12px);
             left: 100%;
-            width: 28%;
-            height: 10px;
+            width: 30%;
+            height: 12px;
           }
 
           74% {
-            top: calc(100% - 10px);
-            left: -28%;
-            width: 28%;
-            height: 10px;
+            top: calc(100% - 12px);
+            left: -30%;
+            width: 30%;
+            height: 12px;
           }
 
           75% {
             top: 100%;
             left: 0;
-            width: 10px;
-            height: 28%;
+            width: 12px;
+            height: 30%;
           }
 
           99% {
-            top: -28%;
+            top: -30%;
             left: 0;
-            width: 10px;
-            height: 28%;
+            width: 12px;
+            height: 30%;
           }
 
           100% {
             top: 0;
-            left: -28%;
-            width: 28%;
-            height: 10px;
+            left: -30%;
+            width: 30%;
+            height: 12px;
           }
-        }
-
-        @keyframes eqDance {
-          from {
-            transform: scaleY(0.35);
-          }
-
-          to {
-            transform: scaleY(1);
-          }
-        }
-
-        @keyframes partyPulse {
-          0% {
-            opacity: 0.4;
-            transform: scale(1);
-          }
-
-          50% {
-            opacity: 1;
-            transform: scale(1.06);
-          }
-
-          100% {
-            opacity: 0.4;
-            transform: scale(1);
-          }
-        }
-
-        @keyframes floatOrb {
-          0% {
-            transform:
-              translate3d(0px, 0px, 0)
-              scale(1);
-          }
-
-          25% {
-            transform:
-              translate3d(
-                30px,
-                -40px,
-                0
-              )
-              scale(1.08);
-          }
-
-          50% {
-            transform:
-              translate3d(
-                -20px,
-                -70px,
-                0
-              )
-              scale(0.96);
-          }
-
-          75% {
-            transform:
-              translate3d(
-                40px,
-                -30px,
-                0
-              )
-              scale(1.04);
-          }
-
-          100% {
-            transform:
-              translate3d(0px, 0px, 0)
-              scale(1);
-          }
-        }
-
-        @keyframes kenburns {
-          0% {
-            transform:
-              scale(1)
-              translate(0, 0);
-          }
-
-          50% {
-            transform:
-              scale(1.04)
-              translate(-0.5%, -0.5%);
-          }
-
-          100% {
-            transform:
-              scale(1.08)
-              translate(0.5%, 0.5%);
-          }
-        }
-
-        @keyframes polaroidFloat {
-          0% {
-            transform: translateY(0px);
-          }
-
-          50% {
-            transform: translateY(-8px);
-          }
-
-          100% {
-            transform: translateY(0px);
-          }
-        }
-
-        @keyframes backgroundDrift {
-          0% {
-            transform:
-              scale(1)
-              translateX(0px);
-          }
-
-          50% {
-            transform:
-              scale(1.03)
-              translateX(-8px);
-          }
-
-          100% {
-            transform:
-              scale(1)
-              translateX(0px);
-          }
-        }
-
-        .animate-kenburns {
-          animation:
-            kenburns 12s ease-in-out forwards;
-        }
-
-        .animate-polaroidFloat {
-          animation:
-            polaroidFloat 7s ease-in-out infinite;
-        }
-
-        .animate-backgroundDrift {
-          animation:
-            backgroundDrift 30s ease-in-out infinite;
         }
 
       `}</style>
+
     </main>
   );
 }
