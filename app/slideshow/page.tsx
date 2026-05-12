@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -373,22 +372,27 @@ export default function SlideshowPage() {
     ];
   }, [currentPhotoIndex]);
 
-  /* -------------------------------------------------- */
-  /* RENDER */
-  /* -------------------------------------------------- */
-
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-black text-white">
 
       {/* BACKGROUND */}
-      <div
-        className="absolute inset-0 bg-cover bg-center z-0 transition-all duration-[2000ms]"
-        style={{
-          backgroundImage: showIntro
-            ? "url('/presentation-stage.jpg')"
-            : "url('/blank-presentation-stage.jpg')",
-        }}
-      />
+      {showIntro ? (
+        <div
+          className="absolute inset-0 bg-cover bg-center z-0"
+          style={{
+            backgroundImage:
+              "url('/presentation-stage.jpg')",
+          }}
+        />
+      ) : (
+        <div
+          className="absolute inset-0 bg-cover bg-center z-0 transition-all duration-[2000ms]"
+          style={{
+            backgroundImage:
+              "url('/blank-presentation-stage.jpg')",
+          }}
+        />
+      )}
 
       {/* ORBS */}
       <div className="ambient-orbs absolute inset-0 z-[2]">
@@ -403,7 +407,7 @@ export default function SlideshowPage() {
       {/* EDGE GLOW */}
       <div className="edge-glow absolute inset-0 z-[3]" />
 
-      {/* OVERLAY */}
+      {/* DARK OVERLAY */}
       <div className="absolute inset-0 bg-[#02112B]/20 z-[4]" />
 
       {/* FLASH */}
@@ -419,7 +423,7 @@ export default function SlideshowPage() {
         }}
       />
 
-      {/* FULLSCREEN BUTTON */}
+      {/* FULLSCREEN */}
       {!isFullscreen && (
         <button
           aria-label="Enter fullscreen"
@@ -435,31 +439,7 @@ export default function SlideshowPage() {
 
         {/* INTRO */}
         {showIntro ? (
-          <div className="text-center animate-fadeIn">
-
-            <div
-              className="text-white font-black uppercase tracking-[0.12em]"
-              style={{
-                fontSize:
-                  "clamp(3rem, 5vw, 6rem)",
-              }}
-            >
-              Chatteris Town FC
-            </div>
-
-            <div
-              className="text-white/90 mt-4"
-              style={{
-                fontFamily:
-                  "var(--font-great-vibes)",
-                fontSize:
-                  "clamp(3rem, 5vw, 6rem)",
-              }}
-            >
-              Presentation Day
-            </div>
-          </div>
-
+          <></>
         ) : showMessages &&
           currentMessage ? (
 
@@ -520,7 +500,7 @@ export default function SlideshowPage() {
 
         ) : photos.length === 0 ? (
 
-          /* EMPTY */
+          /* EMPTY */}
           <div className="text-center">
             <div className="text-6xl font-black">
               Awaiting Photos
@@ -543,12 +523,9 @@ export default function SlideshowPage() {
             >
               <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
 
-                <Image
+                <img
                   src={currentPhoto.imageUrl}
                   alt="Presentation photo"
-                  width={1600}
-                  height={1200}
-                  priority
                   className="block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem] animate-kenburns"
                 />
 
@@ -556,12 +533,10 @@ export default function SlideshowPage() {
 
               <div className="mt-7 flex items-center justify-center gap-5">
 
-                <Image
+                <img
                   src="/logo.png"
                   alt=""
-                  width={56}
-                  height={56}
-                  className="opacity-90"
+                  className="w-14 h-14 object-contain opacity-90"
                 />
 
                 <div
@@ -574,12 +549,10 @@ export default function SlideshowPage() {
                   Memories
                 </div>
 
-                <Image
+                <img
                   src="/logo.png"
                   alt=""
-                  width={56}
-                  height={56}
-                  className="opacity-90"
+                  className="w-14 h-14 object-contain opacity-90"
                 />
 
               </div>
@@ -592,12 +565,10 @@ export default function SlideshowPage() {
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
 
-          <Image
+          <img
             src="/logo.png"
             alt="Club logo"
-            width={128}
-            height={128}
-            className="object-contain"
+            className="w-32 h-32 object-contain"
           />
 
           <div className="leading-none">
@@ -634,15 +605,14 @@ export default function SlideshowPage() {
 
           <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
             ADD PHOTOS
-            <br />& MESSAGES
+            <br />
+            & MESSAGES
           </div>
 
-          <Image
+          <img
             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
             alt="QR Code"
-            width={180}
-            height={180}
-            className="rounded-xl"
+            className="rounded-xl w-[180px] h-[180px]"
           />
 
         </div>
@@ -670,9 +640,9 @@ export default function SlideshowPage() {
 
           mix-blend-mode: screen;
 
-          filter: blur(22px);
+          filter: blur(28px);
 
-          opacity: 0.9;
+          opacity: 1;
 
           animation: floatOrb linear infinite;
         }
@@ -727,7 +697,7 @@ export default function SlideshowPage() {
 
         .edge-glow {
           position: absolute;
-          inset: -8%;
+          inset: 0;
 
           background:
             radial-gradient(
@@ -751,7 +721,7 @@ export default function SlideshowPage() {
               transparent 35%
             );
 
-          filter: blur(60px);
+          filter: blur(90px);
 
           animation:
             edgePulse 8s ease-in-out infinite;
@@ -836,22 +806,6 @@ export default function SlideshowPage() {
             transform: scale(1.08)
               translate(0.5%, 0.5%);
           }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 1.2s ease;
         }
 
         .animate-kenburns {
