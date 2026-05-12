@@ -34,6 +34,10 @@ export default function AdminPage() {
   const [messages, setMessages] = useState<GuestbookMessage[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editedName, setEditedName] = useState("");
+  const [editedMessage, setEditedMessage] = useState("");
+
   useEffect(() => {
     const q = query(
       collection(db, "photos"),
@@ -246,6 +250,28 @@ export default function AdminPage() {
     }
   };
 
+  const saveMessageEdit = async (id: string) => {
+
+    try {
+
+      await updateDoc(doc(db, "guestbook", id), {
+        name: editedName,
+        message: editedMessage,
+      });
+
+      setEditingId(null);
+
+    } catch (error) {
+
+      console.error(
+        "Error editing message:",
+        error
+      );
+
+    }
+
+  };
+
   const deleteMessage = async (id: string) => {
     try {
       await deleteDoc(doc(db, "guestbook", id));
@@ -259,7 +285,6 @@ export default function AdminPage() {
 
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
         <div className="flex items-center justify-between mb-10 flex-wrap gap-6">
 
           <div>
@@ -330,7 +355,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* Pending Photos */}
         <div>
 
           <h2 className="text-4xl font-bold mb-8">
@@ -395,7 +419,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* Approved Photos */}
         <div className="mb-24">
 
           <h2 className="text-3xl font-bold mb-6 text-white/80">
@@ -444,7 +467,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* Guestbook Messages */}
         <div className="mt-24">
 
           <h2 className="text-4xl font-bold mb-8">
@@ -464,17 +486,85 @@ export default function AdminPage() {
 
                   <div className="flex-1">
 
-                    <p className="text-2xl font-bold mb-3 text-[#D9F3FF]">
-                      {message.name}
-                    </p>
+                    {editingId === message.id ? (
 
-                    <p className="text-white/80 text-lg leading-relaxed whitespace-pre-wrap">
-                      {message.message}
-                    </p>
+                      <div className="space-y-4">
+
+                        <input
+                          value={editedName}
+                          onChange={(e) =>
+                            setEditedName(e.target.value)
+                          }
+                          className="w-full rounded-xl bg-white text-black p-4 text-xl font-semibold"
+                        />
+
+                        <textarea
+                          value={editedMessage}
+                          onChange={(e) =>
+                            setEditedMessage(e.target.value)
+                          }
+                          rows={6}
+                          className="w-full rounded-2xl bg-white text-black p-4 text-lg"
+                        />
+
+                        <div className="flex gap-3">
+
+                          <button
+                            onClick={() =>
+                              saveMessageEdit(message.id)
+                            }
+                            className="bg-green-600 hover:bg-green-500 px-5 py-3 rounded-xl font-semibold transition"
+                          >
+                            Save Changes
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              setEditingId(null)
+                            }
+                            className="bg-gray-600 hover:bg-gray-500 px-5 py-3 rounded-xl font-semibold transition"
+                          >
+                            Cancel
+                          </button>
+
+                        </div>
+
+                      </div>
+
+                    ) : (
+
+                      <>
+
+                        <p className="text-2xl font-bold mb-3 text-[#D9F3FF]">
+                          {message.name}
+                        </p>
+
+                        <p className="text-white/80 text-lg leading-relaxed whitespace-pre-wrap">
+                          {message.message}
+                        </p>
+
+                      </>
+
+                    )}
 
                   </div>
 
                   <div className="flex gap-3 flex-wrap">
+
+                    <button
+                      onClick={() => {
+
+                        setEditingId(message.id);
+
+                        setEditedName(message.name);
+
+                        setEditedMessage(message.message);
+
+                      }}
+                      className="bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-semibold transition"
+                    >
+                      Edit
+                    </button>
 
                     {!message.approved && (
 
