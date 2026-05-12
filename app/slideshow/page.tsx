@@ -1005,65 +1005,65 @@ export default function SlideshowPage() {
         @keyframes borderTrail {
           0% {
             top: 0;
-            left: -34%;
-            width: 34%;
-            height: 12px;
+            left: -28%;
+            width: 28%;
+            height: 10px;
           }
 
           24% {
             top: 0;
             left: 100%;
-            width: 34%;
-            height: 12px;
+            width: 28%;
+            height: 10px;
           }
 
           25% {
-            top: -34%;
-            left: calc(100% - 12px);
-            width: 12px;
-            height: 34%;
+            top: -28%;
+            left: calc(100% - 10px);
+            width: 10px;
+            height: 28%;
           }
 
           49% {
             top: 100%;
-            left: calc(100% - 12px);
-            width: 12px;
-            height: 34%;
+            left: calc(100% - 10px);
+            width: 10px;
+            height: 28%;
           }
 
           50% {
-            top: calc(100% - 12px);
+            top: calc(100% - 10px);
             left: 100%;
-            width: 34%;
-            height: 12px;
+            width: 28%;
+            height: 10px;
           }
 
           74% {
-            top: calc(100% - 12px);
-            left: -34%;
-            width: 34%;
-            height: 12px;
+            top: calc(100% - 10px);
+            left: -28%;
+            width: 28%;
+            height: 10px;
           }
 
           75% {
             top: 100%;
             left: 0;
-            width: 12px;
-            height: 34%;
+            width: 10px;
+            height: 28%;
           }
 
           99% {
-            top: -34%;
+            top: -28%;
             left: 0;
-            width: 12px;
-            height: 34%;
+            width: 10px;
+            height: 28%;
           }
 
           100% {
             top: 0;
-            left: -34%;
-            width: 34%;
-            height: 12px;
+            left: -28%;
+            width: 28%;
+            height: 10px;
           }
         }
 
