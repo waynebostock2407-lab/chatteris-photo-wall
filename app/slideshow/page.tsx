@@ -653,40 +653,40 @@ export default function SlideshowPage() {
           transform:
             scaleY(
               calc(
-                0.35 +
+                0.55 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.9
+                ) * 1.8
               )
             );
 
           opacity:
             calc(
-              0.55 +
+              0.65 +
               (
                 var(--audio-reactivity, 1) - 1
-              ) * 0.35
+              ) * 0.45
             );
 
           box-shadow:
             0 0
               calc(
-                15px *
+                20px *
                 var(--audio-reactivity, 1)
               )
-            rgba(120,190,255,0.8),
+            rgba(120,190,255,0.9),
 
             0 0
               calc(
-                45px *
+                60px *
                 var(--audio-reactivity, 1)
               )
-            rgba(120,190,255,0.7);
+            rgba(120,190,255,0.8);
 
           transition:
-            transform 0.08s linear,
-            opacity 0.08s linear,
-            box-shadow 0.08s linear;
+            transform 0.05s linear,
+            opacity 0.05s linear,
+            box-shadow 0.05s linear;
         }
 
         .party-logo {
@@ -698,21 +698,30 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.2
+                ) * 0.38
               )
             );
 
           filter:
             drop-shadow(
-              0 0 calc(40px * var(--audio-reactivity, 1)) rgba(120,190,255,1)
+              0 0 
+              calc(
+                45px *
+                var(--audio-reactivity, 1)
+              ) 
+            rgba(120,190,255,1)
             )
             hue-rotate(
               calc(
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 180deg
+                ) * 220deg
               )
             );
+
+          transition:
+            transform 0.05s linear,
+            filter 0.05s linear;
         }
 
         @keyframes borderTrail {
