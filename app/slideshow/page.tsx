@@ -128,27 +128,49 @@ export default function SlideshowPage() {
         const updateAudio = () => {
           analyser.getByteFrequencyData(dataArray);
 
-          const bassFrequencies = dataArray.slice(0, 18);
-
           let bassSum = 0;
 
-          for (let i = 0; i < bassFrequencies.length; i++) {
-            bassSum += bassFrequencies[i];
+          for (let i = 0; i < 18; i++) {
+            bassSum += dataArray[i];
           }
 
-          const bassAverage = bassSum / bassFrequencies.length;
+          const bassAverage = bassSum / 18;
 
-          const targetLevel = Math.min(3.8, 1 + bassAverage / 28);
+        /* HARD KICK DETECTION */
 
-          smoothedLevel =
-            smoothedLevel * 0.76 + targetLevel * 0.24;
+        const kickStrength = Math.max(
+          0,
+          bassAverage - 110
+        );
 
-          document.documentElement.style.setProperty(
-            "--audio-reactivity",
-            `${smoothedLevel}`
-          );
+        /* MASSIVE REACTION */
 
-          requestAnimationFrame(updateAudio);
+        const targetLevel =
+          1 + kickStrength / 10;
+
+        /* FAST ATTACK / SLOW RELEASE */
+
+        smoothedLevel = Math.max(
+          targetLevel,
+          smoothedLevel * 0.88
+        );
+
+        /* CLAMP */
+
+        smoothedLevel = Math.min(
+          smoothedLevel,
+          10
+        );
+
+        audioLevelRef.current = smoothedLevel;
+
+        document.documentElement.style.setProperty(
+          "--audio-reactivity",
+          `${smoothedLevel}`
+        );
+
+        requestAnimationFrame(updateAudio);
+
         };
 
         updateAudio();
@@ -705,11 +727,19 @@ export default function SlideshowPage() {
           position: absolute;
           inset: 0;
 
-          z-index: 25;
+          z-index: 15;
 
           pointer-events: none;
 
-          overflow: visible;
+          overflow: hidden;
+
+          box-shadow:
+            inset 0 0
+              calc(
+                70px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.22);
         }
 
         .edge-glow::before {
@@ -718,7 +748,7 @@ export default function SlideshowPage() {
           position: absolute;
 
           width: 34%;
-          height: 12px;
+          height: 14px;
 
           top: 0;
           left: -34%;
@@ -729,41 +759,82 @@ export default function SlideshowPage() {
             linear-gradient(
               90deg,
               transparent 0%,
-              rgba(120,190,255,0.15) 8%,
-              rgba(120,190,255,1) 30%,
+              rgba(120,190,255,0.1) 10%,
+              rgba(120,190,255,1) 35%,
               rgba(255,255,255,1) 50%,
-              rgba(120,190,255,1) 70%,
+              rgba(120,190,255,1) 65%,
               transparent 100%
             );
 
           opacity: 1;
 
-          box-shadow:
-            0 0 25px rgba(120,190,255,1),
+          transform:
+            perspective(1200px)
 
-            0 0
+            translateZ(
               calc(
-                90px *
-                var(--audio-reactivity, 1)
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 260px
               )
-              rgba(120,190,255,1),
+            )
+            
+            scale(
+              calc(
+                1 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 0.8
+              )
+            )
+            
+            scaleY(
+              calc(
+                1 +
+                (
+                  var(--audio-reactivity, 1) - 1
+                ) * 4
+              )
+            ); 
+
+          box-shadow:
+            0 0 40px rgba(120,190,255,1),
 
             0 0
               calc(
                 220px *
                 var(--audio-reactivity, 1)
               )
-              rgba(255,255,255,0.95);
+              rgba(120,190,255,1),
 
-          transform:
-            scale(
+            0 0
+              calc(
+                500px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(255,255,255,0.95);
+            
+            0 0
+              calc(
+                800px *
+                var(--audio-reactivity, 1)
+              )
+              rgba(120,190,255,0.9);
+
+          filter:
+            brightness(
               calc(
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.15
+                ) * 1.8
               )
             );
+
+          transition:
+            transorm 0.08s linear,
+            box-shadow 0.08s linear,
+            filter 0.08s linear;
 
           animation:
             borderTrail 34s linear infinite;
