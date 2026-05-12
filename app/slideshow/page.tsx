@@ -124,13 +124,13 @@ export default function SlideshowPage() {
           const bassAverage = bassSum / bass.length;
 
           const targetLevel = Math.min(
-            4,
-            1 + bassAverage / 28
+            1.55,
+            1 + bassAverage / 180
           );
 
           smoothedLevel =
-            smoothedLevel * 0.76 +
-            targetLevel * 0.24;
+            smoothedLevel * 0.92 +
+            targetLevel * 0.08;
 
           audioLevelRef.current = smoothedLevel;
 
@@ -653,40 +653,20 @@ export default function SlideshowPage() {
           transform:
             scaleY(
               calc(
-                0.55 +
+                0.45 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 1.8
+                ) * 0.9
               )
             );
 
-          opacity:
-            calc(
-              0.65 +
-              (
-                var(--audio-reactivity, 1) - 1
-              ) * 0.45
-            );
+          opacity: 0.9;
 
           box-shadow:
-            0 0
-              calc(
-                20px *
-                var(--audio-reactivity, 1)
-              )
-            rgba(120,190,255,0.9),
-
-            0 0
-              calc(
-                60px *
-                var(--audio-reactivity, 1)
-              )
-            rgba(120,190,255,0.8);
+            0 0 18px rgba(120,190,255,0.7);
 
           transition:
-            transform 0.05s linear,
-            opacity 0.05s linear,
-            box-shadow 0.05s linear;
+            transform 0.08s linear,
         }
 
         .party-logo {
@@ -698,7 +678,7 @@ export default function SlideshowPage() {
                 1 +
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 0.38
+                ) * 0.12
               )
             );
 
@@ -706,7 +686,7 @@ export default function SlideshowPage() {
             drop-shadow(
               0 0 
               calc(
-                45px *
+                25px *
                 var(--audio-reactivity, 1)
               ) 
             rgba(120,190,255,1)
@@ -715,13 +695,13 @@ export default function SlideshowPage() {
               calc(
                 (
                   var(--audio-reactivity, 1) - 1
-                ) * 220deg
+                ) * 120deg
               )
             );
 
           transition:
-            transform 0.05s linear,
-            filter 0.05s linear;
+            transform 0.08s linear,
+            filter 0.08s linear;
         }
 
         @keyframes borderTrail {
