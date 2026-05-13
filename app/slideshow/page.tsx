@@ -482,7 +482,7 @@ export default function SlideshowPage() {
             </div>
 
           </div>
-        )
+
         ) : showMessages &&
           currentMessage ? (
 
