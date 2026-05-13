@@ -469,17 +469,32 @@ export default function SlideshowPage() {
 
             <div className="presentation-glow" />
 
-            <img
-              src="/logo.png"
-              className="presentation-logo"
-            />
+            <div className="presentation-logo-wrap">
+
+              <img
+                src="/logo.png"
+                className="presentation-logo logo-back-3"
+              />
+
+              <img
+                src="/logo.png"
+                className="presentation-logo logo-back-2"
+              />
+
+              <img
+                src="/logo.png"
+                className="presentation-logo logo-back-2"
+              />
+
+              <img
+                src="/logo.png"
+                className="presentation-logo logo-back"
+              />
+
+            </div>
 
             <div className="presentation-title">
               CELEBRATING THE 25/26 SEASON
-            </div>
-
-            <div className="presentation-subtitle">
-              ONE CLUB • ONE FAMILY • THE LILIES
             </div>
 
           </div>
@@ -774,16 +789,26 @@ export default function SlideshowPage() {
             presentationPulse 5s ease-in-out infinite;
         }
 
-        .presentation-logo {
+        .presentation-logo-wrap {
           width: 420px;
+          height: 420px
 
-          position: relative;
-          z-index: 10;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
           tranform-style: preserve-3d;
 
           animation:
             logoSpin360 18s linear infinite;
+        }
+
+        .presentation-logo {
+          position: absolute;
+
+          width: 100%;
+
+          object-fit: contain;
 
           filter:
             drop-shadow(
@@ -797,6 +822,33 @@ export default function SlideshowPage() {
             );
         }
 
+        .logo-back-1 {
+          transform:
+            translateZ(-12px);
+
+          opacity: 0.82;
+
+          filter: brightness(0.7);
+        }
+
+        .logo-back-2 {
+          transform:
+            translateZ(-24px);
+
+          opacity: 0.6;
+
+          filter: brightness(0.5);
+        }
+
+        .logo-back-3 {
+          transform:
+            translateZ(-36px);
+
+          opacity: 0.4;
+
+          filter: brightness(0.3);
+        }
+
         .presentation-title {
           margin-top: 55px;
           font-size: clamp(3rem, 5vw, 6rem);
@@ -808,29 +860,6 @@ export default function SlideshowPage() {
             0 0 30px rgba(120,190,255,0.9);
           animation:
             fadeUp 1.5s ease forwards;
-        }
-
-        .presentation-subtitle {
-          margin-top: 40px;
-
-          font-size: clamp(2.2rem, 3.4vw, 4.8rem);
-
-          font-weight: 900;
-
-          letter-spacing: 0.18em;
-
-          line-height: 1.3;
-
-          text-transform: uppercase;
-
-          color: rgba(255,255,255,0.98);
-
-          text-shadow:
-            0 0 10px rgba(120,190,255,0.65);
-            0 0 40px rgba(120,190,255,0.35);
-
-          animation:
-            fadeUp 2s ease forwards;
         }
 
         .presentation-script {
