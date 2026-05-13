@@ -479,11 +479,7 @@ export default function SlideshowPage() {
             </div>
 
             <div className="presentation-subtitle">
-              PLAYERS • COACHES • FAMILIES
-            </div>
-
-            <div className="presentation-script">
-              One Club. One Family. The Lilies.
+              ONE CLUB • ONE FAMILY • THE LILIES
             </div>
 
           </div>
@@ -814,20 +810,23 @@ export default function SlideshowPage() {
         }
 
         .presentation-subtitle {
-          margin-top: 28px;
+          margin-top: 34px;
 
-          font-size: clamp(1.3rem, 2vw, 2.2rem);
+          font-size: clamp(1.5rem, 2.2vw, 2.8rem);
 
-          font-weight: 700;
+          font-weight: 900;
 
-          letter-spacing: 0.18em;
+          letter-spacing: 0.22em;
 
-          line-height: 1.5;
+          line-height: 1.4;
 
-          color: rgba(255,255,255,0.92);
+          text-transform: uppercase;
+
+          color: rgba(255,255,255,0.96);
 
           text-shadow:
-            0 0 20px rgba(120,190,255,0.45);
+            0 0 10px rgba(120,190,255,0.55);
+            0 0 40px rgba(120,190,255,0.30);
 
           animation:
             fadeUp 2s ease forwards;
