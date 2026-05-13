@@ -200,7 +200,7 @@ export default function SlideshowPage() {
 
       setTimeout(() => {
         setShowPresentationIntro(false);
-      }, 18000);
+      }, 30000);
 
     }, INTRO_DURATION);
 
@@ -779,20 +779,24 @@ export default function SlideshowPage() {
         }
 
         .presentation-logo {
-          width: 320px;
+          width: 340px;
+
           position: relative;
           z-index: 10;
-          transform-style: preserve-3d;
+
           animation:
             logoFloat 6s ease-in-out infinite,
-            logoRotate 14s ease-in-out infinite;
+            logoSpin 18s ease-in-out infinite;
 
           filter:
             drop-shadow(
-              0 0 35px rgba(120,190,255,0.8)
+              0 0 25px rgba(120,190,255,0.9)
             )
             drop-shadow(
-              0 0 80px rgba(120,190,255,0.5)
+              0 0 60px rgba(120,190,255,0.6)
+            )
+            drop-shadow(
+              0 0 120px rgba(120,190,255,0.35)
             );
         }
 
@@ -810,11 +814,21 @@ export default function SlideshowPage() {
         }
 
         .presentation-subtitle {
-          margin-top: 30px;
-          font-size: clamp(1rem, 1.8vw, 2rem);
-          letter-spacing: 0.28em;
-          line-height: 1.4;
-          opacity: 0.85;
+          margin-top: 28px;
+
+          font-size: clamp(1.3rem, 2vw, 2.2rem);
+
+          font-weight: 700;
+
+          letter-spacing: 0.18em;
+
+          line-height: 1.5;
+
+          color: rgba(255,255,255,0.92);
+
+          text-shadow:
+            0 0 20px rgba(120,190,255,0.45);
+
           animation:
             fadeUp 2s ease forwards;
         }
@@ -930,13 +944,47 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes logoRotate {
+        @keyframes logoSpin {
           0% {
             transform:
-              perspective(1200px)
-              rotateY(-8deg)
-              rotateX(2deg);
+              perspective(1400px)
+              rotateY(-18deg)
+              rotateX(4deg)
+              scale(1);
           }
+
+          25% {
+            transform:
+              perspective(1400px)
+              rotateY(0deg)
+              rotateX(-2deg)
+              scale(1.04);
+          }
+
+          50% {
+            transform:
+              perspective(1400px)
+              rotateY(18deg)
+              rotateX(4deg)
+              scale(1);
+          }
+
+          75% {
+            transform:
+              perspective(1400px)
+              rotateY(0deg)
+              rotateX(-2deg)
+              scale(1.04);
+          }
+
+          100% {
+            transform:
+              perspective(1400px)
+              rotateY(-18deg)
+              rotateX(4deg)
+              scale(1);
+          }
+        }
 
           50% {
             transform:
@@ -1011,6 +1059,3 @@ export default function SlideshowPage() {
     </main>
   );
 }
-
-
-
