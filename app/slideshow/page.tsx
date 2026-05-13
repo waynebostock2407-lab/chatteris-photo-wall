@@ -416,19 +416,6 @@ export default function SlideshowPage() {
 
       <div className="edge-trail" />
 
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="liquid-overlay"
-      >
-        <source
-          src="/liquid-metal.mp4"
-          type="video/mp4"
-        />
-      </video>
-
       <div className="presentation-glow" />
       <div className="stage-haze" />
 
@@ -706,31 +693,6 @@ export default function SlideshowPage() {
           animation:
             borderTrail 34s linear infinite;
         }
-        
-        .liquid-overlay {
-  position: absolute;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  opacity: 0.2;
-
-  mix-blend-mode: screen;
-
-  filter:
-    hue-rotate(180deg)
-    saturate(1.8)
-    brightness(0.65)
-    contrast(1.3)
-    blur(3px);
-
-  z-index: 3;
-
-  pointer-events: none;
-}
 
         .presentation-intro {
           position: absolute;
