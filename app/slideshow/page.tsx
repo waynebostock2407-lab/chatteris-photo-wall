@@ -465,22 +465,48 @@ export default function SlideshowPage() {
 
           <div className="presentation-intro">
 
-            <div className="presentation-lights" />
+  <div className="presentation-lights" />
 
-            <div className="presentation-glow" />
+  <div className="presentation-glow" />
 
-            <div className="presentation-particles" />
+  <div className="presentation-disco" />
 
-            <div className="presentation-orbs" />
+  <div className="presentation-particles" />
 
-            <div className="presentation-floor-glow" />
+  <div className="presentation-orbs" />
 
-            <img
-              src="/logo 6.png"
-              className="presentation-logo"
-            />
+  <div className="presentation-floor-glow" />
 
-          </div>
+  <div className="presentation-logo-wrap">
+
+    <img
+      src="/logo 6.png"
+      className="presentation-logo logo-depth-4"
+    />
+
+    <img
+      src="/logo 6.png"
+      className="presentation-logo logo-depth-3"
+    />
+
+    <img
+      src="/logo 6.png"
+      className="presentation-logo logo-depth-2"
+    />
+
+    <img
+      src="/logo 6.png"
+      className="presentation-logo logo-depth-1"
+    />
+
+    <img
+      src="/logo 6.png"
+      className="presentation-logo"
+    />
+
+  </div>
+
+</div>
 
         ) : showMessages &&
           currentMessage ? (
@@ -727,274 +753,408 @@ export default function SlideshowPage() {
           z-index: 20;
         }
 
-        .presentation-logo {
-          position: relative;
-          z-index: 20;
+        .presentation-intro {
+  position: absolute;
+  inset: 0;
 
-          width: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-          object-fit: contain;
+  overflow: hidden;
 
-          animation:
-            logoSpin360 22s linear infinite;
+  z-index: 20;
+}
 
-          filter:
-            drop-shadow(
-              0 0 30px rgba(120,190,255,0.9)
-            )
-            drop-shadow(
-              0 0 80px rgba(120,190,255,0.6)
-            )
-            drop-shadow(
-              0 0 160px rgba(120,190,255,0.35)
-            );
-        }
+.presentation-logo-wrap {
+  position: relative;
 
-        .presentation-floor-glow {
-          position: absolute;
+  width: 460px;
+  height: 460px;
 
-          bottom: 12%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-          width: 520px;
-          height: 80px;
+  transform-style: preserve-3d;
 
-          border-radius: 999px;
+  animation:
+    logoSpin360 22s linear infinite;
 
-          background:
-            radial-gradient(
-              ellipse,
-              rgba(120,190,255,0.32) 0%,
-              rgba(120,190,255,0.12) 40%,
-              transparent 75%
-            );
+  z-index: 20;
+}
 
-          filter: blur(24px);
+.presentation-logo {
+  position: absolute;
 
-          animation:
-            floorPulse 4s ease-in-out infinite;
-        }
+  width: 100%;
 
-        .presentation-glow {
-          position: absolute;
+  object-fit: contain;
 
-          width: 950px;
-          height: 950px;
+  filter:
+    drop-shadow(
+      0 0 30px rgba(120,190,255,0.9)
+    )
+    drop-shadow(
+      0 0 80px rgba(120,190,255,0.6)
+    )
+    drop-shadow(
+      0 0 160px rgba(120,190,255,0.35)
+    );
+}
 
-          border-radius: 999px;
+.logo-depth-1 {
+  transform:
+    translateZ(-10px);
 
-          background:
-            radial-gradient(
-              circle,
-              rgba(120,190,255,0.2) 0%,
-              transparent 72%
-            );
+  opacity: 0.85;
 
-          filter: blur(100px);
+  filter:
+    brightness(0.8)
+    blur(0.3px);
+}
 
-          animation:
-            presentationPulse 6s ease-in-out infinite;
-        }
+.logo-depth-2 {
+  transform:
+    translateZ(-20px);
 
-        .presentation-lights {
-          position: absolute;
-          inset: -20%;
+  opacity: 0.65;
 
-          background:
-            conic-gradient(
-              from 0deg at 50% 100%,
-              transparent 0deg,
-              rgba(120,190,255,0.18) 20deg,
-              transparent 40deg,
-              rgba(255,255,255,0.1) 60deg,
-              transparent 90deg,
-              rgba(120,190,255,0.14) 120deg,
-              transparent 180deg,
-              rgba(255,255,255,0.08) 240deg,
-              transparent 300deg,
-              rgba(120,190,255,0.16) 340deg,
-              transparent 360deg
-            );
+  filter:
+    brightness(0.65)
+    blur(0.5px);
+}
 
-          filter: blur(14px);
+.logo-depth-3 {
+  transform:
+    translateZ(-30px);
 
-          opacity: 1;
+  opacity: 0.45;
 
-          animation:
-            lightSweep 20s linear infinite;
-        }
+  filter:
+    brightness(0.45)
+    blur(0.8px);
+}
 
-        .presentation-particles {
-          position: absolute;
-          inset: 0;
+.logo-depth-4 {
+  transform:
+    translateZ(-40px);
 
-          background-image:
-            radial-gradient(
-              rgba(255,255,255,0.95) 2px,
-              transparent 2px
-            );
+  opacity: 0.28;
 
-          background-size: 140px 140px;
+  filter:
+    brightness(0.3)
+    blur(1px);
+}
 
-          opacity: 0.32;
+.presentation-floor-glow {
+  position: absolute;
 
-          filter: blur(1px);
+  bottom: 12%;
 
-          animation:
-            particlesFloat 20s linear infinite;
-        }
+  width: 520px;
+  height: 80px;
 
-        .presentation-orbs {
-          position: absolute;
-          inset: -10%;
+  border-radius: 999px;
 
-          background:
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(120,190,255,0.32) 0%,
+      rgba(120,190,255,0.12) 40%,
+      transparent 75%
+    );
 
-            radial-gradient(
-              circle at 20% 30%,
-              rgba(120,190,255,0.3),
-              transparent 18%
-            ),
+  filter: blur(24px);
 
-            radial-gradient(
-              circle at 75% 25%,
-              rgba(255,255,255,0.22),
-              transparent 16%
-            ),
+  animation:
+    floorPulse 4s ease-in-out infinite;
+}
 
-            radial-gradient(
-              circle at 70% 70%,
-              rgba(120,190,255,0.24),
-              transparent 22%
-            ),
+.presentation-glow {
+  position: absolute;
 
-            radial-gradient(
-              circle at 35% 75%,
-              rgba(255,255,255,0.16),
-              transparent 18%
-            );
+  width: 950px;
+  height: 950px;
 
-          filter: blur(28px);
+  border-radius: 999px;
 
-          opacity: 1;
+  background:
+    radial-gradient(
+      circle,
+      rgba(120,190,255,0.2) 0%,
+      transparent 72%
+    );
 
-          animation:
-            orbDrift 16s ease-in-out infinite alternate;
-        }
+  filter: blur(100px);
 
-        @keyframes logoSpin360 {
+  animation:
+    presentationPulse 6s ease-in-out infinite;
+}
 
-          0% {
-            transform:
-              perspective(1800px)
-              rotateY(0deg)
-              rotateX(6deg)
-              scale(1);
-          }
+.presentation-lights {
+  position: absolute;
+  inset: -40%;
 
-          25% {
-            transform:
-              perspective(1800px)
-              rotateY(90deg)
-              rotateX(-2deg)
-              scale(1.04);
-          }
+  background:
 
-          50% {
-            transform:
-              perspective(1800px)
-              rotateY(180deg)
-              rotateX(6deg)
-              scale(1);
-          }
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(120,190,255,0.35) 25deg,
+      transparent 55deg,
+      rgba(255,255,255,0.18) 80deg,
+      transparent 120deg,
+      rgba(120,190,255,0.28) 180deg,
+      transparent 240deg,
+      rgba(255,255,255,0.14) 300deg,
+      transparent 360deg
+    );
 
-          75% {
-            transform:
-              perspective(1800px)
-              rotateY(270deg)
-              rotateX(-2deg)
-              scale(1.04);
-          }
+  opacity: 1;
 
-          100% {
-            transform:
-              perspective(1800px)
-              rotateY(360deg)
-              rotateX(6deg)
-              scale(1);
-          }
-        }
+  mix-blend-mode: screen;
 
-        @keyframes presentationPulse {
-          0% {
-            transform: scale(1);
-            opacity: 0.45;
-          }
+  filter:
+    blur(18px)
+    brightness(1.3);
 
-          50% {
-            transform: scale(1.08);
-            opacity: 1;
-          }
+  animation:
+    lightSweep 10s linear infinite;
+}
 
-          100% {
-            transform: scale(1);
-            opacity: 0.45;
-          }
-        }
+.presentation-disco {
+  position: absolute;
 
-        @keyframes floorPulse {
-          0% {
-            opacity: 0.5;
-            transform: scaleX(1);
-          }
+  width: 120vw;
+  height: 120vw;
 
-          50% {
-            opacity: 1;
-            transform: scaleX(1.08);
-          }
+  border-radius: 999px;
 
-          100% {
-            opacity: 0.5;
-            transform: scaleX(1);
-          }
-        }
+  background:
+    repeating-conic-gradient(
+      rgba(120,190,255,0.12) 0deg 8deg,
+      transparent 8deg 18deg,
+      rgba(255,255,255,0.08) 18deg 24deg,
+      transparent 24deg 40deg
+    );
 
-        @keyframes lightSweep {
-          0% {
-            transform: rotate(0deg) scale(1.1);
-          }
+  mix-blend-mode: screen;
 
-          100% {
-            transform: rotate(360deg) scale(1.1);
-          }
-        }
+  filter:
+    blur(10px)
+    brightness(1.3);
 
-        @keyframes particlesFloat {
-          0% {
-            transform: translateY(0px);
-          }
+  opacity: 0.8;
 
-          100% {
-            transform: translateY(-120px);
-          }
-        }
+  animation:
+    discoSpin 18s linear infinite;
+}
 
-        @keyframes orbDrift {
-          0% {
-            transform:
-              scale(1)
-              translateX(0px)
-              translateY(0px);
-          }
+.presentation-particles {
+  position: absolute;
+  inset: 0;
 
-          100% {
-            transform:
-              scale(1.12)
-              translateX(-30px)
-              translateY(-20px);
-          }
-        }
+  background-image:
 
-        @keyframes kenburns {
+    radial-gradient(
+      rgba(255,255,255,0.95) 2px,
+      transparent 2px
+    ),
+
+    radial-gradient(
+      rgba(120,190,255,0.8) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    140px 140px,
+    90px 90px;
+
+  opacity: 0.55;
+
+  mix-blend-mode: screen;
+
+  animation:
+    particlesFloat 8s linear infinite;
+}
+
+.presentation-orbs {
+  position: absolute;
+  inset: -20%;
+
+  background:
+
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(0,140,255,0.42),
+      transparent 14%
+    ),
+
+    radial-gradient(
+      circle at 75% 20%,
+      rgba(255,255,255,0.32),
+      transparent 12%
+    ),
+
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(0,180,255,0.35),
+      transparent 16%
+    ),
+
+    radial-gradient(
+      circle at 30% 75%,
+      rgba(255,255,255,0.22),
+      transparent 14%
+    ),
+
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(0,120,255,0.18),
+      transparent 22%
+    );
+
+  filter:
+    blur(34px)
+    saturate(1.4);
+
+  opacity: 1;
+
+  mix-blend-mode: screen;
+
+  animation:
+    orbDrift 8s ease-in-out infinite alternate;
+}
+
+@keyframes logoSpin360 {
+
+  0% {
+    transform:
+      perspective(1800px)
+      rotateY(0deg)
+      rotateX(6deg)
+      scale(1);
+  }
+
+  25% {
+    transform:
+      perspective(1800px)
+      rotateY(90deg)
+      rotateX(-2deg)
+      scale(1.04);
+  }
+
+  50% {
+    transform:
+      perspective(1800px)
+      rotateY(180deg)
+      rotateX(6deg)
+      scale(1);
+  }
+
+  75% {
+    transform:
+      perspective(1800px)
+      rotateY(270deg)
+      rotateX(-2deg)
+      scale(1.04);
+  }
+
+  100% {
+    transform:
+      perspective(1800px)
+      rotateY(360deg)
+      rotateX(6deg)
+      scale(1);
+  }
+}
+
+@keyframes presentationPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+}
+
+@keyframes floorPulse {
+  0% {
+    opacity: 0.5;
+    transform: scaleX(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1.08);
+  }
+
+  100% {
+    opacity: 0.5;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes lightSweep {
+  0% {
+    transform: rotate(0deg) scale(1.1);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1.1);
+  }
+}
+
+@keyframes particlesFloat {
+  0% {
+    transform: translateY(0px);
+  }
+
+  100% {
+    transform: translateY(-120px);
+  }
+}
+
+@keyframes orbDrift {
+  0% {
+    transform:
+      scale(1)
+      translateX(0px)
+      translateY(0px);
+  }
+
+  100% {
+    transform:
+      scale(1.12)
+      translateX(-30px)
+      translateY(-20px);
+  }
+}
+
+@keyframes discoSpin {
+  0% {
+    transform:
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      rotate(360deg)
+      scale(1.08);
+  }
+}
+
+@keyframes kenburns {
           0% {
             transform: scale(1);
           }
