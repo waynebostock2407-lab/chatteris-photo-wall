@@ -470,35 +470,15 @@ export default function SlideshowPage() {
             <div className="presentation-glow" />
 
             <div className="presentation-particles" />
+
             <div className="presentation-orbs" />
 
-            <div className="presentation-logo-wrap">
+            <div className="presentation-floor-glow" />
 
-              <img
-                src="/logo.png"
-                className="presentation-logo logo-back-3"
-              />
-
-              <img
-                src="/logo.png"
-                className="presentation-logo logo-back-2"
-              />
-
-              <img
-                src="/logo.png"
-                className="presentation-logo logo-back-2"
-              />
-
-              <img
-                src="/logo.png"
-                className="presentation-logo logo-back"
-              />
-
-            </div>
-
-            <div className="presentation-title">
-              CELEBRATING THE 25/26 SEASON
-            </div>
+            <img
+              src="/logo 6.png"
+              className="presentation-logo"
+            />
 
           </div>
 
@@ -737,13 +717,82 @@ export default function SlideshowPage() {
         .presentation-intro {
           position: absolute;
           inset: 0;
+
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
+
+          overflow: hidden;
+
           z-index: 20;
-          text-align: center;
-          padding-bottom: 40px;
+        }
+
+        .presentation-logo {
+          position: relative;
+          z-index: 20;
+
+          width: 460px;
+
+          object-fit: contain;
+
+          animation:
+            logoSpin360 22s linear infinite;
+
+          filter:
+            drop-shadow(
+              0 0 30px rgba(120,190,255,0.9)
+            )
+            drop-shadow(
+              0 0 80px rgba(120,190,255,0.6)
+            )
+            drop-shadow(
+              0 0 160px rgba(120,190,255,0.35)
+            );
+        }
+
+        .presentation-floor-glow {
+          position: absolute;
+
+          bottom: 12%;
+
+          width: 520px;
+          height: 80px;
+
+          border-radius: 999px;
+
+          background:
+            radial-gradient(
+              ellipse,
+              rgba(120,190,255,0.32) 0%,
+              rgba(120,190,255,0.12) 40%,
+              transparent 75%
+            );
+
+          filter: blur(24px);
+
+          animation:
+            floorPulse 4s ease-in-out infinite;
+        }
+
+        .presentation-glow {
+          position: absolute;
+
+          width: 950px;
+          height: 950px;
+
+          border-radius: 999px;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(120,190,255,0.2) 0%,
+              transparent 72%
+            );
+
+          filter: blur(100px);
+
+          animation:
+            presentationPulse 6s ease-in-out infinite;
         }
 
         .presentation-lights {
@@ -754,42 +803,24 @@ export default function SlideshowPage() {
             conic-gradient(
               from 0deg at 50% 100%,
               transparent 0deg,
-              rgba(120,190,255,0.14) 18deg,
-              transparent 36deg,
-              rgba(255,255,255,0.08) 52deg,
-              transparent 70deg,
-              rgba(120,190,255,0.12) 90deg,
-              transparent 120deg,
-              rgba(120,190,255,0.14) 150deg,
+              rgba(120,190,255,0.18) 20deg,
+              transparent 40deg,
+              rgba(255,255,255,0.1) 60deg,
+              transparent 90deg,
+              rgba(120,190,255,0.14) 120deg,
               transparent 180deg,
-              rgba(255,255,255,0.08) 220deg,
-              transparent 260deg,
-              rgba(120,190,255,0.12) 300deg,
+              rgba(255,255,255,0.08) 240deg,
+              transparent 300deg,
+              rgba(120,190,255,0.16) 340deg,
               transparent 360deg
             );
 
-          filter: blur(12px);
+          filter: blur(14px);
 
-          opacity: 0.9;
+          opacity: 1;
 
           animation:
-            lightSweep 18s linear infinite;
-        }
-
-        .presentation-glow {
-          position: absolute;
-          width: 900px;
-          height: 900px;
-          border-radius: 999px;
-          background:
-            radial-gradient(
-              circle,
-              rgba(120,190,255,0.22) 0%,
-              transparent 70%
-            );
-          filter: blur(80px);
-          animation:
-            presentationPulse 5s ease-in-out infinite;
+            lightSweep 20s linear infinite;
         }
 
         .presentation-particles {
@@ -798,216 +829,105 @@ export default function SlideshowPage() {
 
           background-image:
             radial-gradient(
-              rgba(255,255,255,0.9) 1px,
+              rgba(255,255,255,0.95) 2px,
+              transparent 2px
             );
 
-          background-size: 120px 120px;
+          background-size: 140px 140px;
 
-          opacity: 0.18;
+          opacity: 0.32;
+
+          filter: blur(1px);
 
           animation:
-            particlesFloat 18s linear infinite;
+            particlesFloat 20s linear infinite;
         }
-        
+
         .presentation-orbs {
           position: absolute;
-          inset: 0;
+          inset: -10%;
 
           background:
+
             radial-gradient(
               circle at 20% 30%,
-              rgba(120,190,255,0.18),
-              transparent 16%
+              rgba(120,190,255,0.3),
+              transparent 18%
             ),
 
             radial-gradient(
               circle at 75% 25%,
-              rgba(255,255,255,0.12),
+              rgba(255,255,255,0.22),
               transparent 16%
             ),
 
             radial-gradient(
               circle at 70% 70%,
-              rgba(120,190,255,0.16),
+              rgba(120,190,255,0.24),
               transparent 22%
             ),
 
             radial-gradient(
-              circle at 35% 70%,
-              rgba(255,255,255,0.1),
+              circle at 35% 75%,
+              rgba(255,255,255,0.16),
               transparent 18%
             );
 
-          filter: blur(8px);
+          filter: blur(28px);
 
-          animation
-            orbDrift 16s ease-in-out infinite alternative;
-        }
-
-        .presentation-logo-wrap {
-          position: relative;
-
-          width: 420px;
-          height: 420px
-
-          margin-bottom: 90px
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          tranform-style: preserve-3d;
+          opacity: 1;
 
           animation:
-            logoSpin360 18s linear infinite;
+            orbDrift 16s ease-in-out infinite alternate;
         }
 
-        .presentation-logo {
-          position: absolute;
+        @keyframes logoSpin360 {
 
-          width: 100%;
-
-          object-fit: contain;
-
-          filter:
-            drop-shadow(
-              0 0 30px rgba(120,190,255,0.95)
-            )
-            drop-shadow(
-              0 0 80px rgba(120,190,255,0.7)
-            )
-            drop-shadow(
-              0 0 160px rgba(120,190,255,0.45)
-            );
-        }
-
-        .logo-back-1 {
-          transform:
-            translateZ(-12px);
-
-          opacity: 0.82;
-
-          filter: brightness(0.7);
-        }
-
-        .logo-back-2 {
-          transform:
-            translateZ(-24px);
-
-          opacity: 0.6;
-
-          filter: brightness(0.5);
-        }
-
-        .logo-back-3 {
-          transform:
-            translateZ(-36px);
-
-          opacity: 0.4;
-
-          filter: brightness(0.3);
-        }
-
-        .presentation-title {
-          position: relative;
-          z-index: 30;
-
-          font-size: clamp(3rem, 5vw, 6rem);
-          font-weight: 900;
-          letter-spacing: 0.05em;
-          line-height: 1;
-          color: white;
-          text-shadow:
-            0 0 30px rgba(120,190,255,0.9);
-            0 0 80px rgba(120,190,255,0.4);
-
-          animation:
-            fadeUp 1.5s ease forwards;
-        }
-
-        .presentation-script {
-          margin-top: 42px;
-      
-          font-size:
-            clamp(3rem, 5vw, 6rem);
-          line-height: 1;
-          color: white;
-          opacity: 0.96;
-          text-shadow:
-            0 0 35px rgba(255,255,255,0.4);
-          animation:
-            fadeUp 2.5s ease forwards;
-        }
-
-        @keyframes borderTrail {
           0% {
-            top: 0;
-            left: -240px;
-            width: 240px;
-            height: 8px;
-          }
-
-          24% {
-            top: 0;
-            left: calc(100% + 240px);
-            width: 240px;
-            height: 8px;
+            transform:
+              perspective(1800px)
+              rotateY(0deg)
+              rotateX(6deg)
+              scale(1);
           }
 
           25% {
-            top: -240px;
-            left: calc(100% - 8px);
-            width: 8px;
-            height: 240px;
-          }
-
-          49% {
-            top: calc(100% + 240px);
-            left: calc(100% - 8px);
-            width: 8px;
-            height: 240px;
+            transform:
+              perspective(1800px)
+              rotateY(90deg)
+              rotateX(-2deg)
+              scale(1.04);
           }
 
           50% {
-            top: calc(100% - 8px);
-            left: calc(100% + 240px);
-            width: 240px;
-            height: 8px;
-          }
-
-          74% {
-            top: calc(100% - 8px);
-            left: -240px;
-            width: 240px;
-            height: 8px;
+            transform:
+              perspective(1800px)
+              rotateY(180deg)
+              rotateX(6deg)
+              scale(1);
           }
 
           75% {
-            top: calc(100% + 240px);
-            left: 0;
-            width: 8px;
-            height: 240px;
-          }
-
-          99% {
-            top: -240px;
-            left: 0;
-            width: 8px;
-            height: 240px;
+            transform:
+              perspective(1800px)
+              rotateY(270deg)
+              rotateX(-2deg)
+              scale(1.04);
           }
 
           100% {
-            top: 0;
-            left: -240px;
-            width: 240px;
-            height: 8px;
+            transform:
+              perspective(1800px)
+              rotateY(360deg)
+              rotateX(6deg)
+              scale(1);
           }
         }
 
         @keyframes presentationPulse {
           0% {
             transform: scale(1);
-            opacity: 0.5;
+            opacity: 0.45;
           }
 
           50% {
@@ -1017,83 +937,24 @@ export default function SlideshowPage() {
 
           100% {
             transform: scale(1);
+            opacity: 0.45;
+          }
+        }
+
+        @keyframes floorPulse {
+          0% {
             opacity: 0.5;
-          }
-        }
-
-        @keyframes logoFloat {
-          0% {
-            transform: translateY(0px);
+            transform: scaleX(1);
           }
 
           50% {
-            transform: translateY(-12px);
+            opacity: 1;
+            transform: scaleX(1.08);
           }
 
           100% {
-            transform: translateY(0px);
-          }
-        }
-
-        @keyframes logoSpin360 {
-          0% {
-            transform:
-              perspective(1800px)
-              rotateY(0deg)
-              rotateX(8deg)
-              translateY(0px)
-              scale(1);
-          }
-
-          25% {
-            transform:
-              perspective(1800px)
-              rotateY(90deg)
-              rotateX(-2deg)
-              translateY(-10px)
-              scale(1.04);
-          }
-
-          50% {
-            transform:
-              perspective(1800px)
-              rotateY(180deg)
-              rotateX(8deg)
-              translateY(0px)
-              scale(1);
-          }
-
-          75% {
-            transform:
-              perspective(1800px)
-              rotateY(270deg)
-              rotateX(-2deg)
-              translateY(-10px)
-              scale(1.04);
-          }
-
-          100% {
-            transform:
-              perspective(1800px)
-              rotateY(360deg)
-              rotateX(8deg)
-              translateY(0px)
-              scale(1);
-          }
-        }
-
-          50% {
-            transform:
-              perspective(1200px)
-              rotateY(8deg)
-              rotateX(-2deg);
-          }
-
-          100% {
-            transform:
-              perspective(1200px)
-              rotateY(-8deg)
-              rotateX(2deg);
+            opacity: 0.5;
+            transform: scaleX(1);
           }
         }
 
@@ -1109,13 +970,11 @@ export default function SlideshowPage() {
 
         @keyframes particlesFloat {
           0% {
-            transform:
-              translateY(0px);
+            transform: translateY(0px);
           }
 
           100% {
-            transform:
-              translateY(-120px);
+            transform: translateY(-120px);
           }
         }
 
@@ -1125,25 +984,13 @@ export default function SlideshowPage() {
               scale(1)
               translateX(0px)
               translateY(0px);
-            }
+          }
 
           100% {
             transform:
               scale(1.12)
               translateX(-30px)
               translateY(-20px);
-          }
-        }
-
-        @keyframes fadeUp {
-          0% {
-            opacity: 0;
-            transform: translateY(25px);
-          }
-
-          100% {
-            opacity: 1;
-            transform: translateY(0px);
           }
         }
 
@@ -1183,3 +1030,4 @@ export default function SlideshowPage() {
     </main>
   );
 }
+
