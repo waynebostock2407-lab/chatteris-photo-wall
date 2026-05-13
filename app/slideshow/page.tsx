@@ -192,13 +192,22 @@ export default function SlideshowPage() {
   /* INTRO */
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const introTimer = setTimeout(() => {
+      
       setShowIntro(false);
+
+      setShowPresentationIntro(true);
+
+      setTimeout(() => {
+        setShowPresentationIntro(false);
+      }, 10000);
+      
     }, INTRO_DURATION);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(introTimer);
+  
   }, []);
-
+   
   /* FIRESTORE - PHOTOS */
 
   useEffect(() => {
