@@ -49,6 +49,9 @@ export default function SlideshowPage() {
 
   const [showIntro, setShowIntro] = useState(true);
 
+  const [showPresentationIntro, setShowPresentationIntro] =
+    useState(false);
+
   const [showMessages, setShowMessages] =
     useState(false);
 
