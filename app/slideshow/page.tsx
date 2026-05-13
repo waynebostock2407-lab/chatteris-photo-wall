@@ -775,24 +775,25 @@ export default function SlideshowPage() {
         }
 
         .presentation-logo {
-          width: 340px;
+          width: 420px;
 
           position: relative;
           z-index: 10;
 
+          tranform-style: preserve-3d;
+
           animation:
-            logoFloat 6s ease-in-out infinite,
-            logoSpin 18s ease-in-out infinite;
+            logoSpin360 18s linear infinite;
 
           filter:
             drop-shadow(
-              0 0 25px rgba(120,190,255,0.9)
+              0 0 30px rgba(120,190,255,0.95)
             )
             drop-shadow(
-              0 0 60px rgba(120,190,255,0.6)
+              0 0 80px rgba(120,190,255,0.7)
             )
             drop-shadow(
-              0 0 120px rgba(120,190,255,0.35)
+              0 0 160px rgba(120,190,255,0.45)
             );
         }
 
@@ -810,23 +811,23 @@ export default function SlideshowPage() {
         }
 
         .presentation-subtitle {
-          margin-top: 34px;
+          margin-top: 40px;
 
-          font-size: clamp(1.5rem, 2.2vw, 2.8rem);
+          font-size: clamp(2.2rem, 3.4vw, 4.8rem);
 
           font-weight: 900;
 
-          letter-spacing: 0.22em;
+          letter-spacing: 0.18em;
 
-          line-height: 1.4;
+          line-height: 1.3;
 
           text-transform: uppercase;
 
-          color: rgba(255,255,255,0.96);
+          color: rgba(255,255,255,0.98);
 
           text-shadow:
-            0 0 10px rgba(120,190,255,0.55);
-            0 0 40px rgba(120,190,255,0.30);
+            0 0 10px rgba(120,190,255,0.65);
+            0 0 40px rgba(120,190,255,0.35);
 
           animation:
             fadeUp 2s ease forwards;
@@ -942,44 +943,49 @@ export default function SlideshowPage() {
           }
         }
 
-        @keyframes logoSpin {
+        @keyframes logoSpin360 {
           0% {
             transform:
-              perspective(1400px)
-              rotateY(-18deg)
-              rotateX(4deg)
+              perspective(1800px)
+              rotateY(0deg)
+              rotateX(8deg)
+              translateY(0px)
               scale(1);
           }
 
           25% {
             transform:
-              perspective(1400px)
-              rotateY(0deg)
+              perspective(1800px)
+              rotateY(90deg)
               rotateX(-2deg)
+              translateY(-10px)
               scale(1.04);
           }
 
           50% {
             transform:
-              perspective(1400px)
-              rotateY(18deg)
-              rotateX(4deg)
+              perspective(1800px)
+              rotateY(180deg)
+              rotateX(8deg)
+              translateY(0px)
               scale(1);
           }
 
           75% {
             transform:
-              perspective(1400px)
-              rotateY(0deg)
+              perspective(1800px)
+              rotateY(270deg)
               rotateX(-2deg)
+              translateY(-10px)
               scale(1.04);
           }
 
           100% {
             transform:
-              perspective(1400px)
-              rotateY(-18deg)
-              rotateX(4deg)
+              perspective(1800px)
+              rotateY(360deg)
+              rotateX(8deg)
+              translateY(0px)
               scale(1);
           }
         }
