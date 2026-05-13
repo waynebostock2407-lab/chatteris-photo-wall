@@ -31,9 +31,6 @@ const INTRO_DURATION = 60000;
 const PHOTO_DURATION = 8000;
 const PHOTO_FADE_DURATION = 650;
 
-const MESSAGE_MIN_DURATION = 9000;
-const MESSAGE_MAX_DURATION = 30000;
-
 export default function SlideshowPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
 
@@ -281,8 +278,7 @@ export default function SlideshowPage() {
     if (
       photos.length === 0 ||
       showIntro ||
-      showPresentationIntro ||
-      showMessages
+      showPresentationIntro
     ) {
       return;
     }
@@ -300,11 +296,42 @@ export default function SlideshowPage() {
 
       setFade(false);
 
+      const shouldShowMessage =
+        messages.length > 0 &&
+        Math.random() < 0.28;
+
       if (fadeTimeoutRef.current) {
         clearTimeout(fadeTimeoutRef.current);
       }
 
       fadeTimeoutRef.current = setTimeout(() => {
+        if (shouldShowMessage) {
+
+          setShowMessages(true);
+
+          setCurrentMessageIndex((prev) => {
+
+            if (messages.length <= 1)
+              return prev;
+
+            let nextIndex = prev;
+
+            while (nextIndex === prev) {
+              nextIndex = Math.floor(
+                Math.random() * messages.length
+              );
+            }
+
+            return nextIndex;
+          });
+
+          setFade(true);
+
+          return;
+        }
+
+        setShowMessages(false);
+
         setCurrentPhotoIndex((prev) => {
           if (photos.length <= 1)
             return prev;
@@ -322,7 +349,16 @@ export default function SlideshowPage() {
 
         setFade(true);
       }, PHOTO_FADE_DURATION);
-    }, PHOTO_DURATION);
+    }, showMessages
+  ? Math.min(
+      30000,
+      Math.max(
+        12000,
+        currentMessage?.message.length * 85
+      )
+    )
+  : PHOTO_DURATION
+);
 
     return () => {
       if (photoIntervalRef.current) {
@@ -334,61 +370,6 @@ export default function SlideshowPage() {
     showIntro,
     showPresentationIntro,
     showMessages,
-  ]);
-
-  /* MESSAGE LOOP */
-
-  useEffect(() => {
-    if (messages.length === 0) return;
-
-    const cycle = setInterval(() => {
-      setShowMessages(true);
-      setCurrentMessageIndex(0);
-    }, 300000);
-
-    return () => clearInterval(cycle);
-  }, [messages]);
-
-  useEffect(() => {
-    if (
-      !showMessages ||
-      messages.length === 0
-    ) {
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setFade(false);
-
-      setTimeout(() => {
-        if (
-          currentMessageIndex >=
-          messages.length - 1
-        ) {
-          setShowMessages(false);
-          setCurrentMessageIndex(0);
-        } else {
-          setCurrentMessageIndex(
-            (prev) => prev + 1
-          );
-        }
-
-        setFade(true);
-      }, 350);
-    }, Math.min(
-      Math.max(
-        MESSAGE_MIN_DURATION,
-        messages[currentMessageIndex]
-          ?.message.length * 60
-      ),
-      MESSAGE_MAX_DURATION
-    ));
-
-    return () => clearInterval(interval);
-  }, [
-    showMessages,
-    currentMessageIndex,
-    messages,
   ]);
 
   const currentPhoto =
@@ -449,11 +430,11 @@ export default function SlideshowPage() {
       </video>
 
       <div className="presentation-glow" />
+      <div className="stage-haze" />
 
       <div className="presentation-particles" />
 
       <div className="liquid-lights" />
-      <div className="club-lights" />
 
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
 
@@ -484,10 +465,6 @@ export default function SlideshowPage() {
         ) : showPresentationIntro ? (
 
           <div className="presentation-intro">
-
-  <div className="presentation-lights" />
-
-  <div className="presentation-disco" />
 
   <div className="presentation-floor-glow" />
 
@@ -774,11 +751,12 @@ export default function SlideshowPage() {
             rgba(0,0,0,0.78)
           );
         }
+        
 
         .presentation-logo {
           position: relative;
 
-          z-index: 20;
+          z-index: 30;
 
           width: 460px;
 
@@ -849,47 +827,6 @@ export default function SlideshowPage() {
   pointer-events: none;
 }
 
-.club-lights {
-  position: absolute;
-  inset: -60%;
-
-  z-index: 7;
-
-  background:
-
-    conic-gradient(
-      from 0deg,
-
-      transparent 0deg,
-      rgba(0,140,255,0.55) 18deg,
-      transparent 40deg,
-
-      rgba(255,255,255,0.35) 70deg,
-      transparent 100deg,
-
-      rgba(0,180,255,0.5) 140deg,
-      transparent 180deg,
-
-      rgba(120,190,255,0.42) 230deg,
-      transparent 280deg,
-
-      rgba(255,255,255,0.28) 320deg,
-      transparent 360deg
-    );
-
-  mix-blend-mode: screen;
-
-  filter:
-    blur(12px)
-    brightness(2);
-
-  opacity: 1;
-
-  animation:
-    clubSpin 8s linear infinite;
-
-  pointer-events: none;
-}
 
 .presentation-floor-glow {
   position: absolute;
@@ -916,6 +853,7 @@ export default function SlideshowPage() {
 }
 
 .presentation-glow {
+  z-index: 1;
   position: absolute;
 
   inset: 0;
@@ -935,70 +873,33 @@ export default function SlideshowPage() {
   pointer-events: none;
 }
 
-.presentation-lights {
+.stage-haze {
   position: absolute;
-  inset: -40%;
+  inset: 0;
+
+  z-index: 10;
 
   background:
-
-    conic-gradient(
-      from 0deg,
-      transparent 0deg,
-      rgba(120,190,255,0.35) 25deg,
-      transparent 55deg,
-      rgba(255,255,255,0.18) 80deg,
-      transparent 120deg,
-      rgba(120,190,255,0.28) 180deg,
-      transparent 240deg,
-      rgba(255,255,255,0.14) 300deg,
-      transparent 360deg
-    );
-
-  opacity: 1;
-
-  mix-blend-mode: screen;
-
-  filter:
-    blur(18px)
-    brightness(1.3);
-
-  animation:
-    lightSweep 10s linear infinite;
-}
-
-.presentation-disco {
-  position: absolute;
-
-  width: 120vw;
-  height: 120vw;
-
-  border-radius: 999px;
-
-  background:
-    repeating-conic-gradient(
-      rgba(120,190,255,0.12) 0deg 8deg,
-      transparent 8deg 18deg,
-      rgba(255,255,255,0.08) 18deg 24deg,
-      transparent 24deg 40deg
+    radial-gradient(
+      circle at 50% 70%,
+      rgba(255,255,255,0.08),
+      transparent 60%
     );
 
   mix-blend-mode: screen;
 
-  filter:
-    blur(10px)
-    brightness(1.3);
+  filter: blur(60px);
 
   opacity: 0.8;
 
-  animation:
-    discoSpin 18s linear infinite;
+  pointer-events: none;
 }
 
 .presentation-particles {
   position: absolute;
   inset: 0;
 
-  z-index: 5;
+  z-index: 2;
 
   background-image:
 
@@ -1045,18 +946,59 @@ export default function SlideshowPage() {
   }
 }
 
-@keyframes clubSpin {
-
+@keyframes floatBlue {
   0% {
     transform:
-      rotate(0deg)
-      scale(1.05);
+      translate(0px, 0px)
+      scale(1);
   }
 
   100% {
     transform:
-      rotate(360deg)
-      scale(1.15);
+      translate(80px, 40px)
+      scale(1.18);
+  }
+}
+
+@keyframes floatPink {
+  0% {
+    transform:
+      translate(0px, 0px)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-60px, 80px)
+      scale(1.12);
+  }
+}
+
+@keyframes floatCyan {
+  0% {
+    transform:
+      translate(0px, 0px)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-100px, -60px)
+      scale(1.2);
+  }
+}
+
+@keyframes floatPurple {
+  0% {
+    transform:
+      translate(0px, 0px)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(70px, -50px)
+      scale(1.16);
   }
 }
 
@@ -1142,16 +1084,6 @@ export default function SlideshowPage() {
   }
 }
 
-@keyframes lightSweep {
-  0% {
-    transform: rotate(0deg) scale(1.1);
-  }
-
-  100% {
-    transform: rotate(360deg) scale(1.1);
-  }
-}
-
 @keyframes particlesFloat {
   0% {
     transform: translateY(0px);
@@ -1159,20 +1091,6 @@ export default function SlideshowPage() {
 
   100% {
     transform: translateY(-120px);
-  }
-}
-
-@keyframes discoSpin {
-  0% {
-    transform:
-      rotate(0deg)
-      scale(1);
-  }
-
-  100% {
-    transform:
-      rotate(360deg)
-      scale(1.08);
   }
 }
 
