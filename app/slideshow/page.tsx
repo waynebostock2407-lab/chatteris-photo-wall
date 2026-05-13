@@ -435,6 +435,26 @@ export default function SlideshowPage() {
 
       <div className="edge-trail" />
 
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="liquid-overlay"
+      >
+        <source
+          src="/liquid-metal.mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      <div className="presentation-glow" />
+
+      <div className="presentation-particles" />
+
+      <div className="liquid-lights" />
+      <div className="club-lights" />
+
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
 
       <div
@@ -467,44 +487,14 @@ export default function SlideshowPage() {
 
   <div className="presentation-lights" />
 
-  <div className="presentation-glow" />
-
   <div className="presentation-disco" />
-
-  <div className="presentation-particles" />
-
-  <div className="presentation-orbs" />
 
   <div className="presentation-floor-glow" />
 
-  <div className="presentation-logo-wrap">
-
-    <img
-      src="/logo 6.png"
-      className="presentation-logo logo-depth-4"
-    />
-
-    <img
-      src="/logo 6.png"
-      className="presentation-logo logo-depth-3"
-    />
-
-    <img
-      src="/logo 6.png"
-      className="presentation-logo logo-depth-2"
-    />
-
-    <img
-      src="/logo 6.png"
-      className="presentation-logo logo-depth-1"
-    />
-
-    <img
-      src="/logo 6.png"
-      className="presentation-logo"
-    />
-
-  </div>
+  <img
+    src="/logo 6.png"
+    className="presentation-logo"
+  />
 
 </div>
 
@@ -739,6 +729,31 @@ export default function SlideshowPage() {
           animation:
             borderTrail 34s linear infinite;
         }
+        
+        .liquid-overlay {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: 0.2;
+
+  mix-blend-mode: screen;
+
+  filter:
+    hue-rotate(180deg)
+    saturate(1.8)
+    brightness(0.65)
+    contrast(1.3)
+    blur(3px);
+
+  z-index: 3;
+
+  pointer-events: none;
+}
 
         .presentation-intro {
           position: absolute;
@@ -751,100 +766,129 @@ export default function SlideshowPage() {
           overflow: hidden;
 
           z-index: 20;
+
+          background:
+            radial-gradient(
+            circle at center,
+            rgba(0,20,40,0.35),
+            rgba(0,0,0,0.78)
+          );
         }
 
-        .presentation-intro {
-  position: absolute;
-  inset: 0;
+        .presentation-logo {
+          position: relative;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+          z-index: 20;
 
-  overflow: hidden;
+          width: 460px;
 
-  z-index: 20;
-}
+          object-fit: contain;
 
-.presentation-logo-wrap {
-  position: relative;
+          transform-style: preserve-3d;
 
-  width: 460px;
-  height: 460px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transform-style: preserve-3d;
-
-  animation:
-    logoSpin360 22s linear infinite;
-
-  z-index: 20;
-}
-
-.presentation-logo {
-  position: absolute;
-
-  width: 100%;
-
-  object-fit: contain;
+          animation:
+            logoSpin360 18s linear infinite;
 
   filter:
     drop-shadow(
       0 0 30px rgba(120,190,255,0.9)
     )
     drop-shadow(
-      0 0 80px rgba(120,190,255,0.6)
+      0 0 90px rgba(120,190,255,0.65)
     )
     drop-shadow(
-      0 0 160px rgba(120,190,255,0.35)
+      0 0 180px rgba(120,190,255,0.4)
+    )
+    brightness(1.08)
+    contrast(1.08);
+}
+
+.liquid-lights {
+  position: absolute;
+  inset: -20%;
+
+  z-index: 5;
+
+  background:
+
+    radial-gradient(
+      ellipse at 20% 30%,
+      rgba(0,140,255,0.28),
+      transparent 42%
+    ),
+
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(255,255,255,0.12),
+      transparent 38%
+    ),
+
+    radial-gradient(
+      ellipse at 70% 80%,
+      rgba(0,180,255,0.24),
+      transparent 44%
+    ),
+
+    radial-gradient(
+      ellipse at 30% 75%,
+      rgba(120,190,255,0.16),
+      transparent 40%
     );
-}
-
-.logo-depth-1 {
-  transform:
-    translateZ(-10px);
-
-  opacity: 0.85;
 
   filter:
-    brightness(0.8)
-    blur(0.3px);
+    blur(120px)
+    saturate(1.6);
+
+  opacity: 1;
+
+  mix-blend-mode: screen;
+
+  animation:
+    liquidFlow 20s ease-in-out infinite alternate;
+
+  pointer-events: none;
 }
 
-.logo-depth-2 {
-  transform:
-    translateZ(-20px);
+.club-lights {
+  position: absolute;
+  inset: -60%;
 
-  opacity: 0.65;
+  z-index: 7;
+
+  background:
+
+    conic-gradient(
+      from 0deg,
+
+      transparent 0deg,
+      rgba(0,140,255,0.55) 18deg,
+      transparent 40deg,
+
+      rgba(255,255,255,0.35) 70deg,
+      transparent 100deg,
+
+      rgba(0,180,255,0.5) 140deg,
+      transparent 180deg,
+
+      rgba(120,190,255,0.42) 230deg,
+      transparent 280deg,
+
+      rgba(255,255,255,0.28) 320deg,
+      transparent 360deg
+    );
+
+  mix-blend-mode: screen;
 
   filter:
-    brightness(0.65)
-    blur(0.5px);
-}
+    blur(12px)
+    brightness(2);
 
-.logo-depth-3 {
-  transform:
-    translateZ(-30px);
+  opacity: 1;
 
-  opacity: 0.45;
+  animation:
+    clubSpin 8s linear infinite;
 
-  filter:
-    brightness(0.45)
-    blur(0.8px);
-}
-
-.logo-depth-4 {
-  transform:
-    translateZ(-40px);
-
-  opacity: 0.28;
-
-  filter:
-    brightness(0.3)
-    blur(1px);
+  pointer-events: none;
 }
 
 .presentation-floor-glow {
@@ -874,22 +918,21 @@ export default function SlideshowPage() {
 .presentation-glow {
   position: absolute;
 
-  width: 950px;
-  height: 950px;
-
-  border-radius: 999px;
+  inset: 0;
 
   background:
     radial-gradient(
-      circle,
-      rgba(120,190,255,0.2) 0%,
-      transparent 72%
+      circle at center,
+      rgba(120,190,255,0.12) 0%,
+      rgba(0,0,0,0) 70%
     );
 
-  filter: blur(100px);
+  filter: blur(90px);
 
   animation:
-    presentationPulse 6s ease-in-out infinite;
+    presentationPulse 10s ease-in-out infinite;
+
+  pointer-events: none;
 }
 
 .presentation-lights {
@@ -955,76 +998,66 @@ export default function SlideshowPage() {
   position: absolute;
   inset: 0;
 
+  z-index: 5;
+
   background-image:
 
     radial-gradient(
-      rgba(255,255,255,0.95) 2px,
-      transparent 2px
+      rgba(255,255,255,0.18) 1px,
+      transparent 1px
     ),
 
     radial-gradient(
-      rgba(120,190,255,0.8) 1px,
+      rgba(120,190,255,0.12) 1px,
       transparent 1px
     );
 
   background-size:
-    140px 140px,
-    90px 90px;
+    320px 320px,
+    240px 240px;
 
-  opacity: 0.55;
+  opacity: 0.12;
 
   mix-blend-mode: screen;
 
   animation:
-    particlesFloat 8s linear infinite;
+    particlesFloat 28s linear infinite;
+
+  pointer-events: none;
 }
 
-.presentation-orbs {
-  position: absolute;
-  inset: -20%;
+@keyframes liquidFlow {
 
-  background:
+  0% {
+    transform:
+      rotate(0deg)
+      scale(1)
+      translateX(0px)
+      translateY(0px);
+  }
 
-    radial-gradient(
-      circle at 20% 30%,
-      rgba(0,140,255,0.42),
-      transparent 14%
-    ),
+  100% {
+    transform:
+      rotate(8deg)
+      scale(1.15)
+      translateX(-40px)
+      translateY(-30px);
+  }
+}
 
-    radial-gradient(
-      circle at 75% 20%,
-      rgba(255,255,255,0.32),
-      transparent 12%
-    ),
+@keyframes clubSpin {
 
-    radial-gradient(
-      circle at 80% 70%,
-      rgba(0,180,255,0.35),
-      transparent 16%
-    ),
+  0% {
+    transform:
+      rotate(0deg)
+      scale(1.05);
+  }
 
-    radial-gradient(
-      circle at 30% 75%,
-      rgba(255,255,255,0.22),
-      transparent 14%
-    ),
-
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(0,120,255,0.18),
-      transparent 22%
-    );
-
-  filter:
-    blur(34px)
-    saturate(1.4);
-
-  opacity: 1;
-
-  mix-blend-mode: screen;
-
-  animation:
-    orbDrift 8s ease-in-out infinite alternate;
+  100% {
+    transform:
+      rotate(360deg)
+      scale(1.15);
+  }
 }
 
 @keyframes logoSpin360 {
@@ -1032,40 +1065,45 @@ export default function SlideshowPage() {
   0% {
     transform:
       perspective(1800px)
-      rotateY(0deg)
-      rotateX(6deg)
+      rotateY(-12deg)
+      rotateX(5deg)
+      translateY(0px)
       scale(1);
   }
 
   25% {
     transform:
       perspective(1800px)
-      rotateY(90deg)
-      rotateX(-2deg)
+      rotateY(0deg)
+      rotateX(0deg)
+      translateY(-10px)
       scale(1.04);
   }
 
   50% {
     transform:
       perspective(1800px)
-      rotateY(180deg)
-      rotateX(6deg)
+      rotateY(12deg)
+      rotateX(5deg)
+      translateY(0px)
       scale(1);
   }
 
   75% {
     transform:
       perspective(1800px)
-      rotateY(270deg)
-      rotateX(-2deg)
+      rotateY(0deg)
+      rotateX(0deg)
+      translateY(-10px)
       scale(1.04);
   }
 
   100% {
     transform:
       perspective(1800px)
-      rotateY(360deg)
-      rotateX(6deg)
+      rotateY(-12deg)
+      rotateX(5deg)
+      translateY(0px)
       scale(1);
   }
 }
@@ -1121,22 +1159,6 @@ export default function SlideshowPage() {
 
   100% {
     transform: translateY(-120px);
-  }
-}
-
-@keyframes orbDrift {
-  0% {
-    transform:
-      scale(1)
-      translateX(0px)
-      translateY(0px);
-  }
-
-  100% {
-    transform:
-      scale(1.12)
-      translateX(-30px)
-      translateY(-20px);
   }
 }
 
