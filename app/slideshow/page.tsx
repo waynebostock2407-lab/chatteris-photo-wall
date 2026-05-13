@@ -193,21 +193,21 @@ export default function SlideshowPage() {
 
   useEffect(() => {
     const introTimer = setTimeout(() => {
-      
+
       setShowIntro(false);
 
       setShowPresentationIntro(true);
 
       setTimeout(() => {
         setShowPresentationIntro(false);
-      }, 10000);
-      
+      }, 18000);
+
     }, INTRO_DURATION);
 
     return () => clearTimeout(introTimer);
-  
+
   }, []);
-   
+
   /* FIRESTORE - PHOTOS */
 
   useEffect(() => {
@@ -281,6 +281,7 @@ export default function SlideshowPage() {
     if (
       photos.length === 0 ||
       showIntro ||
+      showPresentationIntro ||
       showMessages
     ) {
       return;
@@ -331,6 +332,7 @@ export default function SlideshowPage() {
   }, [
     photos,
     showIntro,
+    showPresentationIntro,
     showMessages,
   ]);
 
@@ -413,8 +415,6 @@ export default function SlideshowPage() {
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-black text-white">
 
-      {/* BACKGROUND */}
-
       {showIntro ? (
         <div
           className="absolute inset-0 bg-cover bg-center z-0"
@@ -433,15 +433,9 @@ export default function SlideshowPage() {
         />
       )}
 
-      {/* TRAIL */}
-
       <div className="edge-trail" />
 
-      {/* OVERLAY */}
-
       <div className="absolute inset-0 bg-[#02112B]/4 z-[4]" />
-
-      {/* FLASH */}
 
       <div
         className={`absolute inset-0 z-30 pointer-events-none transition-opacity duration-150 ${
@@ -453,8 +447,6 @@ export default function SlideshowPage() {
         }}
       />
 
-      {/* FULLSCREEN */}
-
       {!isFullscreen && (
         <button
           onClick={toggleFullscreen}
@@ -464,15 +456,16 @@ export default function SlideshowPage() {
         </button>
       )}
 
-      {/* MAIN CONTENT */}
-
       <div className="absolute inset-0 flex items-center justify-center px-12 pb-40 z-20">
 
         {showIntro ? (
           <></>
+
         ) : showPresentationIntro ? (
 
           <div className="presentation-intro">
+
+            <div className="presentation-lights" />
 
             <div className="presentation-glow" />
 
@@ -490,7 +483,7 @@ export default function SlideshowPage() {
             </div>
 
             <div className="presentation-script">
-              ONE CLUB | ONE FAMILY | THE LILIES
+              One Club. One Family. The Lilies.
             </div>
 
           </div>
@@ -616,8 +609,6 @@ export default function SlideshowPage() {
         ) : null}
       </div>
 
-      {/* BRANDING */}
-
       {!showIntro && (
         <div className="absolute bottom-6 left-8 z-30 flex items-end gap-6">
 
@@ -655,8 +646,6 @@ export default function SlideshowPage() {
         </div>
       )}
 
-      {/* QR */}
-
       <div className="absolute bottom-8 right-8 z-30">
 
         <div className="bg-white/92 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/40">
@@ -687,17 +676,12 @@ export default function SlideshowPage() {
 
         .edge-trail::before {
           content: "";
-
           position: absolute;
-
           width: 240px;
           height: 8px;
-
           top: 0;
           left: -240px;
-
           border-radius: 999px;
-
           background:
             linear-gradient(
               90deg,
@@ -717,33 +701,10 @@ export default function SlideshowPage() {
           );
 
           box-shadow:
-            0 0
-              calc(
-                18px *
-                var(--audio-reactivity, 1)
-              )
-            rgba(120,190,255,1),
-
-            0 0
-              calc(
-                40px *
-                var(--audio-reactivity, 1)
-              )
-            rgba(120,190,255,1),
-
-            0 0
-              calc(
-                90px *
-                var(--audio-reactivity, 1)
-              )
-            rgba(255,255,255,0.95),
-
-            0 0
-              calc(
-                160px *
-                var(--audio-reactivity, 1)
-              )
-            rgba(120,190,255,0.9);
+            0 0 calc(18px * var(--audio-reactivity, 1)) rgba(120,190,255,1),
+            0 0 calc(40px * var(--audio-reactivity, 1)) rgba(120,190,255,1),
+            0 0 calc(90px * var(--audio-reactivity, 1)) rgba(255,255,255,0.95),
+            0 0 calc(160px * var(--audio-reactivity, 1)) rgba(120,190,255,0.9);
 
           transform:
             scale(
@@ -755,150 +716,122 @@ export default function SlideshowPage() {
               )
             );
 
-          transition:
-            transform 0.06s linear,
-            opacity 0.06s linear,
-            box-shadow 0.06s linear;
-
           animation:
             borderTrail 34s linear infinite;
         }
-        
+
         .presentation-intro {
           position: absolute;
           inset: 0;
-          
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          
           z-index: 20;
-          
           text-align: center;
+          padding-bottom: 120px;
+        }
+
+        .presentation-lights {
+          position: absolute;
+          inset: -20%;
+
+          background:
+            conic-gradient(
+              from 0deg at 50% 100%,
+              transparent 0deg,
+              rgba(120,190,255,0.14) 18deg,
+              transparent 36deg,
+              rgba(255,255,255,0.08) 52deg,
+              transparent 70deg,
+              rgba(120,190,255,0.12) 90deg,
+              transparent 120deg,
+              rgba(120,190,255,0.14) 150deg,
+              transparent 180deg,
+              rgba(255,255,255,0.08) 220deg,
+              transparent 260deg,
+              rgba(120,190,255,0.12) 300deg,
+              transparent 360deg
+            );
+
+          filter: blur(12px);
+
+          opacity: 0.9;
+
+          animation:
+            lightSweep 18s linear infinite;
         }
 
         .presentation-glow {
           position: absolute;
-
           width: 900px;
           height: 900px;
-
           border-radius: 999px;
-
           background:
             radial-gradient(
               circle,
               rgba(120,190,255,0.22) 0%,
               transparent 70%
             );
-
           filter: blur(80px);
-
           animation:
             presentationPulse 5s ease-in-out infinite;
         }
 
         .presentation-logo {
-          width: 260px;
-
+          width: 320px;
           position: relative;
           z-index: 10;
-
+          transform-style: preserve-3d;
           animation:
-            logoFloat 5s ease-in-out infinite;
+            logoFloat 6s ease-in-out infinite,
+            logoRotate 14s ease-in-out infinite;
 
           filter:
-            drop-shadow(0 0 35px rgba(120,190,255,0.8))
+            drop-shadow(
+              0 0 35px rgba(120,190,255,0.8)
+            )
+            drop-shadow(
+              0 0 80px rgba(120,190,255,0.5)
             );
-
         }
-        
+
         .presentation-title {
-          margin-top: 40px;
-
-          font-size: clamp(2.5rem, 4vw, 5rem);
-
+          margin-top: 55px;
+          font-size: clamp(3rem, 5vw, 6rem);
           font-weight: 900;
-
-          letter-spacing: -0.08em;
-
+          letter-spacing: 0.04em;
+          line-height: 1;
           color: white;
-
           text-shadow:
-            0 0 25px rgba(120,190,255,0.8);
-
+            0 0 30px rgba(120,190,255,0.9);
           animation:
             fadeUp 1.5s ease forwards;
         }
 
         .presentation-subtitle {
-          margin-top: 24px;
-
-          font-size: clamp(1.1rem, 2vw, 2rem);
-
-          letter-spacing: -0.45em;
-
-          opacity: 0.82;
-
+          margin-top: 30px;
+          font-size: clamp(1rem, 1.8vw, 2rem);
+          letter-spacing: 0.28em;
+          line-height: 1.4;
+          opacity: 0.85;
           animation:
             fadeUp 2s ease forwards;
         }
 
-        ,presentation-script {
-          margin-top: 36px;
-
-          font-family: "var(--font-great-vibes)";
-
-          font-size: clamp(2.5rem, 4vw, 5rem);
-
+        .presentation-script {
+          margin-top: 42px;
+          font-family:
+            var(--font-great-vibes);
+          font-size:
+            clamp(3rem, 5vw, 6rem);
+          line-height: 1;
           color: white;
-
-          opacity: 0.95;
-
+          opacity: 0.96;
           text-shadow:
-            0 0 30px rgba(255,255,255,0.35);
-
+            0 0 35px rgba(255,255,255,0.4);
           animation:
             fadeUp 2.5s ease forwards;
-        }
-
-        @keyframes presentationPulse {
-          0% {
-            transform: scale(1);
-            opacity: 0.5;
-          }
-          50% {
-            transform: scale(1.08);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 0.5;
-          }
-        }
-
-        @keyframes logoFloat {
-          0% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-12px);
-          }
-          100% {
-            transform: translateY(0px);
-          }
-        }
-
-        @keyframes fadeUp {
-          0% {
-            opacity: 0;
-            transform: translateY(25px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
         }
 
         @keyframes borderTrail {
@@ -966,6 +899,82 @@ export default function SlideshowPage() {
           }
         }
 
+        @keyframes presentationPulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+
+          50% {
+            transform: scale(1.08);
+            opacity: 1;
+          }
+
+          100% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes logoFloat {
+          0% {
+            transform: translateY(0px);
+          }
+
+          50% {
+            transform: translateY(-12px);
+          }
+
+          100% {
+            transform: translateY(0px);
+          }
+        }
+
+        @keyframes logoRotate {
+          0% {
+            transform:
+              perspective(1200px)
+              rotateY(-8deg)
+              rotateX(2deg);
+          }
+
+          50% {
+            transform:
+              perspective(1200px)
+              rotateY(8deg)
+              rotateX(-2deg);
+          }
+
+          100% {
+            transform:
+              perspective(1200px)
+              rotateY(-8deg)
+              rotateX(2deg);
+          }
+        }
+
+        @keyframes lightSweep {
+          0% {
+            transform: rotate(0deg) scale(1.1);
+          }
+
+          100% {
+            transform: rotate(360deg) scale(1.1);
+          }
+        }
+
+        @keyframes fadeUp {
+          0% {
+            opacity: 0;
+            transform: translateY(25px);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translateY(0px);
+          }
+        }
+
         @keyframes kenburns {
           0% {
             transform: scale(1);
@@ -1002,5 +1011,6 @@ export default function SlideshowPage() {
     </main>
   );
 }
+
 
 
