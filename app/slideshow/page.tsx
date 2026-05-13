@@ -835,8 +835,7 @@ export default function SlideshowPage() {
 
         .presentation-script {
           margin-top: 42px;
-          font-family:
-            var(--font-great-vibes);
+      
           font-size:
             clamp(3rem, 5vw, 6rem);
           line-height: 1;
