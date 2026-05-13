@@ -458,6 +458,31 @@ export default function SlideshowPage() {
 
         {showIntro ? (
           <></>
+        ) : showPresentationIntro ? (
+
+          <div className="presentation-intro">
+
+            <div className="presentation-glow" />
+
+            <img
+              src="/logo.png"
+              className="presentation-logo"
+            />
+
+            <div className="presentation-title">
+              CELEBRATING THE 25/26 SEASON
+            </div>
+
+            <div className="presentation-subtitle">
+              PLAYERS • COACHES • FAMILIES
+            </div>
+
+            <div className="presentation-script">
+              ONE CLUB | ONE FAMILY | THE LILIES
+            </div>
+
+          </div>
+        )
         ) : showMessages &&
           currentMessage ? (
 
@@ -725,6 +750,143 @@ export default function SlideshowPage() {
 
           animation:
             borderTrail 34s linear infinite;
+        }
+        
+        .presentation-intro {
+          position: absolute;
+          inset: 0;
+          
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          
+          z-index: 20;
+          
+          text-align: center;
+        }
+
+        .presentation-glow {
+          position: absolute;
+
+          width: 900px;
+          height: 900px;
+
+          border-radius: 999px;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(120,190,255,0.22) 0%,
+              transparent 70%
+            );
+
+          filter: blur(80px);
+
+          animation:
+            presentationPulse 5s ease-in-out infinite;
+        }
+
+        .presentation-logo {
+          width: 260px;
+
+          position: relative;
+          z-index: 10;
+
+          animation:
+            logoFloat 5s ease-in-out infinite;
+
+          filter:
+            drop-shadow(0 0 35px rgba(120,190,255,0.8))
+            );
+
+        }
+        
+        .presentation-title {
+          margin-top: 40px;
+
+          font-size: clamp(2.5rem, 4vw, 5rem);
+
+          font-weight: 900;
+
+          letter-spacing: -0.08em;
+
+          color: white;
+
+          text-shadow:
+            0 0 25px rgba(120,190,255,0.8);
+
+          animation:
+            fadeUp 1.5s ease forwards;
+        }
+
+        .presentation-subtitle {
+          margin-top: 24px;
+
+          font-size: clamp(1.1rem, 2vw, 2rem);
+
+          letter-spacing: -0.45em;
+
+          opacity: 0.82;
+
+          animation:
+            fadeUp 2s ease forwards;
+        }
+
+        ,presentation-script {
+          margin-top: 36px;
+
+          font-family: "var(--font-great-vibes)";
+
+          font-size: clamp(2.5rem, 4vw, 5rem);
+
+          color: white;
+
+          opacity: 0.95;
+
+          text-shadow:
+            0 0 30px rgba(255,255,255,0.35);
+
+          animation:
+            fadeUp 2.5s ease forwards;
+        }
+
+        @keyframes presentationPulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+          50% {
+            transform: scale(1.08);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes logoFloat {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-12px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+
+        @keyframes fadeUp {
+          0% {
+            opacity: 0;
+            transform: translateY(25px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         @keyframes borderTrail {
