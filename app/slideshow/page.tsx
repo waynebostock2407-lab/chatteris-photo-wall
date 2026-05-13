@@ -469,6 +469,9 @@ export default function SlideshowPage() {
 
             <div className="presentation-glow" />
 
+            <div className="presentation-particles" />
+            <div className="presentation-orbs" />
+
             <div className="presentation-logo-wrap">
 
               <img
@@ -740,7 +743,7 @@ export default function SlideshowPage() {
           justify-content: center;
           z-index: 20;
           text-align: center;
-          padding-bottom: 120px;
+          padding-bottom: 40px;
         }
 
         .presentation-lights {
@@ -789,9 +792,65 @@ export default function SlideshowPage() {
             presentationPulse 5s ease-in-out infinite;
         }
 
+        .presentation-particles {
+          position: absolute;
+          inset: 0;
+
+          background-image:
+            radial-gradient(
+              rgba(255,255,255,0.9) 1px,
+            );
+
+          background-size: 120px 120px;
+
+          opacity: 0.18;
+
+          animation:
+            particlesFloat 18s linear infinite;
+        }
+        
+        .presentation-orbs {
+          position: absolute;
+          inset: 0;
+
+          background:
+            radial-gradient(
+              circle at 20% 30%,
+              rgba(120,190,255,0.18),
+              transparent 16%
+            ),
+
+            radial-gradient(
+              circle at 75% 25%,
+              rgba(255,255,255,0.12),
+              transparent 16%
+            ),
+
+            radial-gradient(
+              circle at 70% 70%,
+              rgba(120,190,255,0.16),
+              transparent 22%
+            ),
+
+            radial-gradient(
+              circle at 35% 70%,
+              rgba(255,255,255,0.1),
+              transparent 18%
+            );
+
+          filter: blur(8px);
+
+          animation
+            orbDrift 16s ease-in-out infinite alternative;
+        }
+
         .presentation-logo-wrap {
+          position: relative;
+
           width: 420px;
           height: 420px
+
+          margin-bottom: 90px
 
           display: flex;
           align-items: center;
@@ -850,14 +909,18 @@ export default function SlideshowPage() {
         }
 
         .presentation-title {
-          margin-top: 55px;
+          position: relative;
+          z-index: 30;
+
           font-size: clamp(3rem, 5vw, 6rem);
           font-weight: 900;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.05em;
           line-height: 1;
           color: white;
           text-shadow:
             0 0 30px rgba(120,190,255,0.9);
+            0 0 80px rgba(120,190,255,0.4);
+
           animation:
             fadeUp 1.5s ease forwards;
         }
@@ -1041,6 +1104,34 @@ export default function SlideshowPage() {
 
           100% {
             transform: rotate(360deg) scale(1.1);
+          }
+        }
+
+        @keyframes particlesFloat {
+          0% {
+            transform:
+              translateY(0px);
+          }
+
+          100% {
+            transform:
+              translateY(-120px);
+          }
+        }
+
+        @keyframes orbDrift {
+          0% {
+            transform:
+              scale(1)
+              translateX(0px)
+              translateY(0px);
+            }
+
+          100% {
+            transform:
+              scale(1.12)
+              translateX(-30px)
+              translateY(-20px);
           }
         }
 
