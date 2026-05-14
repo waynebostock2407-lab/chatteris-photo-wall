@@ -8,7 +8,16 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
 import { db } from "@/lib/firebase";
+
+const storage = getStorage();
 
 export default function UploadPage() {
 
@@ -22,35 +31,53 @@ export default function UploadPage() {
   /* PHOTO UPLOAD */
   const uploadPhotos = async () => {
 
-    if (selectedFiles.length === 0) return;
+  if (selectedFiles.length === 0) return;
 
-    try {
+  try {
 
-      for (const file of selectedFiles) {
+    for (const file of selectedFiles) {
 
-        console.log(
-          "Uploading:",
-          file.name
-        );
+      console.log(
+        "Uploading:",
+        file.name
+      );
 
-        /*
-          PUT YOUR FIREBASE STORAGE
-          UPLOAD CODE HERE
-        */
+      const storageRef = ref(
+        storage,
+        `photos/${Date.now()}-${file.name}`
+      );
 
-      }
+      await uploadBytes(
+        storageRef,
+        file
+      );
 
-      alert("Photos uploaded!");
+      const downloadURL =
+        await getDownloadURL(storageRef);
 
-      setSelectedFiles([]);
-
-    } catch (error) {
-
-      console.error(error);
-
+      await addDoc(
+        collection(db, "photos"),
+        {
+          imageUrl: downloadURL,
+          approved: false,
+          createdAt: serverTimestamp(),
+        }
+      );
     }
 
-  };
+    alert("Photos uploaded!");
+
+    setSelectedFiles([]);
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Upload failed");
+
+  }
+
+};
 
   /* MESSAGE SUBMIT */
   const submitMessage = async () => {
