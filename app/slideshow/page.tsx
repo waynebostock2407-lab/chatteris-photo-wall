@@ -509,7 +509,7 @@ const isQuietMoment =
   <div className="title-logo-wrap">
 
     <img
-      src="/logo 7.png"
+      src="/logo7.png"
       className="title-logo"
     />
 
@@ -1528,7 +1528,7 @@ ${
   inset: 0;
 
   background:
-    url("/logo 7.png")
+    url("/logo7.png")
     center center / 240px no-repeat;
 
   opacity: 0.015;
