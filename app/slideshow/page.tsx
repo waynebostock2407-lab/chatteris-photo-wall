@@ -438,7 +438,7 @@ const isQuietMoment =
           circle at center,
           rgba(0,70,160,0.04) 0%,
           rgba(0,0,0,0.08) 52%,
-          rgba(0,0,0,0.34) 100%
+          rgba(0,0,0,0.52) 100%
         )
       `,
     }}
@@ -924,7 +924,7 @@ ${
 
 .background-drift {
   position: absolute;
-  inset: -5%;
+  inset: -12%;
 
   z-index: 1;
 
