@@ -766,7 +766,7 @@ ${
   justify-content: center;
 
   gap: 0.7rem;
-  transform: translateY(-2vh);
+  padding-bottom: 4vh;
 
   background:
     radial-gradient(
