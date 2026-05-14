@@ -765,7 +765,8 @@ ${
   align-items: center;
   justify-content: center;
 
-  gap: 1.5rem;
+  gap: 0.7rem;
+  transform: translateY(-2vh);
 
   background:
     radial-gradient(
@@ -814,7 +815,7 @@ ${
 }
 
 .title-logo {
-  width: min(950px, 82vw);
+  width: min(760px, 68vw);
 
   object-fit: contain;
 
@@ -881,7 +882,7 @@ ${
     var(--font-great-vibes);
 
   font-size:
-    clamp(2.8rem, 4vw, 5rem);
+    clamp(2rem, 3vw, 3.8rem);
 
   text-align: center;
 
