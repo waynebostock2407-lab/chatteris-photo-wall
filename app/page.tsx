@@ -129,9 +129,8 @@ export default function UploadPage() {
         <div className="flex flex-col items-center text-center">
 
           <img
-            src="/logo7.png"
-            alt="Chatteris Town FC"
-            className="w-44 mb-6"
+            src="/logo 8.png"
+            className="w-72 mb-2"
           />
 
           <div className="upload-title">
@@ -161,9 +160,17 @@ export default function UploadPage() {
             onChange={handleFiles}
           />
 
-          <div className="text-6xl mb-4">
-            ⬆
+          <div className="upload-cloud">
+
+          <div className="upload-cloud-icon">
+            ☁
           </div>
+
+          <div className="upload-cloud-arrow">
+            ↑
+          </div>
+
+        </div>
 
           <div className="text-2xl font-black text-center">
             TAP TO UPLOAD PHOTOS
@@ -191,19 +198,40 @@ export default function UploadPage() {
 
               {previewImages.map((src, index) => (
 
-                <div
-                  key={index}
-                  className="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
-                >
+  <div
+    key={index}
+    className="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
+  >
 
-                  <img
-                    src={src}
-                    className="w-full h-full object-cover"
-                  />
+    <img
+      src={src}
+      className="w-full h-full object-cover"
+    />
 
-                </div>
+    <button
+      onClick={() => {
 
-              ))}
+        const updatedImages =
+          [...previewImages];
+
+        const updatedFiles =
+          [...selectedFiles];
+
+        updatedImages.splice(index, 1);
+        updatedFiles.splice(index, 1);
+
+        setPreviewImages(updatedImages);
+        setSelectedFiles(updatedFiles);
+
+      }}
+      className="absolute top-2 right-2 w-9 h-9 rounded-full bg-black/70 text-white text-lg font-bold backdrop-blur-xl"
+    >
+      ×
+    </button>
+
+  </div>
+
+))}
 
             </div>
 
@@ -223,7 +251,7 @@ export default function UploadPage() {
             onChange={(e) =>
               setName(e.target.value)
             }
-            placeholder="Your name"
+            placeholder="Your name (OPTIONAL)"
             className="upload-input"
           />
 
@@ -240,7 +268,7 @@ export default function UploadPage() {
             onChange={(e) =>
               setMessage(e.target.value)
             }
-            placeholder="Write a message..."
+            placeholder="Write a message or share a memory"
             className="upload-textarea"
           />
 
@@ -294,12 +322,47 @@ export default function UploadPage() {
         }
 
         .upload-title {
-          font-size: 1rem;
+  font-size:
+    clamp(1.4rem, 4vw, 2.2rem);
 
-          letter-spacing: 0.4em;
+  font-weight: 900;
 
-          color: rgba(255,255,255,0.92);
-        }
+  letter-spacing: 0.28em;
+
+  text-transform: uppercase;
+
+  margin-top: 0.5rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f5f5f5 14%,
+      #bcbcbc 34%,
+      #7f7f7f 52%,
+      #ffffff 74%,
+      #6d6d6d 100%
+    );
+
+  background-size: 100% 240%;
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  filter:
+    drop-shadow(
+      0 0 10px rgba(255,255,255,0.08)
+    )
+    drop-shadow(
+      0 0 28px rgba(70,140,220,0.18)
+    );
+
+  animation:
+    metallicShift 8s linear infinite;
+}
 
         .upload-title-big {
           font-size: clamp(3rem, 12vw, 5rem);
@@ -390,6 +453,43 @@ export default function UploadPage() {
 
           backdrop-filter: blur(18px);
         }
+
+        .upload-cloud {
+  position: relative;
+
+  width: 110px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 1.5rem;
+}
+
+.upload-cloud-icon {
+  font-size: 5rem;
+
+  color:
+    rgba(255,255,255,0.92);
+
+  filter:
+    drop-shadow(
+      0 0 18px rgba(0,120,255,0.4)
+    );
+}
+
+.upload-cloud-arrow {
+  position: absolute;
+
+  top: 38px;
+
+  font-size: 2rem;
+
+  font-weight: bold;
+
+  color: #4da3ff;
+}
 
         .upload-textarea {
           width: 100%;
