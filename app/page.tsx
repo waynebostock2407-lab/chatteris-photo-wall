@@ -137,11 +137,17 @@ export default function UploadPage() {
             CHATTERIS TOWN FC
           </div>
 
-          <div className="upload-title-big">
-            SHARE YOUR
-            <br />
-            MEMORIES
-          </div>
+          <div className="upload-heading">
+
+  <div className="upload-heading-top">
+    SHARE YOUR
+  </div>
+
+  <div className="upload-heading-main">
+    MEMORIES
+  </div>
+
+</div>
 
           <div className="upload-subtitle">
             Upload your photos and leave a message
@@ -160,17 +166,11 @@ export default function UploadPage() {
             onChange={handleFiles}
           />
 
-          <div className="upload-cloud">
-
-          <div className="upload-cloud-icon">
-            ☁
-          </div>
-
-          <div className="upload-cloud-arrow">
-            ↑
-          </div>
-
-        </div>
+          <img
+  src="/upload-cloud.png"
+  alt="Upload"
+  className="upload-cloud-image"
+/>
 
           <div className="text-2xl font-black text-center">
             TAP TO UPLOAD PHOTOS
@@ -321,6 +321,21 @@ export default function UploadPage() {
             );
         }
 
+        .upload-cloud-image {
+  width: 120px;
+
+  object-fit: contain;
+
+  margin-bottom: 1.8rem;
+
+  filter:
+    drop-shadow(
+      0 0 24px rgba(0,120,255,0.35)
+    );
+
+  opacity: 0.96;
+}
+
         .upload-title {
   font-size:
     clamp(1.4rem, 4vw, 2.2rem);
@@ -364,31 +379,68 @@ export default function UploadPage() {
     metallicShift 8s linear infinite;
 }
 
-        .upload-title-big {
-          font-size: clamp(3rem, 12vw, 5rem);
+        .upload-heading {
+  margin-top: 2rem;
 
-          font-weight: 900;
+  text-align: center;
+}
 
-          line-height: 0.9;
+.upload-heading-top {
 
-          margin-top: 1rem;
+  font-size:
+    clamp(2.1rem, 7vw, 3.4rem);
 
-          background:
-            linear-gradient(
-              180deg,
-              #ffffff 0%,
-              #d9d9d9 18%,
-              #8d8d8d 52%,
-              #ffffff 78%,
-              #6f6f6f 100%
-            );
+  font-weight: 300;
 
-          background-clip: text;
-          -webkit-background-clip: text;
+  letter-spacing: 0.08em;
 
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-        }
+  color:
+    rgba(255,255,255,0.92);
+
+  text-shadow:
+    0 0 18px rgba(255,255,255,0.08);
+}
+
+.upload-heading-main {
+
+  font-size:
+    clamp(4rem, 14vw, 7rem);
+
+  font-weight: 900;
+
+  line-height: 0.9;
+
+  margin-top: 0.5rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      #89c7ff 0%,
+      #4ea5ff 22%,
+      #006dff 48%,
+      #8fd0ff 74%,
+      #2f8fff 100%
+    );
+
+  background-size: 100% 220%;
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(0,120,255,0.32)
+    )
+    drop-shadow(
+      0 0 38px rgba(0,120,255,0.24)
+    );
+
+  animation:
+    metallicShift 8s linear infinite;
+}
 
         .upload-subtitle {
           margin-top: 1.5rem;
@@ -401,34 +453,50 @@ export default function UploadPage() {
         }
 
         .upload-box {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-          min-height: 240px;
+  min-height: 300px;
 
-          border-radius: 2rem;
+  border-radius: 2.5rem;
 
-          border:
-            2px dashed rgba(70,140,220,0.5);
+  border:
+    2px dashed rgba(60,140,255,0.65);
 
-          background:
-            rgba(255,255,255,0.04);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,40,90,0.22),
+      rgba(0,0,0,0.45)
+    );
 
-          backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
 
-          cursor: pointer;
+  box-shadow:
+    inset 0 0 40px rgba(0,120,255,0.08),
+    0 0 50px rgba(0,80,180,0.16);
 
-          transition: 0.3s ease;
+  cursor: pointer;
 
-          padding: 2rem;
-        }
+  transition: 0.35s ease;
 
-        .upload-box:hover {
-          background:
-            rgba(255,255,255,0.08);
-        }
+  padding: 2rem;
+}
+
+.upload-box:hover {
+
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(100,180,255,0.9);
+
+  box-shadow:
+    inset 0 0 60px rgba(0,120,255,0.12),
+    0 0 70px rgba(0,120,255,0.22);
+}
 
         .upload-input {
           width: 100%;
@@ -453,43 +521,6 @@ export default function UploadPage() {
 
           backdrop-filter: blur(18px);
         }
-
-        .upload-cloud {
-  position: relative;
-
-  width: 110px;
-  height: 90px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 1.5rem;
-}
-
-.upload-cloud-icon {
-  font-size: 5rem;
-
-  color:
-    rgba(255,255,255,0.92);
-
-  filter:
-    drop-shadow(
-      0 0 18px rgba(0,120,255,0.4)
-    );
-}
-
-.upload-cloud-arrow {
-  position: absolute;
-
-  top: 38px;
-
-  font-size: 2rem;
-
-  font-weight: bold;
-
-  color: #4da3ff;
-}
 
         .upload-textarea {
           width: 100%;
