@@ -21,484 +21,434 @@ const storage = getStorage();
 
 export default function UploadPage() {
 
+  const [previewImages, setPreviewImages] =
+    useState<string[]>([]);
+
   const [selectedFiles, setSelectedFiles] =
     useState<File[]>([]);
 
-  const [name, setName] = useState("");
+  const [message, setMessage] =
+    useState("");
 
-  const [message, setMessage] = useState("");
+  const [name, setName] =
+    useState("");
 
-  /* PHOTO UPLOAD */
-  const uploadPhotos = async () => {
+  const handleFiles = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
 
-  if (selectedFiles.length === 0) return;
+    const files = Array.from(
+      e.target.files || []
+    );
 
-  try {
+    setSelectedFiles(files);
 
-    for (const file of selectedFiles) {
+    const previews = files.map((file) =>
+      URL.createObjectURL(file)
+    );
 
-      console.log(
-        "Uploading:",
-        file.name
-      );
+    setPreviewImages(previews);
+  };
 
-      const storageRef = ref(
-        storage,
-        `photos/${Date.now()}-${file.name}`
-      );
+  const handleSubmit = async () => {
 
-      await uploadBytes(
-        storageRef,
-        file
-      );
-
-      const downloadURL =
-        await getDownloadURL(storageRef);
-
-      await addDoc(
-        collection(db, "photos"),
-        {
-          imageUrl: downloadURL,
-          approved: false,
-          createdAt: serverTimestamp(),
-        }
-      );
+    if (
+      selectedFiles.length === 0 &&
+      !message
+    ) {
+      return;
     }
-
-    alert("Photos uploaded!");
-
-    setSelectedFiles([]);
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert("Upload failed");
-
-  }
-
-};
-
-  /* MESSAGE SUBMIT */
-  const submitMessage = async () => {
-
-    if (!message) return;
 
     try {
 
-      await addDoc(
-        collection(db, "guestbook"),
-        {
-          name: name || "Anonymous",
-          message: message,
-          approved: false,
-          createdAt: serverTimestamp(),
-        }
-      );
+      for (const file of selectedFiles) {
 
-      setName("");
+        const storageRef = ref(
+          storage,
+          `photos/${Date.now()}-${file.name}`
+        );
+
+        await uploadBytes(
+          storageRef,
+          file
+        );
+
+        const downloadURL =
+          await getDownloadURL(storageRef);
+
+        await addDoc(
+          collection(db, "photos"),
+          {
+            imageUrl: downloadURL,
+            approved: false,
+            createdAt: serverTimestamp(),
+          }
+        );
+      }
+
+      if (message) {
+
+        await addDoc(
+          collection(db, "guestbook"),
+          {
+            name: name || "Anonymous",
+            message: message,
+            approved: false,
+            createdAt: serverTimestamp(),
+          }
+        );
+
+      }
+
+      alert("Submitted successfully!");
+
+      setSelectedFiles([]);
+      setPreviewImages([]);
       setMessage("");
-
-      alert("Message submitted!");
+      setName("");
 
     } catch (error) {
 
       console.error(error);
 
-    }
+      alert("Upload failed");
 
+    }
   };
 
   return (
 
-    <main
-      className="
-        min-h-screen
-        w-full
-        bg-cover
-        bg-center
-        text-white
-        px-6
-        py-10
-        flex
-        justify-center
-      "
-      style={{
-        backgroundImage:
-          "url('/blank-presentation-stage.jpg')",
-      }}
-    >
+    <main className="min-h-screen bg-black text-white overflow-hidden relative">
 
-      <div className="w-full max-w-md">
+      <div className="upload-background" />
 
-        {/* LOGO */}
-        <div className="flex justify-center mb-8">
+      <div className="upload-overlay" />
+
+      <div className="relative z-10 px-6 py-10 max-w-xl mx-auto">
+
+        <div className="flex flex-col items-center text-center">
 
           <img
-            src="/logo.png"
-            alt="Club Logo"
-            className="w-40 h-40 object-contain"
+            src="/logo7.png"
+            alt="Chatteris Town FC"
+            className="w-44 mb-6"
           />
 
-        </div>
-
-        {/* STRAPLINE */}
-        <div className="flex justify-center mb-10">
-
-          <div
-            className="
-              bg-white/10
-              border
-              border-white/10
-              backdrop-blur-xl
-              rounded-full
-              px-8
-              py-3
-              tracking-[0.35em]
-              text-sm
-              font-semibold
-              text-center
-            "
-          >
-            ONE CLUB • ONE FAMILY • THE LILIES
+          <div className="upload-title">
+            CHATTERIS TOWN FC
           </div>
 
-        </div>
-
-        {/* TITLE */}
-        <div className="text-center mb-10">
-
-          <h1
-            className="
-              text-[4.4rem]
-              font-black
-              uppercase
-              leading-[0.9]
-              tracking-tight
-            "
-          >
+          <div className="upload-title-big">
             SHARE YOUR
-          </h1>
+            <br />
+            MEMORIES
+          </div>
 
-          <div
-            className="
-              text-[4.3rem]
-              font-black
-              italic
-              text-[#80AFFF]
-              leading-none
-              -mt-2
-            "
-          >
-            MEMORIES!
+          <div className="upload-subtitle">
+            Upload your photos and leave a message
+            for Presentation Day
           </div>
 
         </div>
 
-        {/* DESCRIPTION */}
-        <div className="text-center mb-12">
+        <label className="upload-box mt-10">
 
-          <p
-            className="
-              text-[1.2rem]
-              leading-relaxed
-              text-white/90
-              font-medium
-            "
-          >
-            Upload your favourite photos and
-            messages for Presentation Day —
-            and see them featured LIVE on the
-            big screen during the event.
-          </p>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            className="hidden"
+            onChange={handleFiles}
+          />
 
-        </div>
+          <div className="text-6xl mb-4">
+            ⬆
+          </div>
 
-        {/* PHOTO CARD */}
-        <div
-          className="
-            bg-white
-            rounded-[2.5rem]
-            px-8
-            py-10
-            shadow-[0_15px_60px_rgba(0,0,0,0.35)]
-            mb-8
-          "
-        >
+          <div className="text-2xl font-black text-center">
+            TAP TO UPLOAD PHOTOS
+          </div>
 
-          {/* HEADER */}
-          <div className="flex items-center gap-5 mb-8">
+          <div className="text-white/60 mt-3 text-center">
+            You can select multiple images
+          </div>
 
-            <div
-              className="
-                w-20
-                h-20
-                rounded-full
-                bg-[#245DFF]
-                flex
-                items-center
-                justify-center
-                text-white
-                text-4xl
-              "
-            >
-              📷
+          <div className="text-white/40 mt-2 text-sm text-center">
+            JPG, PNG, HEIC
+          </div>
+
+        </label>
+
+        {previewImages.length > 0 && (
+
+          <div className="mt-10">
+
+            <div className="text-2xl font-black mb-5">
+              SELECTED PHOTOS
             </div>
 
-            <div>
+            <div className="grid grid-cols-3 gap-3">
 
-              <div
-                className="
-                  text-[#041B4D]
-                  text-[2.3rem]
-                  font-black
-                  uppercase
-                  leading-none
-                "
-              >
-                Upload Photos
-              </div>
+              {previewImages.map((src, index) => (
 
-              <div
-                className="
-                  text-[#4B5563]
-                  text-lg
-                  mt-2
-                  font-medium
-                "
-              >
-                Share your favourite moments
-                from the season.
-              </div>
+                <div
+                  key={index}
+                  className="relative aspect-square rounded-2xl overflow-hidden border border-white/10"
+                >
+
+                  <img
+                    src={src}
+                    className="w-full h-full object-cover"
+                  />
+
+                </div>
+
+              ))}
 
             </div>
 
           </div>
 
-          {/* FILE INPUT */}
-          <label
-            className="
-              block
-              cursor-pointer
-            "
-          >
+        )}
 
-            <input
-              type="file"
-              multiple
-              className="hidden"
-              onChange={(e) => {
+        <div className="mt-10">
 
-                if (e.target.files) {
-
-                  setSelectedFiles(
-                    Array.from(e.target.files)
-                  );
-
-                }
-
-              }}
-            />
-
-            <div
-              className="
-                rounded-[2rem]
-                bg-[#EDF3FF]
-                py-16
-                px-6
-                text-center
-                border
-                border-[#D7E4FF]
-                transition
-                hover:scale-[1.01]
-              "
-            >
-
-              <div className="text-5xl mb-5">
-                ☁️
-              </div>
-
-              <div
-                className="
-                  text-[#245DFF]
-                  text-[2rem]
-                  font-black
-                  uppercase
-                "
-              >
-                Choose Files
-              </div>
-
-              <div
-                className="
-                  text-[#041B4D]
-                  mt-3
-                  text-lg
-                  font-semibold
-                "
-              >
-                {selectedFiles.length > 0
-                  ? `${selectedFiles.length} files selected`
-                  : "No files chosen"}
-              </div>
-
-            </div>
-
-          </label>
-
-          {/* UPLOAD BUTTON */}
-          <button
-            onClick={uploadPhotos}
-            className="
-              w-full
-              rounded-2xl
-              bg-[#245DFF]
-              hover:bg-[#184FEA]
-              transition
-              text-white
-              font-black
-              uppercase
-              text-xl
-              py-5
-              shadow-lg
-              mt-6
-            "
-          >
-            Upload Photos
-          </button>
-
-        </div>
-
-        {/* MESSAGE CARD */}
-        <div
-          className="
-            bg-white
-            rounded-[2.5rem]
-            px-8
-            py-10
-            shadow-[0_15px_60px_rgba(0,0,0,0.35)]
-          "
-        >
-
-          {/* HEADER */}
-          <div className="flex items-center gap-5 mb-8">
-
-            <div
-              className="
-                w-20
-                h-20
-                rounded-full
-                bg-[#245DFF]
-                flex
-                items-center
-                justify-center
-                text-white
-                text-4xl
-              "
-            >
-              💬
-            </div>
-
-            <div>
-
-              <div
-                className="
-                  text-[#041B4D]
-                  text-[2.3rem]
-                  font-black
-                  uppercase
-                  leading-none
-                "
-              >
-                Send A Message
-              </div>
-
-              <div
-                className="
-                  text-[#4B5563]
-                  text-lg
-                  mt-2
-                  font-medium
-                "
-              >
-                Share your memories and best wishes.
-              </div>
-
-            </div>
-
+          <div className="text-2xl font-black mb-4">
+            YOUR NAME
           </div>
 
-          {/* NAME */}
           <input
             type="text"
-            placeholder="Your Name (Optional)"
             value={name}
             onChange={(e) =>
               setName(e.target.value)
             }
-            className="
-              w-full
-              rounded-2xl
-              bg-[#EDF3FF]
-              border
-              border-[#D7E4FF]
-              p-5
-              text-[#041B4D]
-              text-xl
-              font-semibold
-              outline-none
-              mb-5
-            "
+            placeholder="Your name"
+            className="upload-input"
           />
 
-          {/* MESSAGE */}
+        </div>
+
+        <div className="mt-8">
+
+          <div className="text-2xl font-black mb-4">
+            YOUR MESSAGE
+          </div>
+
           <textarea
-            placeholder="Write your message here..."
             value={message}
             onChange={(e) =>
               setMessage(e.target.value)
             }
-            rows={6}
-            className="
-              w-full
-              rounded-2xl
-              bg-[#EDF3FF]
-              border
-              border-[#D7E4FF]
-              p-5
-              text-[#041B4D]
-              text-lg
-              outline-none
-              resize-none
-              mb-6
-            "
+            placeholder="Write a message..."
+            className="upload-textarea"
           />
-
-          {/* SUBMIT */}
-          <button
-            onClick={submitMessage}
-            className="
-              w-full
-              rounded-2xl
-              bg-[#245DFF]
-              hover:bg-[#184FEA]
-              transition
-              text-white
-              font-black
-              uppercase
-              text-xl
-              py-5
-              shadow-lg
-            "
-          >
-            Send Message
-          </button>
 
         </div>
 
+        <button
+          onClick={handleSubmit}
+          className="upload-button mt-10"
+        >
+          SEND MEMORIES
+        </button>
+
       </div>
 
-    </main>
+      <style jsx>{`
 
+        .upload-background {
+          position: absolute;
+          inset: 0;
+
+          background:
+            url('/background.png');
+
+          background-size: cover;
+          background-position: center;
+
+          filter:
+            brightness(0.22)
+            saturate(1.2);
+
+          transform: scale(1.05);
+        }
+
+        .upload-overlay {
+          position: absolute;
+          inset: 0;
+
+          background:
+
+            radial-gradient(
+              circle at top,
+              rgba(0,120,255,0.22),
+              transparent 45%
+            ),
+
+            linear-gradient(
+              to bottom,
+              rgba(0,0,0,0.15),
+              rgba(0,0,0,0.82)
+            );
+        }
+
+        .upload-title {
+          font-size: 1rem;
+
+          letter-spacing: 0.4em;
+
+          color: rgba(255,255,255,0.92);
+        }
+
+        .upload-title-big {
+          font-size: clamp(3rem, 12vw, 5rem);
+
+          font-weight: 900;
+
+          line-height: 0.9;
+
+          margin-top: 1rem;
+
+          background:
+            linear-gradient(
+              180deg,
+              #ffffff 0%,
+              #d9d9d9 18%,
+              #8d8d8d 52%,
+              #ffffff 78%,
+              #6f6f6f 100%
+            );
+
+          background-clip: text;
+          -webkit-background-clip: text;
+
+          color: transparent;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .upload-subtitle {
+          margin-top: 1.5rem;
+
+          color: rgba(255,255,255,0.72);
+
+          font-size: 1.05rem;
+
+          line-height: 1.6;
+        }
+
+        .upload-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          min-height: 240px;
+
+          border-radius: 2rem;
+
+          border:
+            2px dashed rgba(70,140,220,0.5);
+
+          background:
+            rgba(255,255,255,0.04);
+
+          backdrop-filter: blur(20px);
+
+          cursor: pointer;
+
+          transition: 0.3s ease;
+
+          padding: 2rem;
+        }
+
+        .upload-box:hover {
+          background:
+            rgba(255,255,255,0.08);
+        }
+
+        .upload-input {
+          width: 100%;
+
+          height: 70px;
+
+          border-radius: 1.5rem;
+
+          padding: 0 1.5rem;
+
+          background:
+            rgba(255,255,255,0.05);
+
+          border:
+            1px solid rgba(255,255,255,0.08);
+
+          color: white;
+
+          font-size: 1rem;
+
+          outline: none;
+
+          backdrop-filter: blur(18px);
+        }
+
+        .upload-textarea {
+          width: 100%;
+
+          min-height: 180px;
+
+          border-radius: 2rem;
+
+          padding: 1.5rem;
+
+          background:
+            rgba(255,255,255,0.05);
+
+          border:
+            1px solid rgba(255,255,255,0.08);
+
+          color: white;
+
+          font-size: 1rem;
+
+          outline: none;
+
+          resize: none;
+
+          backdrop-filter: blur(18px);
+        }
+
+        .upload-button {
+          width: 100%;
+
+          height: 74px;
+
+          border-radius: 999px;
+
+          background:
+            linear-gradient(
+              180deg,
+              #3b9cff,
+              #0066ff
+            );
+
+          font-size: 1.2rem;
+
+          font-weight: 900;
+
+          letter-spacing: 0.08em;
+
+          box-shadow:
+            0 0 30px rgba(0,120,255,0.45);
+
+          transition: 0.3s ease;
+        }
+
+        .upload-button:hover {
+          transform: scale(1.02);
+        }
+
+      `}</style>
+
+    </main>
   );
 }
