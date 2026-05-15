@@ -15,6 +15,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
+import imageCompression from "browser-image-compression";
+
 import { db } from "@/lib/firebase";
 
 const storage = getStorage();
@@ -68,10 +70,17 @@ export default function UploadPage() {
           `photos/${Date.now()}-${file.name}`
         );
 
-        await uploadBytes(
-          storageRef,
-          file
-        );
+        const compressedFile =
+  await imageCompression(file, {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  });
+
+await uploadBytes(
+  storageRef,
+  compressedFile
+);
 
         const downloadURL =
           await getDownloadURL(storageRef);
