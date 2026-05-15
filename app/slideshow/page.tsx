@@ -436,7 +436,7 @@ const isQuietMoment =
       background: `
         radial-gradient(
           circle at center,
-          rgba(0,70,160,0.04) 0%,
+          rgba(0,120,255,0.09) 0%,
           rgba(0,0,0,0.08) 52%,
           rgba(0,0,0,0.52) 100%
         )
@@ -450,13 +450,34 @@ const isQuietMoment =
 
       <div className="stage-haze" />
 
-      <div
-  className={`presentation-particles ${
-    isQuietMoment
-      ? "opacity-[0.04]"
-      : ""
-  }`}
-/>
+      <div className="floating-crests">
+
+  <img
+    src="/logo 8.png"
+    className="crest crest-1"
+  />
+
+  <img
+    src="/logo 9.png"
+    className="crest crest-2"
+  />
+
+  <img
+    src="/logo 8.png"
+    className="crest crest-3"
+  />
+
+  <img
+    src="/logo 9.png"
+    className="crest crest-4"
+  />
+
+  <img
+    src="/logo 8.png"
+    className="crest crest-5"
+  />
+
+</div>
 
 <div
   className={`confetti-burst ${
@@ -608,100 +629,120 @@ const isQuietMoment =
 
         ) : currentPhoto ? (
 
-          isFullBleed ? (
+  isFullBleed ? (
 
-  <div
-    key={currentPhoto.id}
-    className={`absolute inset-0 transition-all duration-700 ${
-      fade
-        ? "opacity-100 scale-100"
-        : "opacity-0 scale-[1.06]"
-    }`}
-  >
+    <div
+      key={currentPhoto.id}
+      className={`absolute inset-0 transition-all duration-700 ${
+        fade
+          ? "opacity-100 scale-100"
+          : "opacity-0 scale-[1.06]"
+      }`}
+    >
 
-    <div className="fullbleed-backdrop" />
+      <div className="fullbleed-backdrop" />
 
-    <img
-      src={currentPhoto.imageUrl}
-      alt="Presentation photo"
-      className="w-full h-full object-contain animate-fullBleedMove"
-    />
+      <img
+        src={currentPhoto.imageUrl}
+        alt="Presentation photo"
+        className="w-full h-full object-contain animate-fullBleedMove"
+      />
 
-    <div className="absolute inset-0 bg-black/35" />
+      <div className="absolute inset-0 bg-black/35" />
 
-  </div>
+    </div>
 
-) : ( 
+  ) : (
 
-          <div
-            key={currentPhoto.id}
-            className={`${
-              fade
-                ? "animate-polaroidSlam opacity-100"
-                : "opacity-0"
-            }`}
-          >
+    <div
+      key={currentPhoto.id}
+      className={`${
+        fade
+          ? "animate-polaroidSlam opacity-100"
+          : "opacity-0"
+      }`}
+    >
 
-            <div
-              className={`inline-flex flex-col items-center bg-white p-5 pb-16 rounded-[0.8rem]
+      <div
+        className={`
+          relative
+          inline-flex
+          flex-col
+          items-center
+          rounded-[2.2rem]
+          overflow-hidden
+          border
+          border-white/10
+          bg-white/8
+          backdrop-blur-2xl
+          shadow-[0_0_80px_rgba(0,0,0,0.45)]
+          ${
+            isMegaMoment
+              ? "scale-[1.16] rotate-[2deg]"
+              : isHeroPhoto
+              ? "scale-[1.06] rotate-[1deg]"
+              : ""
+          }
+          ${polaroidStyle}
+          ${
+            fade
+              ? "animate-polaroidSlam opacity-100"
+              : "opacity-0"
+          }
+        `}
+      >
+
+        <div className="glass-frame-glow" />
+
+        <div className="relative overflow-hidden rounded-t-[1.7rem]">
+
+          <img
+            src={currentPhoto.imageUrl}
+            alt="Presentation photo"
+            className={`
+              block
+              max-w-[78vw]
+              max-h-[72vh]
+              object-contain
               ${
-                isMegaMoment
-                  ? "scale-[1.18] rotate-[4deg] shadow-[0_40px_calc(180px*var(--audio-reactivity,1))_rgba(70,140,220,0.7)]"
-                  : isHeroPhoto
-                  ? "scale-[1.08] rotate-[2deg] shadow-[0_30px_calc(120px*var(--audio-reactivity,1))_rgba(70,140,220,0.45)]"
-                  : "shadow-[0_18px_calc(70px*var(--audio-reactivity,1))_rgba(0,0,0,0.5)]"
+                isQuietMoment
+                  ? ""
+                  : "animate-kenburns"
               }
-              ${polaroidStyle}`}
-            >
+            `}
+          />
 
-              <div className="relative overflow-hidden bg-[#f5f5f5] max-w-[74vw] max-h-[58vh] rounded-[0.3rem]">
+          <div className="photo-finish" />
 
-                <img
-                  src={currentPhoto.imageUrl}
-                  alt="Presentation photo"
-                  className={`block max-w-[74vw] max-h-[58vh] object-contain rounded-[0.25rem]
-${
-  isQuietMoment
-    ? ""
-    : "animate-kenburns"
-}`}
-                />
+        </div>
 
-              <div className="photo-finish" />
+        <div className="glass-footer">
 
-              </div>
+          <img
+            src="/logo 8.png"
+            alt="Club logo"
+            className="glass-footer-logo"
+          />
 
-              <div className="mt-7 flex items-center justify-center gap-5">
-
-                <img
-                  src="/logo.png"
-                  alt="Club logo"
-                  className="w-14 h-14 object-contain opacity-90"
-                />
-
-                <div
-                  style={{
-                    fontFamily:
-                      "var(--font-great-vibes)",
-                  }}
-                  className="text-[#222] text-[3.2rem] leading-none"
-                >
-                  Memories
-                </div>
-
-                <img
-                  src="/logo.png"
-                  alt="Club logo"
-                  className="w-14 h-14 object-contain opacity-90"
-                />
-
-              </div>
-            </div>
+          <div className="glass-footer-text">
+            Memories
           </div>
 
-                )
+          <img
+            src="/logo 9.png"
+            alt="Club logo"
+            className="glass-footer-logo"
+          />
 
-        ) : null}
+        </div>
+
+      </div>
+
+    </div>
+
+  )
+
+) : null}
       </div>
 
 )}
@@ -732,9 +773,9 @@ ${
 
   <div className="absolute bottom-8 right-8 z-30">
 
-        <div className="bg-white/78 backdrop-blur-xl rounded-[2rem] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.22)] border border-white/40">
+        <div className="bg-[#0b1630]/72 backdrop-blur-2xl rounded-[2rem] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.22)] border border-[#5eb6ff]/25">
 
-          <div className="text-center text-[#0A1E3D] font-black text-lg tracking-wide leading-tight mb-4">
+          <div className="text-center font-black text-lg tracking-wide leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-[#d6d6d6] to-[#8f8f8f]">
             ADD PHOTOS
             <br />
             & MESSAGES
@@ -743,7 +784,7 @@ ${
           <img
             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
             alt="QR Code"
-            className="rounded-xl w-[180px] h-[180px]"
+            className="rounded-xl w-[180px] h-[180px] border border-white/10 shadow-[0_0_24px_rgba(255,255,255,0.08)]"
           />
 
         </div>
@@ -806,6 +847,273 @@ ${
   z-index: -1;
 }
 
+.glass-frame-glow {
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.12),
+      rgba(255,255,255,0.02)
+    );
+
+  pointer-events: none;
+
+  mix-blend-mode: screen;
+}
+
+.glass-footer {
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1.2rem;
+
+  padding:
+    1.2rem
+    1.5rem;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(8,16,32,0.88),
+      rgba(8,16,32,0.42)
+    );
+
+  border-top:
+    1px solid rgba(255,255,255,0.08);
+
+  backdrop-filter: blur(20px);
+}
+
+.glass-footer-logo {
+
+  width: 54px;
+  height: 54px;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(0,120,255,0.24)
+    );
+}
+
+.glass-footer-text {
+
+  font-family:
+    var(--font-great-vibes);
+
+  font-size: 2.4rem;
+
+  line-height: 1;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #d9d9d9 30%,
+      #8f8f8f 100%
+    );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(255,255,255,0.08)
+    )
+    drop-shadow(
+      0 0 22px rgba(70,140,220,0.16)
+    );
+}
+
+.floating-crests {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  z-index: 14;
+
+  pointer-events: none;
+}
+
+.crest {
+  position: absolute;
+
+  object-fit: contain;
+
+  opacity: 0.42;
+
+  mix-blend-mode: plus-lighter;
+
+  filter:
+  hue-rotate(-12deg)
+  saturate(2.2)
+  brightness(1.35)
+
+  drop-shadow(
+    0 0 10px rgba(60,170,255,0.95)
+  )
+
+  drop-shadow(
+    0 0 26px rgba(40,140,255,0.88)
+  )
+
+  drop-shadow(
+    0 0 60px rgba(0,120,255,0.65)
+  )
+
+  drop-shadow(
+    0 0 110px rgba(0,120,255,0.35)
+  );
+}
+
+.crest-1 {
+  width: 170px;
+
+  top: 8%;
+  left: -10%;
+
+  animation:
+    driftOne 42s linear infinite;
+}
+
+.crest-2 {
+  width: 130px;
+
+  top: 72%;
+  left: -12%;
+
+  animation:
+    driftTwo 42s linear infinite;
+}
+
+.crest-3 {
+  width: 210px;
+
+  top: 38%;
+  left: 105%;
+
+  animation:
+    driftThree 42s linear infinite;
+}
+
+.crest-4 {
+  width: 150px;
+
+  top: 82%;
+  left: 108%;
+
+  animation:
+    driftFour 42s linear infinite;
+}
+
+.crest-5 {
+  width: 120px;
+
+  top: 18%;
+  left: 50%;
+
+  animation:
+    driftFive 42s linear infinite;
+}
+
+@keyframes driftOne {
+
+  0% {
+    transform:
+      translate(0px, 0px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(72vw, 12vh)
+      rotate(12deg)
+      scale(1.12);
+  }
+}
+
+@keyframes driftTwo {
+
+  0% {
+    transform:
+      translate(0px, 0px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(88vw, -22vh)
+      rotate(-16deg)
+      scale(1.06);
+  }
+}
+
+@keyframes driftThree {
+
+  0% {
+    transform:
+      translate(0px, 0px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-92vw, 16vh)
+      rotate(18deg)
+      scale(1.14);
+  }
+}
+
+@keyframes driftFour {
+
+  0% {
+    transform:
+      translate(0px, 0px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-74vw, -28vh)
+      rotate(-12deg)
+      scale(1.1);
+  }
+}
+
+@keyframes driftFive {
+
+  0% {
+    transform:
+      translate(0px, 0px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-32vw, 42vh)
+      rotate(10deg)
+      scale(1.08);
+  }
+}
+
 .title-logos {
   display: flex;
   align-items: center;
@@ -832,49 +1140,56 @@ ${
 }
 
 .title-main {
+
   font-size:
-    clamp(3rem, 6vw, 6rem);
+    clamp(2.8rem, 5.2vw, 5.6rem);
 
-  font-weight: 900;
+  font-family: "Varsity", sans-serif;
 
-  letter-spacing: 0.08em;
+  font-weight: normal;
+
+  letter-spacing: 0.05em;
 
   text-transform: uppercase;
 
   text-align: center;
 
+  line-height: 0.95;
+
   background:
   linear-gradient(
     180deg,
     #ffffff 0%,
-    #fdfdfd 10%,
-    #d6d6d6 18%,
-    #7b7b7b 32%,
-    #f8f8f8 46%,
-    #ffffff 52%,
-    #8e8e8e 66%,
-    #dcdcdc 78%,
+    #f8f8f8 10%,
+    #cfcfcf 22%,
+    #7e7e7e 38%,
+    #f5f5f5 52%,
+    #ffffff 60%,
+    #8a8a8a 78%,
+    #dcdcdc 90%,
     #ffffff 100%
   );
 
-  background-size: 100% 300%;
+background-size: 100% 240%;
 
-  background-clip: text;
-  -webkit-background-clip: text;
+background-clip: text;
+-webkit-background-clip: text;
 
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+color: transparent;
+-webkit-text-fill-color: transparent;
+
+  text-shadow:
+  0 3px 0 rgba(0,0,0,0.35),
+  0 0 16px rgba(255,255,255,0.12),
+  0 0 40px rgba(0,120,255,0.22);
 
   filter:
     drop-shadow(
-      0 0 14px rgba(255,255,255,0.14)
-    )
-    drop-shadow(
-      0 0 40px rgba(70,140,220,0.22)
+      0 0 24px rgba(0,120,255,0.16)
     );
 
   animation:
-    metallicShift 4.5s ease-in-out infinite;
+    titleFloat 7s ease-in-out infinite;
 }
 
 .title-sub {
@@ -882,11 +1197,11 @@ ${
     var(--font-great-vibes);
 
   font-size:
-    clamp(2rem, 3vw, 3.8rem);
+    clamp(2.6rem, 4vw, 4.8rem);
 
   text-align: center;
 
-  margin-top: -0.5rem;
+  margin-top: -0.2rem;
 
   background:
     linear-gradient(
@@ -1133,36 +1448,52 @@ ${
 }
 
 .corner-brand-logo {
-  width: 82px;
+  width: 112px;
+
+  height: 112px;
 
   object-fit: contain;
 
   filter:
-    drop-shadow(0 0 10px rgba(255,255,255,0.12))
-    drop-shadow(0 0 26px rgba(70,140,220,0.22));
+    drop-shadow(0 0 12px rgba(255,255,255,0.12))
+    drop-shadow(0 0 34px rgba(70,140,220,0.24));
+}
+
+.corner-brand-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .corner-brand-main {
-  font-size: 3rem;
 
-  font-weight: 900;
+  font-family: "Varsity", sans-serif;
+
+  font-size: 2.2rem;
+
+  font-weight: normal;
 
   letter-spacing: 0.04em;
 
-  line-height: 0.9;
+  line-height: 0.92;
 
-  background:
+  text-transform: uppercase;
+
+   background:
     linear-gradient(
       180deg,
       #ffffff 0%,
-      #f5f5f5 12%,
-      #cfcfcf 26%,
-      #8a8a8a 48%,
-      #f8f8f8 68%,
-      #7a7a7a 100%
+      #f8f8f8 10%,
+      #cfcfcf 22%,
+      #7e7e7e 38%,
+      #f5f5f5 52%,
+      #ffffff 60%,
+      #8a8a8a 78%,
+      #dcdcdc 90%,
+      #ffffff 100%
     );
 
-  background-size: 100% 220%;
+  background-size: 100% 240%;
 
   background-clip: text;
   -webkit-background-clip: text;
@@ -1170,38 +1501,41 @@ ${
   color: transparent;
   -webkit-text-fill-color: transparent;
 
+  text-shadow:
+    0 2px 0 rgba(0,0,0,0.35),
+    0 0 12px rgba(255,255,255,0.08),
+    0 0 26px rgba(0,120,255,0.14);
+
   filter:
     drop-shadow(
-      0 0 12px rgba(255,255,255,0.08)
-    )
-    drop-shadow(
-      0 0 28px rgba(70,140,220,0.16)
+      0 0 18px rgba(0,120,255,0.12)
     );
-
-  text-shadow:
-    0 0 24px rgba(255,255,255,0.05);
-
-  animation:
-    metallicShift 7s linear infinite;
 }
 
 .corner-brand-sub {
+
   font-family:
     var(--font-great-vibes);
 
-  font-size: 2.4rem;
+  font-size: 2.1rem;
 
-  margin-top: -0.3rem;
+  margin-top: -0.1rem;
 
   background:
     linear-gradient(
       180deg,
       #ffffff 0%,
+      #fefefe 8%,
       #d9d9d9 18%,
-      #8d8d8d 52%,
-      #ffffff 78%,
-      #6f6f6f 100%
+      #7e7e7e 34%,
+      #f8f8f8 48%,
+      #ffffff 56%,
+      #8f8f8f 70%,
+      #d6d6d6 84%,
+      #ffffff 100%
     );
+
+  background-size: 100% 300%;
 
   background-clip: text;
   -webkit-background-clip: text;
@@ -1240,7 +1574,7 @@ ${
 
   radial-gradient(
     ellipse at 72% 82%,
-    rgba(0,110,255,0.34),
+    rgba(0,110,255,0.18),
     transparent 44%
   ),
 
@@ -1344,39 +1678,7 @@ ${
 
   filter: blur(60px);
 
-  opacity: 0.8;
-
-  pointer-events: none;
-}
-
-.presentation-particles {
-  position: absolute;
-  inset: 0;
-
-  z-index: 2;
-
-  background-image:
-
-    radial-gradient(
-      rgba(255,255,255,0.18) 1px,
-      transparent 1px
-    ),
-
-    radial-gradient(
-      rgba(70,140,220,0.12) 1px,
-      transparent 1px
-    );
-
-  background-size:
-    320px 320px,
-    240px 240px;
-
-  opacity: 0.12;
-
-  mix-blend-mode: screen;
-
-  animation:
-    particlesFloat 28s linear infinite;
+  opacity: 0.42;
 
   pointer-events: none;
 }
@@ -1730,16 +2032,6 @@ ${
   100% {
     transform: scale(1);
     opacity: 0.45;
-  }
-}
-
-@keyframes particlesFloat {
-  0% {
-    transform: translateY(0px);
-  }
-
-  100% {
-    transform: translateY(-120px);
   }
 }
 
