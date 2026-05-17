@@ -336,7 +336,7 @@ useEffect(() => {
 
       flashTimeoutRef.current = setTimeout(() => {
         setFlash(false);
-      }, 100);
+      }, 1200);
 
       setFade(false);
 
@@ -428,10 +428,10 @@ useEffect(() => {
   ]);
 
 const isHeroPhoto =
-  currentPhotoIndex % 5 === 0;
+  currentPhotoIndex % 3 === 0;
 
 const isMegaMoment =
-  currentPhotoIndex % 11 === 0;
+  currentPhotoIndex % 7 === 0;
 
 const isFullBleed =
   currentPhotoIndex % 17 === 0;
