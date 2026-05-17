@@ -445,6 +445,13 @@ const isQuietMoment =
   const currentMessage =
     messages[currentMessageIndex];
 
+  const memoryCount =
+    photos.length + messages.length;
+
+  const showMilestone =
+    memoryCount > 0 &&
+    memoryCount % 25 === 0;
+
   const polaroidStyle = useMemo(() => {
     const styles = [
   "rotate-[-1deg] translate-y-2 -translate-x-4",
@@ -822,6 +829,22 @@ const isQuietMoment =
 
 )}
 
+{showMilestone && !showMessages && (
+
+  <div className="milestone-popup">
+
+    <div className="milestone-number">
+      {memoryCount}
+    </div>
+  
+    <div className="milestone-text">
+      MEMORIES SHARED 💙 
+    </div>
+
+  </div>
+
+)}
+
 {!showTitle && (
 <>
   <div className="corner-brand">
@@ -849,6 +872,14 @@ const isQuietMoment =
   <div className="absolute bottom-8 right-8 z-30">
 
         <div className="bg-[#0b1630]/72 backdrop-blur-2xl rounded-[2rem] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.22)] border border-[#5eb6ff]/25">
+
+          <div className="live-indicator">
+
+          <div className="live-dot" />
+
+          LIVE PHOTOS & MESSAGES
+
+</div>
 
           <div className="text-center font-black text-lg tracking-wide leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-[#d6d6d6] to-[#8f8f8f]">
             ADD PHOTOS
@@ -1822,6 +1853,60 @@ color: transparent;
   opacity: 0;
 }
 
+.live-indicator {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.7rem;
+
+  margin-bottom: 1rem;
+
+  font-size: 0.9rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+
+  color:
+    rgba(255,255,255,0.85);
+}
+
+.live-dot {
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 999px;
+
+  background: #42a5ff;
+
+  box-shadow:
+    0 0 14px rgba(0,120,255,0.9);
+
+  animation:
+    livePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.35);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .confetti-active::before {
   animation:
     confettiLeft 1400ms ease-out forwards;
@@ -2016,6 +2101,85 @@ color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.milestone-popup {
+
+  position: absolute;
+  
+  top: 2.5rem;
+  left: 50%;
+  
+  transform: translateX(-50%);
+  
+  z-index: 80;
+  
+  padding:
+    1rem 2rem;
+    
+  border-radius: 999px;
+  
+  background:
+    rgba(8, 16,32,0.72);
+    
+  backdrop-filter: blur(20px);
+  
+  border:
+    1px solid rgba(120,190,255,0.22)
+    
+  box-shadow:
+    0 0 40px rgba(0,120,255,0.18)
+    
+  animation:
+    milestoneFloat 4s ease-in-out infinite;
+}
+
+.milestone-number {
+
+  font-size: 2.4rem;
+
+  font-weight: 900;
+
+  line-height: 1;
+
+  text-align: center;
+
+  color: white;
+}
+
+.milestone-text {
+
+  margin-top: 0.25rem;
+
+  font-size: 0.9rem;
+
+  letter-spacing: 0.22em;
+
+  text-align: center;
+
+  color:
+    rgba(255,255,255,0.7);
+}
+
+@keyframes milestoneFloat {
+
+  0% {
+    transform:
+      translateX(-50%)
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      translateX(-50%)
+      translateY(-4px);
+  }
+
+  100% {
+    transform:
+      translateX(-50%)
+      translateY(0px);
+  }
 }
 
 @keyframes ambientDrift {
