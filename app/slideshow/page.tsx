@@ -945,6 +945,8 @@ const isQuietMoment =
 
   width: 100%;
 
+  overflow: visible;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -989,6 +991,8 @@ const isQuietMoment =
   font-size: 2.4rem;
 
   line-height: 1;
+
+  padding-left: 0.2rem;
 
   background:
     linear-gradient(
