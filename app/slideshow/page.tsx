@@ -507,7 +507,7 @@ const isQuietMoment =
   />
 
   <img
-    src="/logo 9.png"
+    src="/logo9.png"
     className="crest crest-2"
   />
 
@@ -517,7 +517,7 @@ const isQuietMoment =
   />
 
   <img
-    src="/logo 9.png"
+    src="/logo9.png"
     className="crest crest-4"
   />
 
@@ -783,7 +783,7 @@ const isQuietMoment =
           </div>
 
           <img
-            src="/logo 9.png"
+            src="/logo9.png"
             alt="Club logo"
             className="glass-footer-logo"
           />
