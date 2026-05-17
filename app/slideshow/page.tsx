@@ -991,8 +991,11 @@ const isQuietMoment =
 
   line-height: 1.15;
 
-  padding-left: 0.35rem;
+  padding-left: 0.6rem;
+  padding-right: 0.2rem;
   display: inline-block;
+
+  transform: translateX(2px);
 
   background:
     linear-gradient(
