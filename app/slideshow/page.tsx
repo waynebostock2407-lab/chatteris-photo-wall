@@ -777,7 +777,7 @@ const isQuietMoment =
             className="glass-footer-logo"
           />
 
-          <div className="glass-footer-text">
+          <div className="glass-footer-text pl-3">
             Memories
           </div>
 
@@ -989,9 +989,10 @@ const isQuietMoment =
 
   font-size: 2.4rem;
 
-  line-height: 1;
+  line-height: 1.15;
 
-  padding-left: 0.2rem;
+  padding-left: 0.35rem;
+  display: inline-block;
 
   background:
     linear-gradient(
