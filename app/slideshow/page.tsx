@@ -336,7 +336,7 @@ useEffect(() => {
 
       flashTimeoutRef.current = setTimeout(() => {
         setFlash(false);
-      }, 1200);
+      }, 140);
 
       setFade(false);
 
@@ -1782,24 +1782,24 @@ color: transparent;
   background-image:
 
     radial-gradient(
-      rgba(255,255,255,0.95) 2px,
-      transparent 2px
+      rgba(255,255,255,1) 5px,
+      transparent 5px
     ),
 
     radial-gradient(
-      rgba(120,190,255,0.9) 2px,
-      transparent 2px
+      rgba(120,190,255,1) 6px,
+      transparent 6px
     ),
 
     radial-gradient(
-      rgba(210,230,255,0.75) 1.5px,
-      transparent 1.5px
+      rgba(210,230,255,0.95) 4px,
+      transparent 4px
     );
 
   background-size:
-    140px 140px,
-    180px 180px,
-    110px 110px;
+    80px 80px,
+    110px 110px,
+    65px 65px;
 
   mix-blend-mode: screen;
 
