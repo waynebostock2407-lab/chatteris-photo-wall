@@ -881,12 +881,6 @@ const isQuietMoment =
 
 </div>
 
-          <div className="text-center font-black text-lg tracking-wide leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-[#d6d6d6] to-[#8f8f8f]">
-            ADD PHOTOS
-            <br />
-            & MESSAGES
-          </div>
-
           <img
             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://chatteris-photo-wall.vercel.app"
             alt="QR Code"
