@@ -724,7 +724,6 @@ const isQuietMoment =
           flex-col
           items-center
           rounded-[2.2rem]
-          overflow-hidden
           border
           border-white/10
           bg-white/8
