@@ -54,6 +54,12 @@ export default function SlideshowPage() {
   const [showTitle, setShowTitle] =
     useState(true);
 
+  const [calmMode, setCalmMode] =
+    useState(false);
+
+  const [showThankYou, setShowThankYou] =
+    useState(false);
+
   const loadedImages = useRef(new Set<string>());
 
   const photoIntervalRef =
@@ -119,6 +125,48 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [showTitle]);
+
+  /* KEYBOARD CONTROLS */
+
+useEffect(() => {
+
+  const handleKeyDown = (
+    e: KeyboardEvent
+  ) => {
+
+    if (e.key.toLowerCase() === "f") {
+      toggleFullscreen();
+    }
+
+    if (e.key.toLowerCase() === "c") {
+      setCalmMode((prev) => !prev);
+    }
+
+    if (e.key.toLowerCase() === "t") {
+
+      setShowThankYou(true);
+
+      setTimeout(() => {
+        setShowThankYou(false);
+      }, 9000);
+
+    }
+
+  };
+
+  window.addEventListener(
+    "keydown",
+    handleKeyDown
+  );
+
+  return () => {
+    window.removeEventListener(
+      "keydown",
+      handleKeyDown
+    );
+  };
+
+}, []);
 
   /* AUDIO REACTIVITY */
 
@@ -303,6 +351,7 @@ useEffect(() => {
 }
 
       const shouldShowMessage =
+        !calmMode &&
         messages.length > 0 &&
         Math.random() < 0.28;
 
@@ -481,9 +530,11 @@ const isQuietMoment =
 
 <div
   className={`confetti-burst ${
-    flash &&
-    (isMegaMoment || isHeroPhoto) &&
-    !isQuietMoment
+    calmMode
+      ? ""
+      : flash &&
+        (isMegaMoment || isHeroPhoto) &&
+        !isQuietMoment
       ? "confetti-active"
       : ""
   }`}
@@ -491,6 +542,9 @@ const isQuietMoment =
 
 <div
   className={`liquid-lights ${
+    calmMode
+      ? "opacity-[0.12]"
+      :
     isQuietMoment
       ? "opacity-[0.35]"
       : ""
@@ -744,6 +798,28 @@ const isQuietMoment =
 
 ) : null}
       </div>
+
+)}
+
+{showThankYou && (
+
+  <div className="thank-you-overlay">
+
+    <div className="thank-you-inner">
+
+      <div className="thank-you-title">
+        THANK YOU
+      </div>
+
+      <div className="thank-you-text">
+        Coaches · Volunteers · Parents
+        <br />
+        Players · Supporters
+      </div>
+
+    </div>
+
+  </div>
 
 )}
 
@@ -2165,6 +2241,98 @@ color: transparent;
         .animate-kenburns {
           animation: kenburns 12s ease-in-out forwards;
         }
+
+      .thank-you-overlay {
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 120;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(0,80,180,0.18),
+      rgba(0,0,0,0.82)
+    );
+
+  backdrop-filter: blur(20px);
+  
+  animation:
+    thankYouFade 9s ease forwards;
+}
+
+.thank-you-inner {
+  text-align: center;
+}
+
+.thank-you-title {
+
+  font-family: "Varsity", sans-serif;
+
+  font-size:
+    clamp(4rem, 9vw, 8rem);
+
+  letter-spacing: 0.08em;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #9ed6ff 45%,
+      #ffffff 100%
+    );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  filter:
+    drop-shadow(
+      0 0 28px rgba(0,120,255,0.35)
+    );
+}
+
+.thank-you-text {
+
+margin-top: 2rem;
+
+  font-size:
+    clamp(1.5rem, 3vw, 2.6rem);
+
+  line-height: 1.6;
+
+  color:
+    rgba(255,255,255,0.92);
+
+  text-shadow:
+    0 0 20px rgba(255,255,255,0.12);
+}
+
+@keyframes thankYouFade {
+
+  0% {
+    opacity: 0;
+  }
+
+   12% {
+    opacity: 1;
+  }
+
+  88% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
 
       `}</style>
     </main>
