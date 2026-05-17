@@ -984,6 +984,18 @@ const isQuietMoment =
 
 .glass-footer-text {
 
+  display: inline-block;
+
+  contain: paint;
+
+  will-change: transform;
+
+  backface-visibility: hidden;
+
+  transform:
+    translateX(2px)
+    translateY(0);
+
   font-family:
     var(--font-great-vibes);
 
@@ -993,9 +1005,6 @@ const isQuietMoment =
 
   padding-left: 0.6rem;
   padding-right: 0.2rem;
-  display: inline-block;
-
-  transform: translateX(2px);
 
   background:
     linear-gradient(
