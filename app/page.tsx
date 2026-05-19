@@ -165,7 +165,7 @@ await uploadBytes(
         </div>
 
         <div className="section-label">
-          PHOTOS
+          SHARE PHOTOS
         </div>
 
         <label className="upload-box mt-10">
@@ -252,10 +252,14 @@ await uploadBytes(
         )}
 
         <div className="section-label">
-          MESSAGE FOR VICKY
+          MESSAGES FOR VICKY
         </div>
 
-        <div className="mt-10">
+        <div className="message-helper">
+          Leave a thank you message, memory or good luck message 💙
+        </div>
+
+        <div className="mt-16">
 
           <div className="text-2xl font-black mb-4">
             YOUR NAME
@@ -284,7 +288,7 @@ await uploadBytes(
             onChange={(e) =>
               setMessage(e.target.value)
             }
-            placeholder="Share a memory, thank you message or good luck message for Vicky"
+            placeholder="Write your message here..."
             className="upload-textarea"
           />
 
@@ -316,6 +320,21 @@ await uploadBytes(
             saturate(1.2);
 
           transform: scale(1.05);
+        }
+
+        .message-helper {
+          
+          margin-top: -0.5rem;
+          margin-bottom: 2rem;
+          
+          text-align: center;
+          
+          color: 
+            rgba(255,255,255,0.68);
+            
+          font-size: 1rem;
+          
+          line-height: 1.5;
         }
 
         .upload-overlay {
@@ -403,18 +422,30 @@ await uploadBytes(
 
 .section-label {
   
-  margin-bottom: 1rem;
+  margin-bottom: 1.4rem;
   
-  font-size: 0.95rem;
+  font-size:
+    clamp(1.4rem, 3vw, 2rem);
   
   font-weight: 900;
   
-  letter spacing: 0.22rem;
+  letter spacing: 0.12rem;
   
-  color:
-    rgba(120,190,255,0.9);
+  color: white;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 18px rgba(0,120,255,0.35);
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #9ed6ff 100%)
     
-  text-transform: uppercase;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .upload-heading-top {
