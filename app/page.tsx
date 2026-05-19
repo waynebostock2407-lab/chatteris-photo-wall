@@ -159,10 +159,13 @@ await uploadBytes(
 </div>
 
           <div className="upload-subtitle">
-            Upload your photos and leave a message
-            for Presentation Day
+            Share your favourite photos or leave a special message for Vicky 💙
           </div>
 
+        </div>
+
+        <div className="section-label">
+          PHOTOS
         </div>
 
         <label className="upload-box mt-10">
@@ -248,6 +251,10 @@ await uploadBytes(
 
         )}
 
+        <div className="section-label">
+          MESSAGE FOR VICKY
+        </div>
+
         <div className="mt-10">
 
           <div className="text-2xl font-black mb-4">
@@ -269,7 +276,7 @@ await uploadBytes(
         <div className="mt-8">
 
           <div className="text-2xl font-black mb-4">
-            YOUR MESSAGE
+            LEAVE A MESSAGE FOR VICKY
           </div>
 
           <textarea
@@ -277,7 +284,7 @@ await uploadBytes(
             onChange={(e) =>
               setMessage(e.target.value)
             }
-            placeholder="Write a message or share a memory"
+            placeholder="Share a memory, thank you message or good luck message for Vicky"
             className="upload-textarea"
           />
 
@@ -392,6 +399,22 @@ await uploadBytes(
   margin-top: 2rem;
 
   text-align: center;
+}
+
+.section-label {
+  
+  margin-bottom: 1rem;
+  
+  font-size: 0.95rem;
+  
+  font-weight: 900;
+  
+  letter spacing: 0.22rem;
+  
+  color:
+    rgba(120,190,255,0.9);
+    
+  text-transform: uppercase;
 }
 
 .upload-heading-top {
