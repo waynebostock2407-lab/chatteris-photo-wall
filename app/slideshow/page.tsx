@@ -7,6 +7,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  doc,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
@@ -29,6 +30,25 @@ interface GuestbookMessage {
 const PHOTO_FADE_DURATION = 650;
 
 export default function SlideshowPage() {
+
+  const [chairTeam, setChairTeam] =
+  useState<string[]>([]);
+
+const [viceChairTeam, setViceChairTeam] =
+  useState<string[]>([]);
+
+const [showCupDraw, setShowCupDraw] =
+  useState(false);
+
+const [remainingCoaches, setRemainingCoaches] =
+  useState<string[]>([]);
+
+const [currentReveal, setCurrentReveal] =
+  useState("");
+
+ const [isRevealAnimating, setIsRevealAnimating] =
+  useState(false); 
+
   const [photos, setPhotos] = useState<Photo[]>([]);
 
   const [messages, setMessages] = useState<
@@ -144,13 +164,17 @@ useEffect(() => {
 
     if (e.key.toLowerCase() === "t") {
 
-      setShowThankYou(true);
+  setShowThankYou(true);
 
-      setTimeout(() => {
-        setShowThankYou(false);
-      }, 9000);
+  setTimeout(() => {
+    setShowThankYou(false);
+  }, 9000);
 
-    }
+}
+
+if (e.key.toLowerCase() === "d") {
+  setShowCupDraw((prev) => !prev);
+}
 
   };
 
@@ -298,6 +322,58 @@ useEffect(() => {
 
     return () => unsubscribe();
   }, []);
+
+ /* FIRESTORE - CUP DRAW */
+
+useEffect(() => {
+
+  const unsubscribeDraw =
+    onSnapshot(
+      doc(db, "eventControl", "cupDraw"),
+      (snapshot) => {
+
+        if (snapshot.exists()) {
+
+          const data = snapshot.data();
+
+          setChairTeam(
+            data.chairTeam || []
+          );
+
+          setViceChairTeam(
+            data.viceChairTeam || []
+          );
+
+          setRemainingCoaches(
+            data.remainingCoaches || []
+          );
+
+          const revealName =
+  data.currentReveal || "";
+
+if (
+  revealName &&
+  revealName !== currentReveal
+) {
+
+  setIsRevealAnimating(true);
+
+  setTimeout(() => {
+    setIsRevealAnimating(false);
+  }, 850);
+
+}
+
+setCurrentReveal(revealName);
+
+        }
+
+      }
+    );
+
+  return () => unsubscribeDraw();
+
+}, []);
 
   /* PRELOAD IMAGES */
 
@@ -466,6 +542,774 @@ const isQuietMoment =
       currentPhotoIndex % styles.length
     ];
   }, [currentPhotoIndex]);
+
+if (showCupDraw) {
+
+  return (
+
+    <main className="cup-draw-screen">
+
+      <img
+  src="/logo.png"
+  className="cup-logo-left"
+  alt="Logo Left"
+/>
+
+<img
+  src="/logo 4.png"
+  className="cup-logo-right"
+  alt="Logo Right"
+/>
+
+      <div className="cup-background-glow" />
+
+      <div className="cup-particles" />
+
+      <div className="cup-header">
+
+        <div className="cup-main-title">
+          CHAIR vs VICE CHAIR
+
+          {currentReveal && (
+
+  <div className="cup-header-reveal">
+
+    {isRevealAnimating && (
+
+      <div className="cup-ball-stage">
+
+        <img
+          src="/logo 2.png"
+          className="cup-ball-left"
+        />
+
+        <img
+          src="/logo 3.png"
+          className="cup-ball-right"
+        />
+
+      </div>
+
+    )}
+
+    <div className="cup-reveal-name">
+  {currentReveal}
+</div>
+
+  </div>
+
+)}
+        </div>
+
+      </div>
+
+      <div className="cup-layout">
+
+        <div className="cup-team-panel">
+
+          <div className="cup-team-heading">
+            CHAIR
+          </div>
+
+          <div className="cup-player-list">
+
+            {chairTeam.map((coach) => (
+
+              <div
+                key={coach}
+                className="cup-player-card"
+              >
+                {coach}
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        <div className="cup-centre">
+
+          <div className="cup-vs">
+            VS
+          </div>
+
+        </div>
+
+        <div className="cup-team-panel">
+
+          <div className="cup-team-heading">
+            VICE CHAIR
+          </div>
+
+          <div className="cup-player-list">
+
+            {viceChairTeam.map((coach) => (
+
+              <div
+                key={coach}
+                className="cup-player-card"
+              >
+                {coach}
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <style jsx>{`
+
+        .cup-header-reveal {
+
+  position: relative;
+
+  height: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1rem;
+}
+
+        .cup-draw-screen {
+
+          background-blend-mode: screen;
+
+          box-shadow:
+            inset 0 0 180px rgba(255,255,255,0.12)
+
+          position: fixed;
+          inset: 0;
+
+          overflow: hidden;
+
+          background:
+            radial-gradient(
+              circle at top,
+              rgba(120,200,255,0.65),
+              #3c82d6 35%,
+              #5ca8ff 70%,
+              #7fc4ff 100%
+            );
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          z-index: 999;
+        }
+
+        .cup-background-glow {
+
+          position: absolute;
+
+          width: 1200px;
+          height: 1200px;
+
+          border-radius: 999px;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(180,230,255,0.42),
+              transparent 70%
+            );
+
+          filter: blur(80px);
+
+          animation:
+            cupPulse 8s ease-in-out infinite;
+        }
+
+        .cup-logo-left,
+.cup-logo-right {
+
+  position: absolute;
+
+  top: 2rem;
+
+  width: 140px;
+
+  opacity: 0.42;
+
+  filter:
+
+    drop-shadow(
+      0 0 18px rgba(255,255,255,0.35)
+    )
+
+    drop-shadow(
+      0 0 45px rgba(120,220,255,0.28)
+    );
+
+  z-index: 1;
+}
+
+.cup-logo-left {
+
+  left: 2rem;
+}
+
+.cup-logo-right {
+
+  right: 2rem;
+}
+
+        .cup-particles {
+
+          position: absolute;
+          inset: 0;
+
+          background-image:
+            radial-gradient(
+              rgba(255,255,255,0.12) 1px,
+              transparent 1px
+            );
+
+          background-size:
+            60px 60px;
+
+          opacity: 0.14;
+
+          animation:
+            particleMove 40s linear infinite;
+        }
+
+        .cup-header {
+
+          position: relative;
+
+          text-align: center;
+
+          margin-bottom: 1.5rem;
+
+          z-index: 2;
+
+          transform: translateY(-25px);
+        }
+
+        .cup-main-title {
+
+          font-size:
+            clamp(2.8rem, 5vw, 4.5rem);
+
+          font-weight: 900;
+
+          line-height: 0.95;
+
+          color: white;
+
+          text-shadow:
+            0 0 30px rgba(0,120,255,0.35);
+        }
+
+        .cup-date {
+
+          margin-top: 1.5rem;
+
+          font-size: 1rem;
+
+          letter-spacing: 0.25em;
+
+          color:
+            rgba(255,255,255,0.65);
+        }
+
+        .cup-layout {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: center;
+
+  gap: 1.5rem;
+
+  transform:
+    translateY(-30px);
+
+  z-index: 2;
+}
+
+        .cup-team-panel {
+
+          width: 520px;
+
+          height: 520px;
+
+          border-radius: 2.5rem;
+
+          background:
+            linear-gradient(
+              180deg,
+              rgba(255,255,255,0.24),
+              rgba(255,255,255,0.14)
+            );
+
+          border:
+            1px solid rgba(120,190,255,0.32);
+
+          backdrop-filter:
+  blur(18px)
+  saturate(1.4);
+
+          box-shadow:
+            0 0 50px rgba(0,0,0,0.28);
+
+          padding: 2.2rem;
+        }
+
+        .cup-team-heading {
+
+          text-align: center;
+
+          font-size: 1.6rem;
+
+          font-weight: 900;
+
+          margin-bottom: 2rem;
+
+          color: white;
+        }
+
+        .cup-player-list {
+
+        max-height: 420px;
+
+        overflow: hidden;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 0.7rem;
+}
+
+        .cup-player-card {
+
+          padding: 0.7rem 0.9rem;
+
+          border-radius: 1.2rem;
+
+          background:
+            rgba(255,255,255,0.22);
+
+          box-shadow:
+            0 0 12px rgba(255,255,255,0.08);
+
+          border:
+            1px solid rgba(255,255,255,0.06);
+
+          text-align: center;
+
+          font-size: 1rem;
+
+          font-weight: 800;
+
+          min-height: 44px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+          animation:
+            playerReveal 0.5s ease;
+        }
+
+        .cup-centre {
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          gap: 1.5rem;
+
+          padding-top: 0rem;
+        }
+
+        .cup-vs {
+
+        background:
+  radial-gradient(
+    circle,
+    rgba(0,140,255,0.25),
+    transparent 70%
+  );
+
+padding: 2rem;
+
+border-radius: 999px;
+
+          font-size: 6rem;
+
+          font-weight: 900;
+
+          color: white;
+
+          text-shadow:
+            0 0 40px rgba(0,120,255,0.5);
+
+          animation:
+            vsPulse 3s ease-in-out infinite;
+        }
+
+        .cup-live-pill {
+
+          padding:
+            0.8rem 1.4rem;
+
+          border-radius: 999px;
+
+          background:
+            rgba(0,120,255,0.18);
+
+          border:
+            1px solid rgba(120,190,255,0.22);
+
+          letter-spacing: 0.25em;
+
+          font-size: 0.85rem;
+
+          font-weight: 800;
+        }
+
+.cup-reveal-label {
+
+  letter-spacing: 0.35em;
+
+  color:
+    rgba(255,255,255,0.5);
+
+  margin-bottom: 1rem;
+}
+
+.cup-reveal-name {
+
+  font-size:
+    clamp(2.2rem, 4vw, 4rem);
+
+  font-weight: 900;
+
+  line-height: 0.9;
+
+  color: white;
+
+  text-shadow:
+    0 0 30px rgba(255,255,255,0.28),
+    0 0 60px rgba(120,220,255,0.45);
+
+  animation: revealNamepop 0.45s ease;
+}
+
+.cup-remaining-side {
+
+  width: 360px;
+
+  margin-left: 2rem;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  transform: translateY(-40px);
+}
+
+.cup-remaining-column {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 0.6rem;
+
+  width: 100%;
+
+  max-height: 420px;
+
+  overflow: hidden;
+}
+
+.cup-remaining-title {
+
+  margin-bottom: 1.5rem;
+
+  letter-spacing: 0.3em;
+
+  color:
+    rgba(255,255,255,0.55);
+}
+
+.cup-remaining-list {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 1rem;
+
+  max-width: 1200px;
+}
+
+.cup-remaining-pill {
+
+  min-height: 42px;
+
+  padding:
+    0.55rem 0.8rem;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.12);
+
+  border:
+    1px solid rgba(255,255,255,0.14);
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+
+  text-align: center;
+
+  font-size: 0.95rem;
+}
+
+.cup-ball-stage {
+
+  position: absolute;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 180px;
+  height: 80px;
+
+  margin: 0 auto 1.5rem auto;
+}
+
+.cup-ball-left,
+.cup-ball-right {
+
+  position: absolute;
+
+  width: 70px;
+  height: 70px;
+
+  object-fit: contain;
+
+  top: 5px;
+
+  opacity: 0;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(0,120,255,0.25)
+    );
+}
+
+.cup-ball-left {
+
+  left: 0;
+
+  animation:
+    leftBallReveal 0.9s ease forwards;
+}
+
+.cup-ball-right {
+
+  right: 0;
+
+  animation:
+    rightBallReveal 0.9s ease forwards;
+}
+
+@keyframes leftBallReveal {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      translateX(-80px)
+      rotate(-360deg)
+      scale(0.4);
+  }
+
+  30% {
+
+    opacity: 1;
+  }
+
+  55% {
+
+    transform:
+      translateX(42px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+
+    opacity: 0;
+
+    transform:
+      translateX(15px)
+      scale(0.92);
+  }
+}
+
+@keyframes rightBallReveal {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      translateX(80px)
+      rotate(360deg)
+      scale(0.4);
+  }
+
+  30% {
+
+    opacity: 1;
+  }
+
+  55% {
+
+    transform:
+      translateX(-42px)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+
+    opacity: 0;
+
+    transform:
+      translateX(-15px)
+      scale(0.92);
+  }
+}
+
+@keyframes revealNamePop {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(0.75)
+      translateY(24px);
+  }
+
+  100% {
+
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0);
+  }
+}
+
+@keyframes revealPulse {
+
+  0% {
+    opacity: 0;
+    transform:
+      scale(0.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      scale(1);
+  }
+}
+
+        @keyframes playerReveal {
+
+          0% {
+            opacity: 0;
+            transform:
+              translateY(20px)
+              scale(0.92);
+          }
+
+          100% {
+            opacity: 1;
+            transform:
+              translateY(0)
+              scale(1);
+          }
+        }
+
+        @keyframes cupPulse {
+
+          0% {
+            transform: scale(1);
+            opacity: 0.7;
+          }
+
+          50% {
+            transform: scale(1.08);
+            opacity: 1;
+          }
+
+          100% {
+            transform: scale(1);
+            opacity: 0.7;
+          }
+        }
+
+        @keyframes vsPulse {
+
+          0% {
+            transform: scale(1);
+          }
+
+          50% {
+            transform: scale(1.08);
+          }
+
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        @keyframes particleMove {
+
+          from {
+            transform: translateY(0px);
+          }
+
+          to {
+            transform: translateY(-120px);
+          }
+        }
+
+      `}</style>
+
+    </main>
+
+  );
+}
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-black text-white">
@@ -1063,6 +1907,48 @@ const isQuietMoment =
   z-index: 14;
 
   pointer-events: none;
+}
+
+@keyframes revealNamePop {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(0.75)
+      translateY(24px);
+  }
+
+  100% {
+
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0);
+  }
+}
+
+@keyframes revealNamePop {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(0.7)
+      translateY(25px);
+  }
+
+  100% {
+
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0);
+  }
 }
 
 .crest {
