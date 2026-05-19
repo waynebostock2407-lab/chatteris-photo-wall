@@ -198,6 +198,18 @@ await uploadBytes(
 
         </label>
 
+        <div className="or-divider">
+
+          <div className="or-line" />
+
+          <div className="or-text">
+            OR
+          </div>
+
+          <div className="or-line" />
+
+        </div>
+
         {previewImages.length > 0 && (
 
           <div className="mt-10">
@@ -251,31 +263,31 @@ await uploadBytes(
 
         )}
 
-        <div className="section-label">
-          MESSAGES FOR VICKY
-        </div>
+        <div className="section-label mt-10">
+  MESSAGE FOR VICKY
+</div>
 
-        <div className="message-helper">
-          Leave a thank you message, memory or good luck message 💙
-        </div>
+<div className="message-helper">
+  Leave a thank you message, memory or good luck message 💙
+</div>
 
-        <div className="mt-16">
+<div className="mt-10">
 
-          <div className="text-2xl font-black mb-4">
-            YOUR NAME
-          </div>
+  <div className="text-2xl font-black mb-4">
+    YOUR NAME
+  </div>
 
-          <input
-            type="text"
-            value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
-            placeholder="Your name (OPTIONAL)"
-            className="upload-input"
-          />
+  <input
+    type="text"
+    value={name}
+    onChange={(e) =>
+      setName(e.target.value)
+    }
+    placeholder="Your name (OPTIONAL)"
+    className="upload-input"
+  />
 
-        </div>
+</div>
 
         <div className="mt-8">
 
@@ -640,6 +652,45 @@ await uploadBytes(
         .upload-button:hover {
           transform: scale(1.02);
         }
+
+        .or-divider {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1rem;
+
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.or-line {
+
+  flex: 1;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(120,190,255,0.35),
+      transparent
+    );
+}
+
+.or-text {
+
+  font-size: 0.95rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.3em;
+
+  color:
+    rgba(255,255,255,0.45);
+}
 
       `}</style>
 
