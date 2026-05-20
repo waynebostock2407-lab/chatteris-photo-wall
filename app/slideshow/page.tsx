@@ -49,6 +49,8 @@ const [currentReveal, setCurrentReveal] =
  const [isRevealAnimating, setIsRevealAnimating] =
   useState(false); 
 
+ const revealRef = useRef("");
+
   const [photos, setPhotos] = useState<Photo[]>([]);
 
   const [messages, setMessages] = useState<
@@ -349,22 +351,24 @@ useEffect(() => {
           );
 
           const revealName =
-  data.currentReveal || "";
+            data.currentReveal || "";
 
-if (
-  revealName &&
-  revealName !== currentReveal
-) {
+          if (
+            revealName &&
+            revealName !== revealRef.current
+          ) {
 
-  setIsRevealAnimating(true);
+            setIsRevealAnimating(true);
 
-  setTimeout(() => {
-    setIsRevealAnimating(false);
-  }, 850);
+            setCurrentReveal(revealName);
 
-}
+            setTimeout(() => {
 
-setCurrentReveal(revealName);
+              setIsRevealAnimating(false);
+
+            }, 850);
+
+          }
 
         }
 
@@ -374,6 +378,29 @@ setCurrentReveal(revealName);
   return () => unsubscribeDraw();
 
 }, []);
+
+/* CLEAR REVEAL AFTER 5 SECONDS */
+
+useEffect(() => {
+
+  if (!currentReveal) return;
+
+  const timeout = setTimeout(() => {
+
+    setCurrentReveal("");
+
+  }, 5000);
+
+  return () => clearTimeout(timeout);
+
+}, [currentReveal]);
+
+useEffect(() => {
+
+  revealRef.current = currentReveal;
+
+}, [currentReveal]);
+
 
   /* PRELOAD IMAGES */
 
@@ -507,13 +534,13 @@ const isHeroPhoto =
   currentPhotoIndex % 3 === 0;
 
 const isMegaMoment =
-  currentPhotoIndex % 7 === 0;
+  currentPhotoIndex % 14 === 0;
 
 const isFullBleed =
   currentPhotoIndex % 17 === 0;
 
 const isQuietMoment =
-  currentPhotoIndex % 7 === 0;
+  currentPhotoIndex % 5 === 0;
 
   const currentPhoto =
     photos[currentPhotoIndex];
@@ -568,9 +595,10 @@ if (showCupDraw) {
       <div className="cup-header">
 
         <div className="cup-main-title">
-          CHAIR vs VICE CHAIR
+  CHAIR vs VICE CHAIR
+</div>
 
-          {currentReveal && (
+{currentReveal && (
 
   <div className="cup-header-reveal">
 
@@ -579,12 +607,12 @@ if (showCupDraw) {
       <div className="cup-ball-stage">
 
         <img
-          src="/logo 2.png"
+          src="/logo.png"
           className="cup-ball-left"
         />
 
         <img
-          src="/logo 3.png"
+          src="/logo 4.png"
           className="cup-ball-right"
         />
 
@@ -592,72 +620,179 @@ if (showCupDraw) {
 
     )}
 
-    <div className="cup-reveal-name">
-  {currentReveal}
-</div>
+    <div
+      className="cup-reveal-name"
+      style={{
+        color: chairTeam.includes(currentReveal)
+          ? "#9fd8ff"
+          : "#ffe680"
+      }}
+    >
+
+      {currentReveal}
+
+      <span
+        className={
+          chairTeam.includes(currentReveal)
+            ? "reveal-dot reveal-blue"
+            : "reveal-dot reveal-yellow"
+        }
+      />
+
+  </div>
 
   </div>
 
 )}
-        </div>
 
       </div>
 
       <div className="cup-layout">
 
-        <div className="cup-team-panel">
+  {/* REMAINING PLAYERS */}
 
-          <div className="cup-team-heading">
-            CHAIR
+  <div className="cup-remaining-wrapper">
+
+  <div className="cup-remaining-column">
+
+    <div className="cup-remaining-list">
+
+      <div className="cup-remaining-track">
+
+        {[...remainingCoaches,
+          ...remainingCoaches].map(
+          (coach, index) => (
+
+          <div
+            key={`${coach}-${index}`}
+            className={`
+              cup-remaining-item
+              ${
+                currentReveal === coach
+                  ? chairTeam.includes(coach)
+                    ? "remaining-picked-chair"
+                    : "remaining-picked-vice"
+                  : ""
+              }
+            `}
+          >
+
+            <div className="cup-ball-number">
+  {(index % remainingCoaches.length) + 1}
+            </div>
+
+            <div className="cup-remaining-name">
+              {coach}
+            </div>
+
           </div>
 
-          <div className="cup-player-list">
+        ))}
 
-            {chairTeam.map((coach) => (
+      </div>
 
-              <div
-                key={coach}
-                className="cup-player-card"
-              >
-                {coach}
-              </div>
+    </div>
 
-            ))}
+  </div>
 
-          </div>
+</div>
 
+  {/* CHAIR */}
+
+  <div className="cup-team-panel chair-panel">
+
+    <div className="cup-team-heading">
+      CHAIR SQUAD
+    </div>
+
+    <div className="cup-player-list">
+
+      {chairTeam.map((coach) => (
+
+        <div
+          key={coach}
+          className="cup-player-card"
+        >
+          {coach}
         </div>
 
-        <div className="cup-centre">
+      ))}
 
-          <div className="cup-vs">
-            VS
-          </div>
+    </div>
 
+  </div>
+
+  {/* VICE */}
+
+  <div className="cup-team-panel vice-panel">
+
+    <div className="cup-team-heading vice-heading">
+      VICE CHAIR
+    </div>
+
+    <div className="cup-player-list">
+
+      {viceChairTeam.map((coach) => (
+
+        <div
+          key={coach}
+          className="cup-player-card vice-card"
+        >
+          {coach}
         </div>
 
-        <div className="cup-team-panel">
+      ))}
 
-          <div className="cup-team-heading">
-            VICE CHAIR
+    </div>
+
+  </div>
+
+</div>
+
+<div className="cup-ticker-wrap">
+
+  <div className="cup-ticker">
+
+    {[...chairTeam, ...viceChairTeam]
+      .map((coach, index) => {
+
+        const isChair =
+          chairTeam.includes(coach);
+
+        return (
+
+          <div
+            key={coach}
+            className="cup-ticker-item"
+          >
+
+            <span
+              className={
+                isChair
+                  ? "ticker-chair"
+                  : "ticker-vice"
+              }
+            >
+              {isChair ? "🔵" : "🟡"}
+            </span>
+
+            {coach}
+
+            <span className="ticker-team">
+
+              {isChair
+                ? "CHAIR"
+                : "VICE"}
+
+            </span>
+
           </div>
 
-          <div className="cup-player-list">
+        );
 
-            {viceChairTeam.map((coach) => (
+      })}
 
-              <div
-                key={coach}
-                className="cup-player-card"
-              >
-                {coach}
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
+  </div>
 
       </div>
 
@@ -665,45 +800,80 @@ if (showCupDraw) {
 
         .cup-header-reveal {
 
+        padding:
+  0.7rem 1.8rem;
+
+border-radius: 999px;
+
+background:
+  rgba(10,25,55,0.22);
+
+backdrop-filter:
+  blur(6px);
+
   position: relative;
 
-  height: 110px;
+  z-index: 25;
+
+  isolation: isolate;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   margin-top: 1rem;
+
+  min-height: 0;
 }
 
         .cup-draw-screen {
 
-          background-blend-mode: screen;
+  position: fixed;
 
-          box-shadow:
-            inset 0 0 180px rgba(255,255,255,0.12)
+  inset: 0;
 
-          position: fixed;
-          inset: 0;
+  width: 100vw;
 
-          overflow: hidden;
+  height: 100vh;
 
-          background:
-            radial-gradient(
-              circle at top,
-              rgba(120,200,255,0.65),
-              #3c82d6 35%,
-              #5ca8ff 70%,
-              #7fc4ff 100%
-            );
+  overflow: hidden;
 
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+  display: flex;
 
-          z-index: 999;
-        }
+  flex-direction: column;
+
+  justify-content: flex-start;
+
+  align-items: center;
+
+  padding:
+    1.5rem
+    2rem
+    5.5rem;
+
+  box-sizing: border-box;
+
+  background:
+  linear-gradient(
+    rgba(22,55,120,0.72),
+    rgba(12,35,85,0.76)
+  ),
+  url("/stripe-bg.jpg");
+
+background-size: cover;
+
+background-position: center;
+
+background-repeat: no-repeat;
+
+  font-family:
+    "Bebas Neue",
+    sans-serif;
+
+  color: white;
+}
 
         .cup-background-glow {
 
@@ -734,31 +904,26 @@ if (showCupDraw) {
 
   top: 2rem;
 
-  width: 140px;
+  width: 120px;
 
-  opacity: 0.42;
+  opacity: 0.12;
 
   filter:
-
-    drop-shadow(
-      0 0 18px rgba(255,255,255,0.35)
-    )
-
-    drop-shadow(
-      0 0 45px rgba(120,220,255,0.28)
-    );
+  drop-shadow(
+    0 4px 18px rgba(77,163,255,0.18)
+  );
 
   z-index: 1;
 }
 
 .cup-logo-left {
 
-  left: 2rem;
+  left: 0.5rem;
 }
 
 .cup-logo-right {
 
-  right: 2rem;
+  right: 0.5rem;
 }
 
         .cup-particles {
@@ -787,7 +952,7 @@ if (showCupDraw) {
 
           text-align: center;
 
-          margin-bottom: 1.5rem;
+          margin-bottom: 3rem;
 
           z-index: 2;
 
@@ -796,18 +961,37 @@ if (showCupDraw) {
 
         .cup-main-title {
 
-          font-size:
-            clamp(2.8rem, 5vw, 4.5rem);
+  margin-top: 0.5rem;
 
-          font-weight: 900;
+  font-size:
+    clamp(2.8rem, 5vw, 4.5rem);
 
-          line-height: 0.95;
+  font-weight: 900;
 
-          color: white;
+  background:
+    linear-gradient(
+      90deg,
+      #4da3ff 0%,
+      #7ab8ff 30%,
+      #c8dfff 52%,
+      #ffe27a 78%,
+      #ffd84d 100%
+    );
 
-          text-shadow:
-            0 0 30px rgba(0,120,255,0.35);
-        }
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  line-height: 0.95;
+
+  filter:
+    drop-shadow(
+      0 3px 10px rgba(0,0,0,0.12)
+    );
+
+}
 
         .cup-date {
 
@@ -823,49 +1007,404 @@ if (showCupDraw) {
 
         .cup-layout {
 
-  position: relative;
+  flex: 1;
 
-  display: flex;
+  width: 100%;
 
-  align-items: flex-start;
+  display: grid;
 
-  justify-content: center;
+  grid-template-columns:
+  0.9fr
+  1.2fr
+  1.2fr;
 
   gap: 1.5rem;
 
-  transform:
-    translateY(-30px);
+  align-items: stretch;
 
-  z-index: 2;
+  min-height: 0;
+
+  overflow: hidden;
+
+  margin-top: 1rem;
+}
+
+.cup-remaining-wrapper {
+
+  display: flex;
+
+  flex-direction: column;
+
+  min-height: 0;
+}
+
+.cup-remaining-column {
+
+  position: relative;
+  
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+  linear-gradient(
+    180deg,
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.10)
+  );
+
+backdrop-filter:
+  blur(12px);
+
+box-shadow:
+  0 10px 30px rgba(0,0,0,0.16);
+
+  border:
+    1px solid rgba(255,255,255,0.18);
+
+  border-radius: 2rem;
+
+  padding: 1.5rem;
+
+  height: 100%;
+}
+
+.cup-remaining-list {
+
+  height: 100%;      
+
+  position: relative;
+
+  flex: 1;
+
+  overflow: hidden;
+
+  min-height: 0;
+
+  border-radius: 1rem;
+}
+
+.cup-remaining-track {
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.55rem;
+
+  animation:
+    remainingScroll 28s linear infinite;
+}
+
+.cup-remaining-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.8rem;
+
+  background:
+  rgba(255,255,255,0.10);
+
+  border:
+  1px solid rgba(255,255,255,0.08);
+
+  border-radius: 999px;
+
+  padding:
+    0.5rem 0.7rem;
+
+  min-height: 42px;
+}
+
+.cup-ball-number {
+
+  width: 36px;
+  height: 36px;
+
+  min-width: 36px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255,255,255,0.96);
+
+  color: #163b7a;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-family:
+    "Oswald",
+    sans-serif;
+
+  font-size: 1rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.03em;
+
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.22);
+
+  text-shadow: none;
+}
+
+.cup-remaining-name {
+
+  font-family:
+    "Oswald",
+    sans-serif;
+
+  text-transform: uppercase;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+
+  line-height: 1;
+
+  color: #163b7a;
+
+  text-shadow:
+    0 1px 1px rgba(0,0,0,0.22);
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.chair-panel .cup-player-card {
+
+  border-left:
+    4px solid #4da3ff;
+}
+
+.vice-heading {
+
+  color: #d4a300;
+
+  text-shadow:
+    0 1px 3px rgba(255,255,255,0.35);
+}
+
+.vice-card {
+
+  border-left:
+    4px solid #ffd84d !important;
+}
+
+.cup-reveal-center {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 420px;
+}
+
+.cup-ticker-wrap {
+
+  position: absolute;
+
+  left: 0;
+
+  bottom: 0;
+
+  width: 100%;
+
+  height: 72px;
+
+  overflow: hidden;
+
+  z-index: 30;
+
+  background:
+    linear-gradient(
+      90deg,
+      #10396b,
+      #1f5ba5
+    );
+
+  border-top:
+    2px solid rgba(255,255,255,0.15);
+
+  display: flex;
+
+  align-items: center;
+}
+
+.cup-ticker {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 4rem;
+
+  width: max-content;
+
+  min-width: 100%;
+
+  padding-left: 100%;
+
+  white-space: nowrap;
+
+  animation:
+    tickerMove 28s linear infinite;
+}
+
+.cup-ticker-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.9rem;
+
+  font-family:
+    "Oswald",
+    sans-serif;
+
+  font-size: 1.35rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
+
+  color: white;
+
+  text-shadow:
+    0 1px 2px rgba(0,0,0,0.28);
+
+  flex-shrink: 0;
+}
+
+.ticker-team {
+
+  opacity: 0.92;
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+.ticker-chair {
+
+  color: #4da3ff;
+
+  font-size: 1.5rem;
+}
+
+.ticker-vice {
+
+  color: #ffd84d;
+
+  font-size: 1.5rem;
+}
+
+@keyframes remainingScroll {
+
+  0% {
+
+    transform:
+      translateY(0);
+  }
+
+  100% {
+
+    transform:
+      translateY(calc(-50% + 140px));
+  }
+}
+
+@keyframes tickerMove {
+
+  0% {
+
+    transform:
+      translateX(0);
+  }
+
+  100% {
+
+    transform:
+      translateX(-100%);
+  }
 }
 
         .cup-team-panel {
 
-          width: 520px;
+          height: 100%;
 
-          height: 520px;
+          overflow: hidden;
 
           border-radius: 2.5rem;
 
           background:
-            linear-gradient(
-              180deg,
-              rgba(255,255,255,0.24),
-              rgba(255,255,255,0.14)
-            );
+  linear-gradient(
+    180deg,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.12)
+  );
+
+backdrop-filter:
+  blur(12px);
+
+box-shadow:
+  0 10px 30px rgba(0,0,0,0.16);
 
           border:
-            1px solid rgba(120,190,255,0.32);
+            1px solid rgba(255,255,255,0.14);
 
           backdrop-filter:
-  blur(18px)
-  saturate(1.4);
+  blur(10px)
+  saturate(1.05);
 
           box-shadow:
             0 0 50px rgba(0,0,0,0.28);
 
           padding: 2.2rem;
         }
+
+        .chair-panel {
+
+  border:
+    2px solid rgba(90,176,255,0.75);
+}
+
+.vice-panel {
+
+  border:
+    3px solid rgba(255,216,77,0.95);
+
+  box-shadow:
+    0 0 28px rgba(255,216,77,0.22);
+}
 
         .cup-team-heading {
 
@@ -877,112 +1416,83 @@ if (showCupDraw) {
 
           margin-bottom: 2rem;
 
-          color: white;
+color: white;
+
+text-shadow:
+0 2px 8px rgba(0,0,0,0.35);
         }
 
-        .cup-player-list {
-
-        max-height: 420px;
-
-        overflow: hidden;
+       .cup-player-list {
 
   display: grid;
 
   grid-template-columns:
-    repeat(2, 1fr);
+    1fr 1fr;
 
   gap: 0.7rem;
+
+  align-content: start;
+
+  padding-top: 1rem;
+
+  overflow: hidden;
 }
 
         .cup-player-card {
 
-          padding: 0.7rem 0.9rem;
+  font-family:
+    "Oswald",
+    sans-serif;
 
-          border-radius: 1.2rem;
+  text-transform: uppercase;
 
-          background:
-            rgba(255,255,255,0.22);
+  letter-spacing: 0.06rem;
 
-          box-shadow:
-            0 0 12px rgba(255,255,255,0.08);
+  padding: 0.7rem 0.9rem;
 
-          border:
-            1px solid rgba(255,255,255,0.06);
+  border-radius: 1.2rem;
 
-          text-align: center;
+  color: white;
 
-          font-size: 1rem;
+  background:
+  rgba(255,255,255,0.12);
 
-          font-weight: 800;
+border:
+  1px solid rgba(22,59,122,0.08);
 
-          min-height: 44px;
-display: flex;
-align-items: center;
-justify-content: center;
+box-shadow:
+  0 3px 10px rgba(0,0,0,0.08);
 
-          animation:
-            playerReveal 0.5s ease;
-        }
+  text-align: center;
 
-        .cup-centre {
+  text-shadow:
+    0 1px 1px rgba(0,0,0,0.2);
 
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+  font-size: 1rem;
 
-          gap: 1.5rem;
+  font-weight: 800;
 
-          padding-top: 0rem;
-        }
+  line-height: 1.1;
 
-        .cup-vs {
+  min-height: 46px;
 
-        background:
-  radial-gradient(
-    circle,
-    rgba(0,140,255,0.25),
-    transparent 70%
-  );
+  display: flex;
 
-padding: 2rem;
+  align-items: center;
 
-border-radius: 999px;
+  justify-content: center;
 
-          font-size: 6rem;
+  overflow: hidden;
 
-          font-weight: 900;
+  text-overflow: ellipsis;
 
-          color: white;
+  white-space: nowrap;
 
-          text-shadow:
-            0 0 40px rgba(0,120,255,0.5);
+  animation:
+    playerReveal 0.5s ease;
+}
 
-          animation:
-            vsPulse 3s ease-in-out infinite;
-        }
-
-        .cup-live-pill {
-
-          padding:
-            0.8rem 1.4rem;
-
-          border-radius: 999px;
-
-          background:
-            rgba(0,120,255,0.18);
-
-          border:
-            1px solid rgba(120,190,255,0.22);
-
-          letter-spacing: 0.25em;
-
-          font-size: 0.85rem;
-
-          font-weight: 800;
-        }
-
-.cup-reveal-label {
+        .cup-reveal-label {
 
   letter-spacing: 0.35em;
 
@@ -992,104 +1502,71 @@ border-radius: 999px;
   margin-bottom: 1rem;
 }
 
+.remaining-picked-chair {
+
+  background:
+    rgba(77,163,255,0.28);
+
+  border:
+    1px solid rgba(77,163,255,0.6);
+
+  box-shadow:
+    0 0 22px rgba(77,163,255,0.35);
+}
+
+.remaining-picked-vice {
+
+  background:
+    rgba(255,216,77,0.22);
+
+  border:
+    1px solid rgba(255,216,77,0.6);
+
+  box-shadow:
+    0 0 22px rgba(255,216,77,0.28);
+}
+
 .cup-reveal-name {
 
-  font-size:
-    clamp(2.2rem, 4vw, 4rem);
+-webkit-text-fill-color: unset;
 
-  font-weight: 900;
+  position: relative;
 
-  line-height: 0.9;
-
-  color: white;
-
-  text-shadow:
-    0 0 30px rgba(255,255,255,0.28),
-    0 0 60px rgba(120,220,255,0.45);
-
-  animation: revealNamepop 0.45s ease;
-}
-
-.cup-remaining-side {
-
-  width: 360px;
-
-  margin-left: 2rem;
+  z-index: 40;
 
   display: flex;
-  flex-direction: column;
 
   align-items: center;
-
-  transform: translateY(-40px);
-}
-
-.cup-remaining-column {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
-  gap: 0.6rem;
-
-  width: 100%;
-
-  max-height: 420px;
-
-  overflow: hidden;
-}
-
-.cup-remaining-title {
-
-  margin-bottom: 1.5rem;
-
-  letter-spacing: 0.3em;
-
-  color:
-    rgba(255,255,255,0.55);
-}
-
-.cup-remaining-list {
-
-  display: flex;
-
-  flex-wrap: wrap;
 
   justify-content: center;
 
   gap: 1rem;
 
-  max-width: 1200px;
-}
+  font-size:
+    clamp(2.4rem, 4vw, 4.2rem);
 
-.cup-remaining-pill {
+  font-weight: 900;
 
-  min-height: 42px;
+  line-height: 0.9;
 
-  padding:
-    0.55rem 0.8rem;
+  opacity: 1;
 
-  border-radius: 999px;
+  filter: none;
 
-  background:
-    rgba(255,255,255,0.12);
+  backdrop-filter: none;
 
-  border:
-    1px solid rgba(255,255,255,0.14);
+  text-shadow:
+    0 2px 4px rgba(0,0,0,0.28);
 
-  font-size: 0.72rem;
-
-  font-weight: 700;
-
-  text-align: center;
-
-  font-size: 0.95rem;
+  animation:
+    revealNamePop 0.45s ease;
 }
 
 .cup-ball-stage {
 
   position: absolute;
+
+  z-index: 20;
 
   left: 50%;
 
@@ -1207,27 +1684,6 @@ border-radius: 999px;
   }
 }
 
-@keyframes revealNamePop {
-
-  0% {
-
-    opacity: 0;
-
-    transform:
-      scale(0.75)
-      translateY(24px);
-  }
-
-  100% {
-
-    opacity: 1;
-
-    transform:
-      scale(1)
-      translateY(0);
-  }
-}
-
 @keyframes revealPulse {
 
   0% {
@@ -1275,21 +1731,6 @@ border-radius: 999px;
           100% {
             transform: scale(1);
             opacity: 0.7;
-          }
-        }
-
-        @keyframes vsPulse {
-
-          0% {
-            transform: scale(1);
-          }
-
-          50% {
-            transform: scale(1.08);
-          }
-
-          100% {
-            transform: scale(1);
           }
         }
 
@@ -1898,6 +2339,40 @@ border-radius: 999px;
     );
 }
 
+.reveal-dot {
+
+  display: inline-flex;
+
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+
+  border-radius: 999px;
+
+  margin-left: 1rem;
+
+  position: relative;
+
+  box-shadow:
+    0 0 22px currentColor,
+    0 0 40px currentColor;
+}
+
+.reveal-blue {
+
+  background: #5ab0ff;
+
+  color: #5ab0ff;
+}
+
+.reveal-yellow {
+
+  background: #ffd84d;
+
+  color: #ffd84d;
+}
+
 .floating-crests {
   position: absolute;
   inset: 0;
@@ -2030,6 +2505,35 @@ border-radius: 999px;
 
   animation:
     driftFive 42s linear infinite;
+}
+
+.reveal-chair {
+
+  color: #4da3ff;
+
+  text-shadow:
+    0 0 16px rgba(77,163,255,0.45),
+    0 2px 8px rgba(0,0,0,0.35);
+}
+
+.reveal-vice {
+
+  color: #ffd84d;
+
+  text-shadow:
+    0 0 16px rgba(255,216,77,0.4),
+    0 2px 8px rgba(0,0,0,0.35);
+}
+
+.cup-reveal-team {
+
+  font-size: 1.2rem;
+
+  margin-left: 0.7rem;
+
+  letter-spacing: 0.14em;
+
+  opacity: 0.92;
 }
 
 @keyframes driftOne {
@@ -3005,7 +3509,7 @@ color: transparent;
   backdrop-filter: blur(20px);
   
   border:
-    1px solid rgba(120,190,255,0.22)
+    1px solid rgba(120,190,255,0.22);
     
   box-shadow:
     0 0 40px rgba(0,120,255,0.18)
