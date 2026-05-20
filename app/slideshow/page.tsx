@@ -370,6 +370,8 @@ useEffect(() => {
   revealName !== revealRef.current
 ) {
 
+  revealRef.current = revealName;
+
   setIsRevealAnimating(true);
 
   setCurrentReveal(revealName);
