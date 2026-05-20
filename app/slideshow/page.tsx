@@ -82,6 +82,9 @@ const [currentReveal, setCurrentReveal] =
   const [showThankYou, setShowThankYou] =
     useState(false);
 
+  const [showTrophyReveal, setShowTrophyReveal] =
+  useState(false);
+
   const loadedImages = useRef(new Set<string>());
 
   const photoIntervalRef =
@@ -354,21 +357,29 @@ useEffect(() => {
             data.currentReveal || "";
 
           if (
-            revealName &&
-            revealName !== revealRef.current
-          ) {
+  revealName &&
+  revealName !== revealRef.current
+) {
 
-            setIsRevealAnimating(true);
+  setShowTrophyReveal(true);
 
-            setCurrentReveal(revealName);
+  setTimeout(() => {
 
-            setTimeout(() => {
+    setShowTrophyReveal(false);
 
-              setIsRevealAnimating(false);
+    setIsRevealAnimating(true);
 
-            }, 850);
+    setCurrentReveal(revealName);
 
-          }
+    setTimeout(() => {
+
+      setIsRevealAnimating(false);
+
+    }, 850);
+
+  }, 2200);
+
+}
 
         }
 
@@ -577,6 +588,11 @@ if (showCupDraw) {
     <main className="cup-draw-screen">
 
       <img
+  src="/trophy-clean.png"
+  className="cup-background-trophy"
+/>
+
+      <img
   src="/logo.png"
   className="cup-logo-left"
   alt="Logo Left"
@@ -592,7 +608,26 @@ if (showCupDraw) {
 
       <div className="cup-particles" />
 
+      
+
       <div className="cup-header">
+
+        {showTrophyReveal && (
+
+  <div className="cup-trophy-overlay">
+
+    <img
+      src="/trophy-clean.png"
+      className="cup-trophy-image"
+    />
+
+    <div className="cup-trophy-text">
+      DRAW IN PROGRESS
+    </div>
+
+  </div>
+
+)}
 
         <div className="cup-main-title">
   CHAIR vs VICE CHAIR
@@ -745,20 +780,31 @@ if (showCupDraw) {
 
 <div className="cup-ticker-wrap">
 
-  <div className="cup-ticker">
+  <div className="cup-ticker-fixed">
 
-    {[...chairTeam, ...viceChairTeam]
-      .map((coach, index) => {
+    <img
+      src="/trophy-clean.png"
+      className="cup-ticker-trophy-image"
+    />
 
-        const isChair =
-          chairTeam.includes(coach);
+  </div>
 
-        return (
+  <div className="cup-ticker-scroll">
 
-          <div
-            key={coach}
-            className="cup-ticker-item"
-          >
+    <div className="cup-ticker">
+
+      {[...chairTeam, ...viceChairTeam]
+  .map((coach, index) => {
+
+    const isChair =
+      chairTeam.includes(coach);
+
+    return (
+
+      <div
+        key={`${coach}-${index}`}
+        className="cup-ticker-item"
+      >
 
             <span
               className={
@@ -787,6 +833,8 @@ if (showCupDraw) {
       })}
 
   </div>
+
+      </div>
 
       </div>
 
@@ -820,6 +868,171 @@ backdrop-filter:
   margin-top: 1rem;
 
   min-height: 0;
+}
+
+.cup-trophy-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 120;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 2rem;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(12,35,85,0.68),
+      rgba(5,15,35,0.92)
+    );
+
+  backdrop-filter:
+    blur(10px);
+
+  animation:
+    trophyOverlayFade 2.2s ease;
+}
+
+.cup-trophy-image {
+
+  width: 340px;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 0 45px rgba(255,255,255,0.18)
+    );
+
+  animation:
+    trophyEntrance 2s
+    cubic-bezier(0.16,1,0.3,1);
+}
+
+.cup-trophy-text {
+
+  font-family:
+    "Oswald",
+    sans-serif;
+
+  font-size: 2rem;
+
+  font-weight: 900;
+
+  letter-spacing: 0.35em;
+
+  color: white;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 18px rgba(255,255,255,0.18);
+
+  animation:
+    trophyTextPulse 1.4s ease infinite;
+}
+
+@keyframes trophyEntrance {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(0.45)
+      rotate(-8deg);
+  }
+
+  55% {
+
+    opacity: 1;
+
+    transform:
+      scale(1.08)
+      rotate(2deg);
+  }
+
+  100% {
+
+    opacity: 1;
+
+    transform:
+      scale(1)
+      rotate(0deg);
+  }
+}
+
+@keyframes trophyTextPulse {
+
+  0%, 100% {
+
+    opacity: 0.7;
+  }
+
+  50% {
+
+    opacity: 1;
+  }
+}
+
+@keyframes trophyOverlayFade {
+
+  0% {
+
+    opacity: 0;
+  }
+
+  12% {
+
+    opacity: 1;
+  }
+
+  88% {
+
+    opacity: 1;
+  }
+
+  100% {
+
+    opacity: 0;
+  }
+}
+
+.cup-background-trophy {
+
+  position: absolute;
+
+  width: 950px;
+
+  right: -140px;
+
+  bottom: -180px;
+
+  opacity: 0.12;
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  object-fit: contain;
+
+  filter:
+    blur(0.5px)
+    drop-shadow(
+      0 0 40px rgba(255,255,255,0.10)
+    );
+
+  transform:
+    rotate(-8deg);
 }
 
         .cup-draw-screen {
@@ -1248,6 +1461,47 @@ box-shadow:
   align-items: center;
 }
 
+.cup-ticker-fixed {
+
+  width: 92px;
+
+  min-width: 92px;
+
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  position: relative;
+
+  z-index: 5;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8,20,40,0.96),
+      rgba(8,20,40,0.72)
+    );
+
+  border-right:
+    1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    8px 0 20px rgba(0,0,0,0.25);
+}
+
+.cup-ticker-scroll {
+
+  flex: 1;
+
+  overflow: hidden;
+
+  position: relative;
+}
+
 .cup-ticker {
 
   display: flex;
@@ -1258,14 +1512,22 @@ box-shadow:
 
   width: max-content;
 
-  min-width: 100%;
-
-  padding-left: 100%;
-
   white-space: nowrap;
 
   animation:
-    tickerMove 28s linear infinite;
+    tickerMove 36s linear infinite;
+}
+
+.cup-ticker-trophy-image {
+
+  width: 48px;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(255,255,255,0.18)
+    );
 }
 
 .cup-ticker-item {
@@ -1347,7 +1609,7 @@ box-shadow:
   100% {
 
     transform:
-      translateX(-100%);
+      translateX(-50%);
   }
 }
 
