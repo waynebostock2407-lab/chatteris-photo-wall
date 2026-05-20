@@ -280,6 +280,66 @@ export default function AdminPage() {
     }
   };
 
+
+  const triggerCupDraw = async () => {
+
+  await updateDoc(
+    doc(db, "eventControl", "live"),
+    {
+      showCupDraw: true,
+      drawTrigger: Date.now()
+    }
+  );
+
+};
+
+const closeCupDraw = async () => {
+
+  await updateDoc(
+    doc(db, "eventControl", "live"),
+    {
+      showCupDraw: false
+    }
+  );
+
+};
+
+const triggerThankYou = async () => {
+
+  await updateDoc(
+    doc(db, "eventControl", "live"),
+    {
+      thankYouTrigger: Date.now()
+    }
+  );
+
+};
+
+const togglePause = async (
+  current: boolean
+) => {
+
+  await updateDoc(
+    doc(db, "eventControl", "live"),
+    {
+      pauseSlideshow: !current
+    }
+  );
+
+};
+
+const toggleCalmMode = async (
+  current: boolean
+) => {
+
+  await updateDoc(
+    doc(db, "eventControl", "live"),
+    {
+      calmMode: !current
+    }
+  );
+
+};
   return (
     <main className="min-h-screen bg-[#081226] text-white p-8">
 
@@ -583,6 +643,38 @@ export default function AdminPage() {
                     >
                       Delete
                     </button>
+
+                    <div className="grid grid-cols-2 gap-4">
+
+  <button
+    onClick={triggerCupDraw}
+    className="bg-blue-600 text-white p-4 rounded-2xl font-bold"
+  >
+    START DRAW
+  </button>
+
+  <button
+    onClick={closeCupDraw}
+    className="bg-zinc-800 text-white p-4 rounded-2xl font-bold"
+  >
+    CLOSE DRAW
+  </button>
+
+  <button
+    onClick={triggerThankYou}
+    className="bg-yellow-500 text-black p-4 rounded-2xl font-bold"
+  >
+    THANK YOU
+  </button>
+
+  <button
+    onClick={() => togglePause(false)}
+    className="bg-red-600 text-white p-4 rounded-2xl font-bold"
+  >
+    PAUSE
+  </button>
+
+</div>
 
                   </div>
 

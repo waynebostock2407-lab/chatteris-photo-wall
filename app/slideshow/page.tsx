@@ -85,6 +85,15 @@ const [currentReveal, setCurrentReveal] =
   const [showTrophyReveal, setShowTrophyReveal] =
   useState(false);
 
+  const [pauseSlideshow, setPauseSlideshow] =
+  useState(false);
+
+const lastThankYouTrigger =
+  useRef<number | null>(null);
+
+const lastDrawTrigger =
+  useRef<number | null>(null);
+
   const loadedImages = useRef(new Set<string>());
 
   const photoIntervalRef =
@@ -390,6 +399,80 @@ useEffect(() => {
 
 }, []);
 
+useEffect(() => {
+
+  const unsubscribe =
+    onSnapshot(
+      doc(db, "eventControl", "live"),
+      (snapshot) => {
+
+        if (!snapshot.exists()) return;
+
+        const data = snapshot.data();
+
+        /* CUP DRAW */
+
+        setShowCupDraw(
+          data.showCupDraw || false
+        );
+
+        /* PAUSE */
+
+        setPauseSlideshow(
+          data.pauseSlideshow || false
+        );
+
+        /* CALM MODE */
+
+        setCalmMode(
+          data.calmMode || false
+        );
+
+        /* THANK YOU */
+
+        if (
+          data.thankYouTrigger &&
+          data.thankYouTrigger !==
+            lastThankYouTrigger.current
+        ) {
+
+          lastThankYouTrigger.current =
+            data.thankYouTrigger;
+
+          setShowThankYou(true);
+
+          setTimeout(() => {
+            setShowThankYou(false);
+          }, 9000);
+
+        }
+
+        /* TROPHY INTRO */
+
+        if (
+          data.drawTrigger &&
+          data.drawTrigger !==
+            lastDrawTrigger.current
+        ) {
+
+          lastDrawTrigger.current =
+            data.drawTrigger;
+
+          setShowTrophyReveal(true);
+
+          setTimeout(() => {
+            setShowTrophyReveal(false);
+          }, 2200);
+
+        }
+
+      }
+    );
+
+  return () => unsubscribe();
+
+}, []);
+
 /* CLEAR REVEAL AFTER 5 SECONDS */
 
 useEffect(() => {
@@ -437,9 +520,11 @@ useEffect(() => {
 
   useEffect(() => {
     if (
-      photos.length === 0) {
-      return;
-    }
+  photos.length === 0 ||
+  pauseSlideshow
+) {
+  return;
+}
 
     photoIntervalRef.current = setInterval(() => {
       setFlash(true);
