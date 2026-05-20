@@ -288,6 +288,7 @@ export default function AdminPage() {
     doc(db, "eventControl", "live"),
     {
       showCupDraw: true,
+      pauseSlideshow: true,
       drawTrigger: Date.now()
     },
     { merge: true }
@@ -300,7 +301,8 @@ const closeCupDraw = async () => {
   await setDoc(
     doc(db, "eventControl", "live"),
     {
-      showCupDraw: false
+      showCupDraw: false,
+      pauseSlideshow: false
     },
     { merge: true }
   );
