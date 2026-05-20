@@ -527,6 +527,48 @@ const toggleCalmMode = async (
 
         </div>
 
+        {/* LIVE EVENT CONTROLS */}
+
+<div className="mb-16">
+
+  <h2 className="text-4xl font-bold mb-6">
+    Live Controls
+  </h2>
+
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+    <button
+      onClick={triggerCupDraw}
+      className="bg-blue-600 text-white p-4 rounded-2xl font-bold"
+    >
+      START DRAW
+    </button>
+
+    <button
+      onClick={closeCupDraw}
+      className="bg-zinc-800 text-white p-4 rounded-2xl font-bold"
+    >
+      CLOSE DRAW
+    </button>
+
+    <button
+      onClick={triggerThankYou}
+      className="bg-yellow-500 text-black p-4 rounded-2xl font-bold"
+    >
+      THANK YOU
+    </button>
+
+    <button
+      onClick={() => togglePause(false)}
+      className="bg-red-600 text-white p-4 rounded-2xl font-bold"
+    >
+      PAUSE
+    </button>
+
+  </div>
+
+</div>
+
         <div className="mt-24">
 
           <h2 className="text-4xl font-bold mb-8">
@@ -643,38 +685,6 @@ const toggleCalmMode = async (
                     >
                       Delete
                     </button>
-
-                    <div className="grid grid-cols-2 gap-4">
-
-  <button
-    onClick={triggerCupDraw}
-    className="bg-blue-600 text-white p-4 rounded-2xl font-bold"
-  >
-    START DRAW
-  </button>
-
-  <button
-    onClick={closeCupDraw}
-    className="bg-zinc-800 text-white p-4 rounded-2xl font-bold"
-  >
-    CLOSE DRAW
-  </button>
-
-  <button
-    onClick={triggerThankYou}
-    className="bg-yellow-500 text-black p-4 rounded-2xl font-bold"
-  >
-    THANK YOU
-  </button>
-
-  <button
-    onClick={() => togglePause(false)}
-    className="bg-red-600 text-white p-4 rounded-2xl font-bold"
-  >
-    PAUSE
-  </button>
-
-</div>
 
                   </div>
 
