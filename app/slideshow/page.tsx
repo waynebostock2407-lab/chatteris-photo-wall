@@ -66,6 +66,9 @@ const [currentReveal, setCurrentReveal] =
   const [showMessages, setShowMessages] =
     useState(false);
 
+  const [pauseSlideshow, setPauseSlideshow] =
+  useState(false);
+
   const [fade, setFade] = useState(true);
 
   const [flash, setFlash] = useState(false);
@@ -83,9 +86,6 @@ const [currentReveal, setCurrentReveal] =
     useState(false);
 
   const [showTrophyReveal, setShowTrophyReveal] =
-  useState(false);
-
-  const [pauseSlideshow, setPauseSlideshow] =
   useState(false);
 
 const lastThankYouTrigger =
@@ -527,7 +527,12 @@ useEffect(() => {
 }
 
     photoIntervalRef.current = setInterval(() => {
-      setFlash(true);
+
+  if (pauseSlideshow) {
+    return;
+  }
+
+  setFlash(true);
 
       if (flashTimeoutRef.current) {
         clearTimeout(flashTimeoutRef.current);
@@ -622,8 +627,11 @@ useEffect(() => {
       }
     };
   }, [
-    photos,
-    showMessages,
+  photos,
+  showMessages,
+  pauseSlideshow,
+  calmMode,
+  messages,
   ]);
 
 const isHeroPhoto =
@@ -878,8 +886,12 @@ if (showCupDraw) {
 
     <div className="cup-ticker">
 
-      {[...chairTeam, ...viceChairTeam]
-  .map((coach, index) => {
+      {[
+  ...chairTeam,
+  ...viceChairTeam,
+  ...chairTeam,
+  ...viceChairTeam,
+].map((coach, index) => {
 
     const isChair =
       chairTeam.includes(coach);
