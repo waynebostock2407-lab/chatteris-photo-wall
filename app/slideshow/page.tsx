@@ -602,30 +602,24 @@ if (showCupDraw) {
 
   <div className="cup-header-reveal">
 
-    {isRevealAnimating && (
+      {isRevealAnimating && (
 
-      <div className="cup-ball-stage">
+  <div
+    className={
+      chairTeam.includes(currentReveal)
+        ? "reveal-burst reveal-burst-blue"
+        : "reveal-burst reveal-burst-yellow"
+    }
+  />
 
-        <img
-          src="/logo.png"
-          className="cup-ball-left"
-        />
+)}
 
-        <img
-          src="/logo 4.png"
-          className="cup-ball-right"
-        />
-
-      </div>
-
-    )}
-
-    <div
+      <div
       className="cup-reveal-name"
       style={{
         color: chairTeam.includes(currentReveal)
-          ? "#9fd8ff"
-          : "#ffe680"
+          ? "#3ea6ff"
+          : "#ffd447"
       }}
     >
 
@@ -1528,6 +1522,8 @@ box-shadow:
 
 .cup-reveal-name {
 
+font-weight: 1000;
+
 -webkit-text-fill-color: unset;
 
   position: relative;
@@ -1559,7 +1555,122 @@ box-shadow:
     0 2px 4px rgba(0,0,0,0.28);
 
   animation:
-    revealNamePop 0.45s ease;
+  revealNameImpact 0.75s
+  cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-burst {
+
+  position: absolute;
+
+  width: 220px;
+  height: 220px;
+
+  border-radius: 999px;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  z-index: 15;
+
+  animation:
+    revealBurst 0.9s ease-out forwards;
+
+  pointer-events: none;
+}
+
+.reveal-burst-blue {
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(77,163,255,0.75) 0%,
+      rgba(77,163,255,0.18) 45%,
+      transparent 75%
+    );
+}
+
+.reveal-burst-yellow {
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,216,77,0.75) 0%,
+      rgba(255,216,77,0.18) 45%,
+      transparent 75%
+    );
+}
+
+@keyframes revealNameImpact {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(0.65)
+      translateY(30px);
+
+    letter-spacing: 0.35em;
+
+    filter:
+      blur(12px);
+  }
+
+  55% {
+
+    opacity: 1;
+
+    transform:
+      scale(1.08)
+      translateY(-4px);
+
+    filter:
+      blur(0);
+  }
+
+  100% {
+
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0);
+
+    letter-spacing: 0.04em;
+
+    filter:
+      blur(0);
+  }
+}
+
+@keyframes revealBurst {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(0.2);
+  }
+
+  35% {
+
+    opacity: 1;
+  }
+
+  100% {
+
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.35);
+  }
 }
 
 .cup-ball-stage {
@@ -2355,22 +2466,26 @@ box-shadow:
   position: relative;
 
   box-shadow:
-    0 0 22px currentColor,
-    0 0 40px currentColor;
+    0 0 14px currentColor,
+    0 0 34px currentColor;
+    0 0 60px currentColor;
+
+  transform:
+    scale(1.08);
 }
 
 .reveal-blue {
 
-  background: #5ab0ff;
+  background: #3ea6ff;
 
-  color: #5ab0ff;
+  color: #3ea6ff;
 }
 
 .reveal-yellow {
 
-  background: #ffd84d;
+  background: #ffd447;
 
-  color: #ffd84d;
+  color: #ffd447;
 }
 
 .floating-crests {
