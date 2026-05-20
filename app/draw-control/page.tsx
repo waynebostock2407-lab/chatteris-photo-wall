@@ -346,7 +346,7 @@ export default function DrawControlPage() {
 
           <div className="flex flex-wrap justify-center gap-3">
 
-            {remainingCoaches.map((coach) => (
+            {remainingCoaches.map((coach, index) => (
 
               <div
                 key={coach}
@@ -361,6 +361,25 @@ export default function DrawControlPage() {
                   py-2
                 "
               >
+
+                <div
+  className="
+    w-10
+    h-10
+    rounded-full
+    bg-white
+    text-[#163b7a]
+    flex
+    items-center
+    justify-center
+    font-black
+    text-sm
+    shadow-lg
+    flex-shrink-0
+  "
+>
+  {index + 1}
+</div>
 
                 <button
                   onClick={() =>
