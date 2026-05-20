@@ -370,23 +370,15 @@ useEffect(() => {
   revealName !== revealRef.current
 ) {
 
-  setShowTrophyReveal(true);
+  setIsRevealAnimating(true);
+
+  setCurrentReveal(revealName);
 
   setTimeout(() => {
 
-    setShowTrophyReveal(false);
+    setIsRevealAnimating(false);
 
-    setIsRevealAnimating(true);
-
-    setCurrentReveal(revealName);
-
-    setTimeout(() => {
-
-      setIsRevealAnimating(false);
-
-    }, 850);
-
-  }, 2200);
+  }, 850);
 
 }
 
