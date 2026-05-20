@@ -703,9 +703,7 @@ if (showCupDraw) {
 
       
 
-      <div className="cup-header">
-
-        {showTrophyReveal && (
+      {showTrophyReveal && (
 
   <div className="cup-trophy-overlay">
 
@@ -714,13 +712,11 @@ if (showCupDraw) {
       className="cup-trophy-image"
     />
 
-    <div className="cup-trophy-text">
-      DRAW IN PROGRESS
-    </div>
-
   </div>
 
 )}
+
+<div className="cup-header">
 
         <div className="cup-main-title">
   CHAIR vs VICE CHAIR
@@ -886,12 +882,8 @@ if (showCupDraw) {
 
     <div className="cup-ticker">
 
-      {[
-  ...chairTeam,
-  ...viceChairTeam,
-  ...chairTeam,
-  ...viceChairTeam,
-].map((coach, index) => {
+  {[...chairTeam, ...viceChairTeam].map(
+  (coach, index) => {
 
     const isChair =
       chairTeam.includes(coach);
@@ -903,31 +895,32 @@ if (showCupDraw) {
         className="cup-ticker-item"
       >
 
-            <span
-              className={
-                isChair
-                  ? "ticker-chair"
-                  : "ticker-vice"
-              }
-            >
-              {isChair ? "🔵" : "🟡"}
-            </span>
+        <span
+          className={
+            isChair
+              ? "ticker-chair"
+              : "ticker-vice"
+          }
+        >
+          {isChair ? "🔵" : "🟡"}
+        </span>
 
-            {coach}
+        {coach}
 
-            <span className="ticker-team">
+        <span className="ticker-team">
 
-              {isChair
-                ? "CHAIR"
-                : "VICE"}
+          {isChair
+            ? "CHAIR"
+            : "VICE"}
 
-            </span>
+        </span>
 
-          </div>
+      </div>
 
-        );
+    );
 
-      })}
+  }
+)}
 
   </div>
 
@@ -977,13 +970,9 @@ backdrop-filter:
 
   display: flex;
 
-  flex-direction: column;
-
   align-items: center;
 
   justify-content: center;
-
-  gap: 2rem;
 
   background:
     radial-gradient(
@@ -1001,9 +990,21 @@ backdrop-filter:
 
 .cup-trophy-image {
 
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
   width: 340px;
 
+  max-height: 70vh;
+
   object-fit: contain;
+
+  display: block;
 
   filter:
     drop-shadow(
@@ -1045,6 +1046,7 @@ backdrop-filter:
     opacity: 0;
 
     transform:
+      translate(-50%, -50%)
       scale(0.45)
       rotate(-8deg);
   }
@@ -1054,6 +1056,7 @@ backdrop-filter:
     opacity: 1;
 
     transform:
+      translate(-50%, -50%)
       scale(1.08)
       rotate(2deg);
   }
@@ -1063,6 +1066,7 @@ backdrop-filter:
     opacity: 1;
 
     transform:
+      translate(-50%, -50%)
       scale(1)
       rotate(0deg);
   }

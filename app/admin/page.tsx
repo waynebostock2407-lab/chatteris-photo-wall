@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
@@ -283,34 +284,37 @@ export default function AdminPage() {
 
   const triggerCupDraw = async () => {
 
-  await updateDoc(
+  await setDoc(
     doc(db, "eventControl", "live"),
     {
       showCupDraw: true,
       drawTrigger: Date.now()
-    }
+    },
+    { merge: true }
   );
 
 };
 
 const closeCupDraw = async () => {
 
-  await updateDoc(
+  await setDoc(
     doc(db, "eventControl", "live"),
     {
       showCupDraw: false
-    }
+    },
+    { merge: true }
   );
 
 };
 
 const triggerThankYou = async () => {
 
-  await updateDoc(
+  await setDoc(
     doc(db, "eventControl", "live"),
     {
       thankYouTrigger: Date.now()
-    }
+    },
+    { merge: true }
   );
 
 };
@@ -319,11 +323,12 @@ const togglePause = async (
   current: boolean
 ) => {
 
-  await updateDoc(
+  await setDoc(
     doc(db, "eventControl", "live"),
     {
       pauseSlideshow: !current
-    }
+    },
+    { merge: true }
   );
 
 };
@@ -332,11 +337,12 @@ const toggleCalmMode = async (
   current: boolean
 ) => {
 
-  await updateDoc(
+  await setDoc(
     doc(db, "eventControl", "live"),
     {
       calmMode: !current
-    }
+    },
+    { merge: true }
   );
 
 };
