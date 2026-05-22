@@ -1480,10 +1480,11 @@ box-shadow:
 
   line-height: 1;
 
-  color: #163b7a;
+  color: rgba(255,255,255,0.96);
 
   text-shadow:
-    0 1px 1px rgba(0,0,0,0.22);
+    0 0 10px rgba(255,255,255,0.12),
+    0 1px 3px rgba(0,0,0,0.45);
 
   overflow: hidden;
 
@@ -2824,7 +2825,7 @@ font-weight: 1000;
 
   box-shadow:
     0 0 14px currentColor,
-    0 0 34px currentColor;
+    0 0 34px currentColor,
     0 0 60px currentColor;
 
   transform:
